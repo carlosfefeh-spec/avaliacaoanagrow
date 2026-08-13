@@ -640,6 +640,23 @@ export function ResultScreen({
           {protocol.summary}
         </p>
 
+        <div className="mt-4 space-y-3">
+          {whyBlocks.map((block) => (
+            <article
+              key={block.title}
+              className="border-primary/15 bg-primary/[0.04] rounded-3xl border p-5"
+            >
+              <p className="text-primary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
+                Por quê
+              </p>
+              <p className="mt-1.5 text-[1.02rem] font-semibold">{block.title}</p>
+              <p className="text-muted-foreground mt-2 text-[0.9rem] leading-relaxed">
+                {block.body}
+              </p>
+            </article>
+          ))}
+        </div>
+
         <article className="surface mt-4 rounded-3xl p-5">
           <p className="text-primary/60 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
             Produto principal
