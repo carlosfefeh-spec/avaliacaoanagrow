@@ -292,7 +292,7 @@ export const STEPS: Step[] = [
     kind: "insights",
     id: "insights",
     weight: 6,
-    title: "Estamos cruzando suas respostas…",
+    title: "Estamos analisando suas respostas para um diagnóstico mais preciso.",
     subtitle: "Analisando mais de 30 fatores",
     insights: [
       "Afinamento costuma acontecer antes da queda intensa.",
