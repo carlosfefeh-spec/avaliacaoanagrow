@@ -592,6 +592,13 @@ export function ResultScreen({
   const chance = recoveryChance(answers, scores);
   const list = highlights(answers, scores);
   const ferritin = ferritinReading(answers);
+  const FERRITIN_FILL: Record<string, number> = {
+    critico: 18,
+    baixo: 38,
+    limitrofe: 68,
+    ideal: 100,
+    desconhecido: 8,
+  };
 
   const [ctaVariant, setCtaVariant] = useState<Variant<"cta_v1">>("control");
   const [whyVariant, setWhyVariant] = useState<Variant<"why_v1">>("single");
