@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ProgressBar } from "@/components/quiz/ProgressBar";
@@ -17,9 +18,23 @@ import {
   btnPrimary,
 } from "@/components/quiz/screens";
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
-import { collectTags, computeScores } from "@/lib/quiz/engine";
-import { track, trackProgress } from "@/lib/quiz/analytics";
-import { decorateMicroFeedback, getVariant, type Variant } from "@/lib/quiz/experiments";
+import {
+  CAUSES,
+  collectTags,
+  computeScores,
+  ferritinReading,
+  primaryCause,
+  recoveryChance,
+  resolveProtocol,
+} from "@/lib/quiz/engine";
+import { captureUtms, track, trackProgress } from "@/lib/quiz/analytics";
+import {
+  activeVariants,
+  decorateMicroFeedback,
+  getVariant,
+  type Variant,
+} from "@/lib/quiz/experiments";
+import { sendLead } from "@/lib/quiz/lead.functions";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 
 const TITLE = "Avaliação Capilar Anagrow — descubra a causa da sua queda";
@@ -169,6 +184,43 @@ function QuizPage() {
     track("quiz_resumed", { question_id: resumable.stepId });
   };
 
+  const submitLead = useServerFn(sendLead);
+
+  const dispatchLead = useCallback(
+    (phoneValue: string, optIn: boolean) => {
+      const protocol = resolveProtocol(scores, tags);
+      const cause = primaryCause(scores);
+      const reading = ferritinReading(answers);
+      const payload = {
+        name,
+        phone: phoneValue,
+        phoneDigits: phoneValue.replace(/\D/g, ""),
+        marketingOptIn: optIn,
+        answers,
+        answersLabeled: labelAnswers(answers),
+        scores: scores as unknown as Record<string, number>,
+        tags,
+        cause: CAUSES[cause].label,
+        protocol: {
+          id: protocol.id,
+          title: protocol.title,
+          main: protocol.main.name,
+          complements: protocol.complements.map((p) => p.name),
+        },
+        recoveryChance: recoveryChance(answers, scores),
+        ferritin: reading ? reading.range : null,
+        utms: captureUtms(),
+        variants: activeVariants(),
+        pageUrl: typeof window !== "undefined" ? window.location.href : "",
+        completedAt: new Date().toISOString(),
+      };
+      void submitLead({ data: payload })
+        .then((res) => track("quiz_lead_sent", { ok: res.ok, status: res.status }))
+        .catch(() => track("quiz_lead_failed"));
+    },
+    [answers, name, scores, tags, submitLead],
+  );
+
   const restart = () => {
     clearState();
     setAnswers({});
@@ -261,6 +313,7 @@ function QuizPage() {
               setPhone(value);
               track("quiz_phone_submitted", { marketing_opt_in: optIn });
               track("quiz_completed", { progress: 100 });
+              dispatchLead(value, optIn);
               go(1);
             }}
           />
@@ -332,4 +385,18 @@ function QuestionScreen({
       </div>
     </div>
   );
+}
+
+function labelAnswers(answers: Answers): { question: string; answers: string[] }[] {
+  const out: { question: string; answers: string[] }[] = [];
+  for (const step of STEPS) {
+    if (step.kind !== "question") continue;
+    const picked = answers[step.id];
+    if (!picked?.length) continue;
+    out.push({
+      question: step.title,
+      answers: picked.map((id) => step.options.find((o) => o.id === id)?.label ?? id),
+    });
+  }
+  return out;
 }
