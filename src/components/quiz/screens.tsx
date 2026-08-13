@@ -148,6 +148,11 @@ export function MilestoneScreen({
     <div className="animate-enter">
       <div className="surface rounded-3xl p-6">
         <Eyebrow>Um detalhe importante</Eyebrow>
+        {step.highlight && (
+          <span className="bg-primary/10 text-primary mb-3 inline-flex items-center rounded-full px-3 py-1 text-[0.72rem] font-semibold tracking-wide uppercase">
+            {step.highlight}
+          </span>
+        )}
         <h2 className="text-[1.45rem] leading-tight font-semibold">{step.title}</h2>
         <p className="text-muted-foreground mt-3 leading-relaxed">{step.body}</p>
       </div>

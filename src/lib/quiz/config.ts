@@ -35,7 +35,7 @@ export type Step =
       bullets?: string[];
       cta: string;
     })
-  | (Base & { kind: "milestone"; title: string; body: string })
+  | (Base & { kind: "milestone"; title: string; body: string; highlight?: string })
   | (Base & { kind: "insights"; title: string; subtitle: string; insights: string[] })
   | (Base & { kind: "findings" })
   | (Base & { kind: "chance" })
@@ -177,8 +177,9 @@ export const STEPS: Step[] = [
     kind: "milestone",
     id: "milestone40",
     weight: 3,
-    title: "Enquanto analisamos…",
-    body: "Ferritina baixa pode reduzir a espessura dos fios antes mesmo de a queda aumentar.",
+    title: "Ferritina: o sinal que muitos exames deixam passar",
+    body: "Tricologistas consideram ferritina abaixo de 150 ng/mL o principal indicador nutricional quando o cabelo perde espessura. Antes da queda aumentar, o fio já fica mais fino.",
+    highlight: "Ferritina < 150 ng/mL",
   },
 
   {
