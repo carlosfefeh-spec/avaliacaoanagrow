@@ -863,59 +863,8 @@ export function ResultScreen({
         Refazer minha avaliação
       </button>
 
-      <div
-        className={`border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_28px_-18px_hsl(var(--foreground)/0.45)] backdrop-blur transition-transform duration-300 ease-out will-change-transform ${
-          ctaFloating ? "translate-y-0" : "pointer-events-none translate-y-[130%]"
-        }`}
-        aria-hidden={!ctaFloating}
-      >
-        <div className="mx-auto max-w-[560px]">
-          {ctaCopy.context && (
-            <p className="mb-2.5 line-clamp-2 text-center text-[0.8rem] leading-snug font-medium text-foreground">
-              {ctaCopy.context(causeLabel, chance)}
-            </p>
-          )}
-          <a
-            href={storeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
-            className={
-              ctaCopy.highlight
-                ? `${btnPrimary} min-h-[56px] py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft touch-manipulation select-none active:scale-[0.985] transition-transform`
-                : `${btnPrimary} min-h-[56px] py-[1.15rem] touch-manipulation select-none active:scale-[0.985] transition-transform`
-            }
-            onClick={() => {
-              track("quiz_cta_clicked", {
-                recommended_protocol: protocol.id,
-                recommended_product: protocol.main.name,
-                url: storeUrl,
-                cta_label: ctaCopy.label(protocol.cta, causeLabel),
-              });
-              trackEcommerce("select_item", ecommerceItems, {
-                item_list_id: "quiz_result",
-                item_list_name: "Protocolo recomendado",
-              });
-              trackEcommerce("begin_checkout", ecommerceItems);
-            }}
-          >
-            <span>{ctaCopy.label(protocol.cta, causeLabel)}</span>
-            <svg
-              viewBox="0 0 24 24"
-              className="ml-1.5 h-5 w-5 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.4}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M7 17L17 7M17 7H9M17 7v8" />
-            </svg>
-          </a>
-        </div>
-      </div>
-
     </div>
+    {mounted ? createPortal(floatingBar, document.body) : null}
+    </>
   );
 }
