@@ -643,6 +643,25 @@ export function ResultScreen({
     chance,
   });
 
+  /* Mobile-first: CTA flutuante entra a partir do primeiro scroll */
+  const [ctaFloating, setCtaFloating] = useState(false);
+  const ctaShownRef = useRef(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const visible = window.scrollY > 64;
+      setCtaFloating(visible);
+      if (visible && !ctaShownRef.current) {
+        ctaShownRef.current = true;
+        track("quiz_sticky_cta_visible", { trigger: "scroll" });
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+
+
 
   return (
     <div className="animate-enter pb-28">
