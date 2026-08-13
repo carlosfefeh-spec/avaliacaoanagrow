@@ -77,7 +77,7 @@ export function Landing({
 
       <div className="space-y-3">
         <button className={btnPrimary} onClick={onStart}>
-          Quero descobrir
+          {copy.cta}
         </button>
         {onResume && (
           <button className={btnGhost} onClick={onResume}>
