@@ -17,9 +17,23 @@ import {
   btnPrimary,
 } from "@/components/quiz/screens";
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
-import { collectTags, computeScores } from "@/lib/quiz/engine";
-import { track, trackProgress } from "@/lib/quiz/analytics";
-import { decorateMicroFeedback, getVariant, type Variant } from "@/lib/quiz/experiments";
+import {
+  CAUSES,
+  collectTags,
+  computeScores,
+  ferritinReading,
+  primaryCause,
+  recoveryChance,
+  resolveProtocol,
+} from "@/lib/quiz/engine";
+import { captureUtms, track, trackProgress } from "@/lib/quiz/analytics";
+import {
+  activeVariants,
+  decorateMicroFeedback,
+  getVariant,
+  type Variant,
+} from "@/lib/quiz/experiments";
+import { sendLead } from "@/lib/quiz/lead.functions";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 
 const TITLE = "Avaliação Capilar Anagrow — descubra a causa da sua queda";
