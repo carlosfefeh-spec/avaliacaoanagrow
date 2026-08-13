@@ -806,7 +806,7 @@ export function ResultScreen({
       >
         <div className="mx-auto max-w-[560px]">
           {ctaCopy.context && (
-            <p className="mb-2.5 text-center text-[0.8rem] leading-snug font-medium text-foreground">
+            <p className="mb-2.5 line-clamp-2 text-center text-[0.8rem] leading-snug font-medium text-foreground">
               {ctaCopy.context(causeLabel, chance)}
             </p>
           )}
@@ -817,8 +817,8 @@ export function ResultScreen({
             aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
             className={
               ctaCopy.highlight
-                ? `${btnPrimary} py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft`
-                : `${btnPrimary} py-[1.15rem]`
+                ? `${btnPrimary} min-h-[56px] py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft touch-manipulation select-none active:scale-[0.985] transition-transform`
+                : `${btnPrimary} min-h-[56px] py-[1.15rem] touch-manipulation select-none active:scale-[0.985] transition-transform`
             }
             onClick={() => {
               track("quiz_cta_clicked", {
