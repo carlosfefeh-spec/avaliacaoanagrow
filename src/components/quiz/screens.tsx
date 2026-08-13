@@ -586,13 +586,24 @@ export function ResultScreen({
   const list = highlights(answers, scores);
 
   const [ctaVariant, setCtaVariant] = useState<Variant<"cta_v1">>("control");
+  const [whyVariant, setWhyVariant] = useState<Variant<"why_v1">>("single");
   useEffect(() => {
     const assigned = getVariant("cta_v1");
     setCtaVariant(assigned);
     track("experiment_viewed", { experiment_id: "cta_v1", variant: assigned });
+    const why = getVariant("why_v1");
+    setWhyVariant(why);
+    track("experiment_viewed", { experiment_id: "why_v1", variant: why });
   }, []);
   const ctaCopy = CTA_COPY[ctaVariant];
   const causeLabel = CAUSES[cause].label;
+  const whyBlocks = WHY_BLOCKS[whyVariant]({
+    causeLabel,
+    causeBody: CAUSES[cause].body,
+    productName: protocol.main.name,
+    productRole: protocol.main.role,
+    chance,
+  });
 
 
   return (
