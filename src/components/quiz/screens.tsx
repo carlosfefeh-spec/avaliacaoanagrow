@@ -34,6 +34,16 @@ export function Landing({
   onStart: () => void;
   onResume?: (() => void) | undefined;
 }) {
+  const [variant, setVariant] = useState<Variant<"landing_v1">>("control");
+
+  useEffect(() => {
+    const assigned = getVariant("landing_v1");
+    setVariant(assigned);
+    track("experiment_viewed", { experiment_id: "landing_v1", variant: assigned });
+  }, []);
+
+  const copy = LANDING_COPY[variant];
+
   return (
     <div className="animate-enter flex min-h-[100svh] flex-col justify-between px-5 pt-10 pb-8">
       <div>
