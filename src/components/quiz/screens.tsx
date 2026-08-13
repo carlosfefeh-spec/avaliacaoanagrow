@@ -666,7 +666,7 @@ export function ResultScreen({
             rel="noopener noreferrer"
             className={
               ctaCopy.highlight
-                ? `${btnPrimary} shadow-[0_10px_30px_-8px_hsl(var(--primary)/0.65)] ring-primary/25 animate-pop ring-4`
+                ? `${btnPrimary} ring-primary/25 animate-pop shadow-xl ring-4`
                 : btnPrimary
             }
             onClick={() =>
