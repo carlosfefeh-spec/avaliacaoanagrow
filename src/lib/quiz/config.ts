@@ -168,7 +168,7 @@ export const STEPS: Step[] = [
       },
     ],
     microFeedback: (a) =>
-      a.exames?.includes("nunca")
+      a['exames']?.includes("nunca")
         ? "Sem exames, a leitura passa a depender ainda mais dos sinais que você percebe — e você já me deu vários."
         : "Ótimo. Quem já investigou costuma chegar mais rápido a um protocolo coerente.",
   },
