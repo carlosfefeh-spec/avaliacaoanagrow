@@ -654,6 +654,46 @@ export function ResultScreen({
         </ul>
       </section>
 
+      {ferritin && (
+        <section className="mt-8">
+          <h3 className="text-[1.15rem] font-semibold">Sua leitura de ferritina</h3>
+          <article className="border-primary/20 bg-primary/[0.05] mt-3 rounded-3xl border p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-[0.72rem] font-semibold tracking-[0.08em] uppercase">
+                {ferritin.range}
+              </span>
+              <span className="text-muted-foreground text-[0.78rem]">
+                Referência capilar: 150 ng/mL
+              </span>
+            </div>
+
+            <p className="mt-3 text-[1.02rem] font-semibold">{ferritin.status}</p>
+
+            <div className="mt-4">
+              <div className="bg-primary/10 relative h-2 w-full overflow-hidden rounded-full">
+                <div
+                  className="bg-primary h-full rounded-full transition-[width] duration-700"
+                  style={{ width: `${FERRITIN_FILL[ferritin.level]}%` }}
+                />
+              </div>
+              <div className="text-muted-foreground mt-1.5 flex justify-between text-[0.7rem]">
+                <span>0</span>
+                <span>150 ng/mL — ideal para o fio</span>
+              </div>
+            </div>
+
+            <p className="mt-4 text-[0.9rem] leading-relaxed">{ferritin.meaning}</p>
+
+            <div className="border-primary/15 mt-4 border-t pt-4">
+              <p className="text-primary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
+                O que fazer agora
+              </p>
+              <p className="mt-1.5 text-[0.9rem] leading-relaxed">{ferritin.nextStep}</p>
+            </div>
+          </article>
+        </section>
+      )}
+
       <section className="mt-8">
         <h3 className="text-[1.15rem] font-semibold">Por isso, sua recomendação é:</h3>
         <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">
