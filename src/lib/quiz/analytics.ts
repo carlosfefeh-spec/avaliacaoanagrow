@@ -1,3 +1,5 @@
+import { activeVariants } from "./experiments";
+
 const UTM_KEYS = [
   "utm_source",
   "utm_medium",
