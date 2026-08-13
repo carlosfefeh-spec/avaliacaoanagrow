@@ -27,7 +27,13 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
 
 /* ---------------------------------------------------------------- Landing */
 
-export function Landing({ onStart, onResume }: { onStart: () => void; onResume?: () => void }) {
+export function Landing({
+  onStart,
+  onResume,
+}: {
+  onStart: () => void;
+  onResume?: (() => void) | undefined;
+}) {
   return (
     <div className="animate-enter flex min-h-[100svh] flex-col justify-between px-5 pt-10 pb-8">
       <div>
