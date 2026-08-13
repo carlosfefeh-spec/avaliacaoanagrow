@@ -138,6 +138,18 @@
   }
 }
 
+@keyframes qz-pulse-soft {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 10px 28px -8px oklch(0.35 0.115 12 / 0.28);
+  }
+  50% {
+    transform: scale(1.012);
+    box-shadow: 0 14px 34px -6px oklch(0.35 0.115 12 / 0.36);
+  }
+}
+
 @keyframes qz-shimmer {
   from {
     background-position: -140% 0;
@@ -153,6 +165,10 @@
 
 @utility animate-pop {
   animation: qz-pop 0.28s ease-out;
+}
+
+@utility animate-pulse-soft {
+  animation: qz-pulse-soft 2.4s ease-in-out infinite;
 }
 
 @utility shimmer {
