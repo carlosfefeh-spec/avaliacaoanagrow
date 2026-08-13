@@ -93,11 +93,30 @@ function QuizPage() {
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
   }, []);
 
+  const answersRef = useRef<Answers>(answers);
+  answersRef.current = answers;
+
   const go = useCallback((delta: number) => {
     setFeedback(null);
-    setIndex((i) => Math.min(STEPS.length - 1, Math.max(0, i + delta)));
+    setIndex((i) => {
+      const dir = delta >= 0 ? 1 : -1;
+      let next = i;
+      for (let s = 0; s < Math.abs(delta); s++) {
+        next += dir;
+        while (
+          next > 0 &&
+          next < STEPS.length - 1 &&
+          STEPS[next]!.condition &&
+          !STEPS[next]!.condition!(answersRef.current)
+        ) {
+          next += dir;
+        }
+      }
+      return Math.min(STEPS.length - 1, Math.max(0, next));
+    });
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   }, []);
+
 
   const showFeedbackThenAdvance = useCallback(
     (message: string | null) => {
