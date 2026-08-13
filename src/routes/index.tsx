@@ -183,6 +183,43 @@ function QuizPage() {
     track("quiz_resumed", { question_id: resumable.stepId });
   };
 
+  const submitLead = useServerFn(sendLead);
+
+  const dispatchLead = useCallback(
+    (phoneValue: string, optIn: boolean) => {
+      const protocol = resolveProtocol(scores, tags);
+      const cause = primaryCause(scores);
+      const reading = ferritinReading(answers);
+      const payload = {
+        name,
+        phone: phoneValue,
+        phoneDigits: phoneValue.replace(/\D/g, ""),
+        marketingOptIn: optIn,
+        answers,
+        answersLabeled: labelAnswers(answers),
+        scores: scores as unknown as Record<string, number>,
+        tags,
+        cause: CAUSES[cause].label,
+        protocol: {
+          id: protocol.id,
+          title: protocol.title,
+          main: protocol.main.name,
+          complements: protocol.complements.map((p) => p.name),
+        },
+        recoveryChance: recoveryChance(answers, scores),
+        ferritin: reading ? reading.range : null,
+        utms: captureUtms(),
+        variants: activeVariants(),
+        pageUrl: typeof window !== "undefined" ? window.location.href : "",
+        completedAt: new Date().toISOString(),
+      };
+      void submitLead({ data: payload })
+        .then((res) => track("quiz_lead_sent", { ok: res.ok, status: res.status }))
+        .catch(() => track("quiz_lead_failed"));
+    },
+    [answers, name, scores, tags, submitLead],
+  );
+
   const restart = () => {
     clearState();
     setAnswers({});
