@@ -19,6 +19,7 @@ import {
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
 import { collectTags, computeScores } from "@/lib/quiz/engine";
 import { track, trackProgress } from "@/lib/quiz/analytics";
+import { decorateMicroFeedback, getVariant, type Variant } from "@/lib/quiz/experiments";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 
 const TITLE = "Avaliação Capilar Anagrow — descubra a causa da sua queda";
