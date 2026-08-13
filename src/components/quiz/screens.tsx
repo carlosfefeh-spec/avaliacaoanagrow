@@ -10,6 +10,7 @@ import {
 } from "@/lib/quiz/engine";
 import { isValidBrPhone, maskPhone } from "@/lib/quiz/phone";
 import { track } from "@/lib/quiz/analytics";
+import { LANDING_COPY, getVariant, type Variant } from "@/lib/quiz/experiments";
 
 export const btnPrimary =
   "inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.98rem] font-semibold text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-40 disabled:active:scale-100";
