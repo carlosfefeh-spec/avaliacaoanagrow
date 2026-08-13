@@ -313,6 +313,7 @@ function QuizPage() {
               setPhone(value);
               track("quiz_phone_submitted", { marketing_opt_in: optIn });
               track("quiz_completed", { progress: 100 });
+              dispatchLead(value, optIn);
               go(1);
             }}
           />
