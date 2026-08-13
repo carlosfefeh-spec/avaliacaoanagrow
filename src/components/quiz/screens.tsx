@@ -712,7 +712,7 @@ export function ResultScreen({
         Refazer minha avaliação
       </button>
 
-      <div className="border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_28px_-18px_hsl(var(--foreground)/0.45)] backdrop-blur">
         <div className="mx-auto max-w-[560px]">
           {ctaCopy.context && (
             <p className="mb-2.5 text-center text-[0.8rem] leading-snug font-medium text-foreground">
