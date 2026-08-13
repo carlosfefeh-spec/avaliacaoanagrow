@@ -6,22 +6,22 @@
 
 type Item = {
   item_id: string;
-  item_name?: string;
-  quantity?: number;
-  price?: number;
+  item_name?: string | undefined;
+  quantity?: number | undefined;
+  price?: number | undefined;
 };
 
 export type PurchasePayload = {
   quiz_id: string;
   order_id: string;
-  value?: number;
-  currency?: string;
-  items?: Item[];
-  client_id?: string;
-  session_id?: string;
-  utm_source?: string;
-  utm_campaign?: string;
-  utm_content?: string;
+  value?: number | undefined;
+  currency?: string | undefined;
+  items?: Item[] | undefined;
+  client_id?: string | undefined;
+  session_id?: string | undefined;
+  utm_source?: string | undefined;
+  utm_campaign?: string | undefined;
+  utm_content?: string | undefined;
 };
 
 /** GA4 exige um client_id no formato "XXXXXXXXXX.YYYYYYYYYY"; derivamos do quiz_id quando ausente. */
