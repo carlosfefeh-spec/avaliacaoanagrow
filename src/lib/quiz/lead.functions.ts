@@ -3,6 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 const WEBHOOK_URL = "https://n8n.srv1083227.hstgr.cloud/webhook-test/respostaquizz";
 
 export type LeadPayload = {
+  quizId: string;
+  storeUrl: string;
   name: string;
   phone: string;
   phoneDigits: string;
@@ -28,7 +30,7 @@ export const sendLead = createServerFn({ method: "POST" })
       const res = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ event: "quiz_completed", ...data }),
       });
       return { ok: res.ok, status: res.status };
     } catch (error) {

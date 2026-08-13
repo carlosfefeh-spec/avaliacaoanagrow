@@ -35,6 +35,7 @@ import {
   type Variant,
 } from "@/lib/quiz/experiments";
 import { sendLead } from "@/lib/quiz/lead.functions";
+import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 
 const TITLE = "Avaliação Capilar Anagrow — descubra a causa da sua queda";
@@ -192,6 +193,11 @@ function QuizPage() {
       const cause = primaryCause(scores);
       const reading = ferritinReading(answers);
       const payload = {
+        quizId: quizId(),
+        storeUrl: buildStoreUrl(protocol.ctaUrl, {
+          protocolId: protocol.id,
+          cause: CAUSES[cause].label,
+        }),
         name,
         phone: phoneValue,
         phoneDigits: phoneValue.replace(/\D/g, ""),
