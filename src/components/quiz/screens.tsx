@@ -335,6 +335,7 @@ export function ChanceScreen({
 }) {
   const target = recoveryChance(answers, scores);
   const [value, setValue] = useState(0);
+  const nextTap = useTap(onNext);
 
   useEffect(() => {
     let frame = 0;
