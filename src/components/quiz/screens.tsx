@@ -10,7 +10,13 @@ import {
 } from "@/lib/quiz/engine";
 import { isValidBrPhone, maskPhone } from "@/lib/quiz/phone";
 import { track } from "@/lib/quiz/analytics";
-import { CTA_COPY, LANDING_COPY, getVariant, type Variant } from "@/lib/quiz/experiments";
+import {
+  CTA_COPY,
+  LANDING_COPY,
+  LOADER_COPY,
+  getVariant,
+  type Variant,
+} from "@/lib/quiz/experiments";
 
 export const btnPrimary =
   "inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.98rem] font-semibold text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-40 disabled:active:scale-100";
@@ -160,19 +166,31 @@ export function InsightsScreen({
   step: Extract<Step, { kind: "insights" }>;
   onDone: () => void;
 }) {
+  const variant = getVariant("loader_v1");
+  const copy = LOADER_COPY[variant];
+  const insights = copy.insights ?? step.insights;
+
   const [shown, setShown] = useState(1);
-  const total = step.insights.length;
+  const total = insights.length;
+
+  useEffect(() => {
+    track("quiz_loader_start", { loader_messages: total });
+  }, [total]);
 
   useEffect(() => {
     if (shown >= total) {
-      const done = setTimeout(onDone, 1400);
+      const done = setTimeout(() => {
+        track("quiz_loader_complete", { loader_messages: total });
+        onDone();
+      }, copy.hold);
       return () => clearTimeout(done);
     }
-    const timer = setTimeout(() => setShown((n) => n + 1), 1700);
+    const timer = setTimeout(() => setShown((n) => n + 1), copy.pace(shown - 1));
     return () => clearTimeout(timer);
-  }, [shown, total, onDone]);
+  }, [shown, total, onDone, copy]);
 
   const pct = Math.round((shown / total) * 83);
+  const status = copy.status?.(shown, total) ?? null;
 
   return (
     <div className="animate-enter" aria-live="polite">
@@ -186,10 +204,17 @@ export function InsightsScreen({
         />
         <div className="shimmer pointer-events-none absolute inset-0" />
       </div>
-      <p className="text-muted-foreground mt-2 text-sm tabular-nums">{pct}%</p>
+      <div className="mt-2 flex items-baseline justify-between gap-3">
+        <p className="text-muted-foreground text-sm tabular-nums">{pct}%</p>
+        {status && (
+          <p key={status} className="text-primary animate-fade-in text-sm font-medium">
+            {status}
+          </p>
+        )}
+      </div>
 
       <ul className="mt-7 space-y-3">
-        {step.insights.slice(0, shown).map((insight) => (
+        {insights.slice(0, shown).map((insight) => (
           <li
             key={insight}
             className="surface animate-enter flex items-start gap-3 rounded-2xl px-4 py-3.5 text-[0.92rem] leading-snug"
