@@ -655,23 +655,34 @@ export function ResultScreen({
 
       <div className="border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
         <div className="mx-auto max-w-[560px]">
+          {ctaCopy.context && (
+            <p className="text-muted-foreground mb-2 text-center text-[0.76rem] leading-snug">
+              {ctaCopy.context(causeLabel, chance)}
+            </p>
+          )}
           <a
             href={protocol.ctaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={btnPrimary}
+            className={
+              ctaCopy.highlight
+                ? `${btnPrimary} shadow-[0_10px_30px_-8px_hsl(var(--primary)/0.65)] ring-primary/25 animate-pop ring-4`
+                : btnPrimary
+            }
             onClick={() =>
               track("quiz_cta_clicked", {
                 recommended_protocol: protocol.id,
                 recommended_product: protocol.main.name,
                 url: protocol.ctaUrl,
+                cta_label: ctaCopy.label(protocol.cta, causeLabel),
               })
             }
           >
-            {protocol.cta}
+            {ctaCopy.label(protocol.cta, causeLabel)}
           </a>
         </div>
       </div>
+
     </div>
   );
 }
