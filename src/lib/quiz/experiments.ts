@@ -155,6 +155,12 @@ export const CTA_COPY: Record<Variant<"cta_v1">, CtaCopy> = {
       `Baseado em ${causeLabel.toLowerCase()} · ${chance}% de chance de melhora se começar agora`,
     highlight: true,
   },
+  // Copy curta e direta, mantendo a hierarquia (contexto de uma linha só).
+  direct: {
+    label: () => "Ver meu protocolo",
+    context: (_causeLabel, chance) => `${chance}% de chance de melhora`,
+    highlight: true,
+  },
 };
 
 /* ------------------------------------------------- Loader de insights (83%) */
