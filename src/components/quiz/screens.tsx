@@ -57,21 +57,16 @@ export function Landing({
       <div className="py-8">
         <span className="border-primary/20 bg-secondary text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[0.72rem] font-semibold">
           <span className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full" />
-          Avaliação capilar guiada
+          {copy.badge}
         </span>
         <h1 className="mt-5 text-[2.15rem] leading-[1.08] font-semibold text-balance">
-          Descubra a verdadeira causa da sua queda de cabelo.
+          {copy.headline}
         </h1>
         <p className="text-muted-foreground mt-4 text-[1rem] leading-relaxed">
-          Em cerca de 2 minutos analisamos seu caso e indicamos o protocolo Anagrow mais
-          adequado ao que você está vivendo hoje.
+          {copy.subhead}
         </p>
         <ul className="mt-6 space-y-2.5">
-          {[
-            "Mais de 20.000 mulheres avaliadas",
-            "Perguntas rápidas, uma por vez",
-            "Recomendação explicada resposta por resposta",
-          ].map((item) => (
+          {copy.bullets.map((item) => (
             <li key={item} className="flex items-start gap-2.5 text-[0.92rem]">
               <Check />
               <span>{item}</span>
