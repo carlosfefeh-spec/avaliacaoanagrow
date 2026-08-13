@@ -765,7 +765,7 @@ export function ResultScreen({
             </p>
           )}
           <a
-            href={protocol.ctaUrl}
+            href={storeUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
@@ -774,14 +774,19 @@ export function ResultScreen({
                 ? `${btnPrimary} py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft`
                 : `${btnPrimary} py-[1.15rem]`
             }
-            onClick={() =>
+            onClick={() => {
               track("quiz_cta_clicked", {
                 recommended_protocol: protocol.id,
                 recommended_product: protocol.main.name,
-                url: protocol.ctaUrl,
+                url: storeUrl,
                 cta_label: ctaCopy.label(protocol.cta, causeLabel),
-              })
-            }
+              });
+              trackEcommerce("select_item", ecommerceItems, {
+                item_list_id: "quiz_result",
+                item_list_name: "Protocolo recomendado",
+              });
+              trackEcommerce("begin_checkout", ecommerceItems);
+            }}
           >
             <span>{ctaCopy.label(protocol.cta, causeLabel)}</span>
             <svg
