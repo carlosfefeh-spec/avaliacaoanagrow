@@ -129,3 +129,28 @@ export function decorateMicroFeedback(
   const first = base.charAt(0).toLowerCase() + base.slice(1);
   return `${prefix} ${first}`;
 }
+
+/* ------------------------------------------------- CTA final "Ver protocolo" */
+
+export type CtaCopy = {
+  /** Texto do botão. Recebe o texto padrão do protocolo e a causa detectada. */
+  label: (defaultLabel: string, causeLabel: string) => string;
+  /** Linha de contexto/insight logo acima do botão (null = sem contexto). */
+  context: ((causeLabel: string, chance: number) => string) | null;
+  /** Destaque visual extra (glow + leve pulso) na barra fixa. */
+  highlight: boolean;
+};
+
+export const CTA_COPY: Record<Variant<"cta_v1">, CtaCopy> = {
+  control: {
+    label: (defaultLabel) => defaultLabel,
+    context: null,
+    highlight: false,
+  },
+  insight: {
+    label: () => "Ver meu protocolo completo",
+    context: (causeLabel, chance) =>
+      `Baseado em ${causeLabel.toLowerCase()} · ${chance}% de chance de melhora se começar agora`,
+    highlight: true,
+  },
+};
