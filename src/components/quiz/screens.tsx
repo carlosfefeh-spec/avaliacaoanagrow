@@ -560,6 +560,16 @@ export function ResultScreen({
   const chance = recoveryChance(answers, scores);
   const list = highlights(answers, scores);
 
+  const [ctaVariant, setCtaVariant] = useState<Variant<"cta_v1">>("control");
+  useEffect(() => {
+    const assigned = getVariant("cta_v1");
+    setCtaVariant(assigned);
+    track("experiment_viewed", { experiment_id: "cta_v1", variant: assigned });
+  }, []);
+  const ctaCopy = CTA_COPY[ctaVariant];
+  const causeLabel = CAUSES[cause].label;
+
+
   return (
     <div className="animate-enter pb-28">
       <Eyebrow>Resultado da sua avaliação</Eyebrow>
