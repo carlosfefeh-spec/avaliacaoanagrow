@@ -10,7 +10,7 @@
 export const EXPERIMENTS = {
   landing_v1: ["control", "cause"] as const,
   micro_v1: ["neutral", "empathic"] as const,
-  cta_v1: ["control", "insight"] as const,
+  cta_v1: ["control", "insight", "direct"] as const,
   loader_v1: ["control", "personal"] as const,
   why_v1: ["single", "double"] as const,
 };
