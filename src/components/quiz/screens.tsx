@@ -10,7 +10,7 @@ import {
 } from "@/lib/quiz/engine";
 import { isValidBrPhone, maskPhone } from "@/lib/quiz/phone";
 import { track } from "@/lib/quiz/analytics";
-import { LANDING_COPY, getVariant, type Variant } from "@/lib/quiz/experiments";
+import { CTA_COPY, LANDING_COPY, getVariant, type Variant } from "@/lib/quiz/experiments";
 
 export const btnPrimary =
   "inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.98rem] font-semibold text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-40 disabled:active:scale-100";
@@ -560,6 +560,16 @@ export function ResultScreen({
   const chance = recoveryChance(answers, scores);
   const list = highlights(answers, scores);
 
+  const [ctaVariant, setCtaVariant] = useState<Variant<"cta_v1">>("control");
+  useEffect(() => {
+    const assigned = getVariant("cta_v1");
+    setCtaVariant(assigned);
+    track("experiment_viewed", { experiment_id: "cta_v1", variant: assigned });
+  }, []);
+  const ctaCopy = CTA_COPY[ctaVariant];
+  const causeLabel = CAUSES[cause].label;
+
+
   return (
     <div className="animate-enter pb-28">
       <Eyebrow>Resultado da sua avaliação</Eyebrow>
@@ -645,23 +655,34 @@ export function ResultScreen({
 
       <div className="border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
         <div className="mx-auto max-w-[560px]">
+          {ctaCopy.context && (
+            <p className="text-muted-foreground mb-2 text-center text-[0.76rem] leading-snug">
+              {ctaCopy.context(causeLabel, chance)}
+            </p>
+          )}
           <a
             href={protocol.ctaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={btnPrimary}
+            className={
+              ctaCopy.highlight
+                ? `${btnPrimary} ring-primary/25 animate-pop shadow-xl ring-4`
+                : btnPrimary
+            }
             onClick={() =>
               track("quiz_cta_clicked", {
                 recommended_protocol: protocol.id,
                 recommended_product: protocol.main.name,
                 url: protocol.ctaUrl,
+                cta_label: ctaCopy.label(protocol.cta, causeLabel),
               })
             }
           >
-            {protocol.cta}
+            {ctaCopy.label(protocol.cta, causeLabel)}
           </a>
         </div>
       </div>
+
     </div>
   );
 }
