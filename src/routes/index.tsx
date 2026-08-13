@@ -19,6 +19,7 @@ import {
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
 import { collectTags, computeScores } from "@/lib/quiz/engine";
 import { track, trackProgress } from "@/lib/quiz/analytics";
+import { decorateMicroFeedback, getVariant, type Variant } from "@/lib/quiz/experiments";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 
 const TITLE = "Avaliação Capilar Anagrow — descubra a causa da sua queda";
@@ -47,6 +48,14 @@ function QuizPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [resumable, setResumable] = useState<ReturnType<typeof loadState>>(null);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const microCount = useRef(0);
+  const [microVariant, setMicroVariant] = useState<Variant<"micro_v1">>("neutral");
+
+  useEffect(() => {
+    const assigned = getVariant("micro_v1");
+    setMicroVariant(assigned);
+    track("experiment_viewed", { experiment_id: "micro_v1", variant: assigned });
+  }, []);
 
   const steps = STEPS;
   const step = steps[index]!;
@@ -92,12 +101,13 @@ function QuizPage() {
 
   const showFeedbackThenAdvance = useCallback(
     (message: string | null) => {
-      const text =
+      const base =
         message ?? MICRO_FEEDBACKS[Math.floor(Math.random() * MICRO_FEEDBACKS.length)]!;
+      const text = decorateMicroFeedback(microVariant, base, microCount.current++);
       setFeedback(text);
-      feedbackTimer.current = setTimeout(() => go(1), 900);
+      feedbackTimer.current = setTimeout(() => go(1), microVariant === "empathic" ? 1100 : 900);
     },
-    [go],
+    [go, microVariant],
   );
 
   const answerSingle = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
