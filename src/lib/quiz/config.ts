@@ -178,6 +178,7 @@ export const STEPS: Step[] = [
     id: "ferritina_nivel",
     phase: "Contexto",
     weight: 6,
+    condition: (a) => !a['exames']?.includes("nunca"),
     title: "Você sabe qual foi o seu valor de ferritina?",
     subtitle: "Se lembrar mais ou menos, escolha a faixa mais próxima.",
     type: "single",
