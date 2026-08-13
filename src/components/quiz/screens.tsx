@@ -865,9 +865,6 @@ export function ResultScreen({
         antes de iniciar qualquer suplementação.
       </p>
 
-      <button className={`${btnGhost} mt-6`} onClick={onRestart}>
-        Refazer minha avaliação
-      </button>
 
     </div>
     {mounted ? createPortal(floatingBar, document.body) : null}
