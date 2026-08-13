@@ -169,6 +169,71 @@ export function recoveryChance(answers: Answers, scores: Scores): number {
   return Math.min(94, base);
 }
 
+/* ----------------------------------- Leitura personalizada da ferritina */
+
+export type FerritinReading = {
+  level: "critico" | "baixo" | "limitrofe" | "ideal" | "desconhecido";
+  range: string;
+  status: string;
+  meaning: string;
+  nextStep: string;
+};
+
+const FERRITIN_READINGS: Record<string, FerritinReading> = {
+  lt30: {
+    level: "critico",
+    range: "Abaixo de 30 ng/mL",
+    status: "Reserva de ferro muito baixa",
+    meaning:
+      "Nessa faixa o corpo prioriza órgãos vitais e o folículo fica no fim da fila. O fio nasce mais fino, encurta o ciclo de crescimento e cai antes da hora — é o cenário em que a perda de espessura costuma ser mais visível.",
+    nextStep:
+      "Reposição nutricional contínua é o primeiro passo: comece pelo Ferritin12 todos os dias e reavalie a ferritina em 90 dias.",
+  },
+  "30a70": {
+    level: "baixo",
+    range: "Entre 30 e 70 ng/mL",
+    status: "Normal no laboratório, baixo para o cabelo",
+    meaning:
+      "Esse valor não acende alerta no exame, mas está muito abaixo do que o folículo precisa. É a faixa que mais confunde: o exame vem “normal” enquanto o fio continua afinando.",
+    nextStep:
+      "Sustentar a reposição por pelo menos 3 meses para subir a reserva e devolver espessura ao fio novo.",
+  },
+  "70a150": {
+    level: "limitrofe",
+    range: "Entre 70 e 150 ng/mL",
+    status: "Perto, mas ainda abaixo do ideal capilar",
+    meaning:
+      "Você está a um passo da faixa em que o folículo trabalha sem restrição. Nessa zona o crescimento acontece, só que sem o calibre e o brilho que o fio teria com a reserva completa.",
+    nextStep:
+      "Fechar essa lacuna com uso contínuo e associar estímulo local para ganhar densidade mais rápido.",
+  },
+  gt150: {
+    level: "ideal",
+    range: "Acima de 150 ng/mL",
+    status: "Faixa considerada ideal para o fio",
+    meaning:
+      "Com a ferritina nessa faixa, a matéria-prima não é o gargalo da sua queda. Isso é uma boa notícia: aponta que a causa principal está em outra frente — hormonal ou de estímulo do folículo.",
+    nextStep:
+      "Manter a reserva e direcionar o protocolo para a frente que apareceu com mais peso na sua análise.",
+  },
+  nsei: {
+    level: "desconhecido",
+    range: "Valor não medido",
+    status: "Ainda sem número para comparar",
+    meaning:
+      "Sem esse dado, a leitura fica nos sinais que você descreveu — e vários deles são compatíveis com reserva de ferro baixa: fio mais fino, queda que não estabiliza e crescimento lento.",
+    nextStep:
+      "Peça ferritina no próximo exame de sangue e use 150 ng/mL como referência capilar, não o mínimo do laboratório.",
+  },
+};
+
+/** Interpretação personalizada do exame de ferritina (null se não respondido). */
+export function ferritinReading(answers: Answers): FerritinReading | null {
+  const picked = answers['ferritina_nivel']?.[0];
+  if (!picked) return null;
+  return FERRITIN_READINGS[picked] ?? null;
+}
+
 export function highlights(answers: Answers, scores: Scores): string[] {
   const out: string[] = [];
   const label = (stepId: string) => {
