@@ -45,7 +45,13 @@ const sent = new Set<string>();
 
 export function track(event: string, payload: Payload = {}) {
   if (typeof window === "undefined") return;
-  const data = { event, ...captureUtms(), ...payload, ts: Date.now() };
+  const data = {
+    event,
+    ...captureUtms(),
+    ...activeVariants(),
+    ...payload,
+    ts: Date.now(),
+  };
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(data);
   if (import.meta.env.DEV) console.debug("[analytics]", data);
