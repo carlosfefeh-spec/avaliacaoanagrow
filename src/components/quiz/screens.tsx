@@ -646,10 +646,14 @@ export function ResultScreen({
 
   /* Mobile-first: CTA flutuante entra a partir do primeiro scroll */
   const [ctaFloating, setCtaFloating] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const ctaShownRef = useRef(false);
+  useEffect(() => setMounted(true), []);
   useEffect(() => {
     const onScroll = () => {
-      const visible = window.scrollY > 64;
+      const scrollable =
+        document.documentElement.scrollHeight - window.innerHeight > 80;
+      const visible = !scrollable || window.scrollY > 24;
       setCtaFloating(visible);
       if (visible && !ctaShownRef.current) {
         ctaShownRef.current = true;
