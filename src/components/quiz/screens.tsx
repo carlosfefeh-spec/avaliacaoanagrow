@@ -600,6 +600,7 @@ export function ResultScreen({
     const why = getVariant("why_v1");
     setWhyVariant(why);
     track("experiment_viewed", { experiment_id: "why_v1", variant: why });
+    track("quiz_sticky_cta_shown", { variant: assigned });
   }, []);
   const ctaCopy = CTA_COPY[ctaVariant];
   const causeLabel = CAUSES[cause].label;
