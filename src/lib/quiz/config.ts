@@ -174,6 +174,31 @@ export const STEPS: Step[] = [
   },
 
   {
+    kind: "question",
+    id: "ferritina_nivel",
+    phase: "Contexto",
+    weight: 6,
+    title: "Você sabe qual foi o seu valor de ferritina?",
+    subtitle: "Se lembrar mais ou menos, escolha a faixa mais próxima.",
+    type: "single",
+    options: [
+      { id: "lt30", label: "Abaixo de 30 ng/mL", hint: "Reserva de ferro muito baixa", scores: { ferritin12: 4 } },
+      { id: "30a70", label: "Entre 30 e 70 ng/mL", hint: "Dentro do laboratório, baixo para o cabelo", scores: { ferritin12: 3 } },
+      { id: "70a150", label: "Entre 70 e 150 ng/mL", hint: "Ainda abaixo do ideal capilar", scores: { ferritin12: 2 } },
+      { id: "gt150", label: "Acima de 150 ng/mL", hint: "Faixa considerada ideal para o fio", scores: { osa: 1, tonico: 1 } },
+      { id: "nsei", label: "Não sei / nunca medi", scores: { ferritin12: 2 } },
+    ],
+    microFeedback: (a) => {
+      const v = a['ferritina_nivel']?.[0];
+      if (v === "gt150")
+        return "Ótimo sinal. Com a ferritina em faixa ideal, a leitura aponta para outras frentes.";
+      if (v === "nsei")
+        return "Sem problema — vou interpretar o restante dos sinais e te mostrar o que medir.";
+      return "Esse número explica muita coisa sobre a espessura dos seus fios.";
+    },
+  },
+
+  {
     kind: "milestone",
     id: "milestone40",
     weight: 3,
