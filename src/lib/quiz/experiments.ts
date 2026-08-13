@@ -12,6 +12,7 @@ export const EXPERIMENTS = {
   micro_v1: ["neutral", "empathic"] as const,
   cta_v1: ["control", "insight"] as const,
   loader_v1: ["control", "personal"] as const,
+  why_v1: ["single", "double"] as const,
 };
 
 
@@ -195,4 +196,37 @@ export const LOADER_COPY: Record<Variant<"loader_v1">, LoaderCopy> = {
       return "Analisando as suas respostas…";
     },
   },
+};
+
+/* --------------------------------- "Por quê" do produto recomendado (result) */
+
+export type WhyContext = {
+  causeLabel: string;
+  causeBody: string;
+  productName: string;
+  productRole: string;
+  chance: number;
+};
+
+export type WhyBlock = { title: string; body: string };
+
+export const WHY_BLOCKS: Record<Variant<"why_v1">, (ctx: WhyContext) => WhyBlock[]> = {
+  // 1 bloco: explicação única e direta.
+  single: (c) => [
+    {
+      title: `Por que ${c.productName} para o seu caso`,
+      body: `Suas respostas apontam para ${c.causeLabel.toLowerCase()}. ${c.productRole} É por isso que ele vem em primeiro lugar no seu protocolo.`,
+    },
+  ],
+  // 2 blocos: causa → mecanismo, separando o diagnóstico da solução.
+  double: (c) => [
+    {
+      title: "O que está por trás da sua queda",
+      body: `${c.causeBody} Enquanto essa causa não é tratada, o fio continua nascendo mais fino e caindo antes da hora.`,
+    },
+    {
+      title: `Como ${c.productName} age nisso`,
+      body: `${c.productRole} Mantendo o uso contínuo, sua chance estimada de melhora é de ${c.chance}%.`,
+    },
+  ],
 };
