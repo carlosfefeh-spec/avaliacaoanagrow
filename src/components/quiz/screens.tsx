@@ -10,7 +10,8 @@ import {
   type Cause,
 } from "@/lib/quiz/engine";
 import { isValidBrPhone, maskPhone } from "@/lib/quiz/phone";
-import { track } from "@/lib/quiz/analytics";
+import { track, trackEcommerce } from "@/lib/quiz/analytics";
+import { buildStoreUrl } from "@/lib/quiz/attribution";
 import {
   CTA_COPY,
   LANDING_COPY,
@@ -602,6 +603,15 @@ export function ResultScreen({
 
   const [ctaVariant, setCtaVariant] = useState<Variant<"cta_v1">>("control");
   const [whyVariant, setWhyVariant] = useState<Variant<"why_v1">>("single");
+  const [storeUrl, setStoreUrl] = useState(protocol.ctaUrl);
+  const ecommerceItems = [
+    { item_id: protocol.id, item_name: protocol.title, item_category: CAUSES[cause].label },
+    ...protocol.complements.map((p) => ({
+      item_id: p.name,
+      item_name: p.name,
+      item_category: "complemento",
+    })),
+  ];
   useEffect(() => {
     const assigned = getVariant("cta_v1");
     setCtaVariant(assigned);
@@ -610,6 +620,18 @@ export function ResultScreen({
     setWhyVariant(why);
     track("experiment_viewed", { experiment_id: "why_v1", variant: why });
     track("quiz_sticky_cta_shown", { variant: assigned });
+    setStoreUrl(
+      buildStoreUrl(protocol.ctaUrl, {
+        protocolId: protocol.id,
+        cause: CAUSES[cause].label,
+        variantSuffix: assigned,
+      }),
+    );
+    trackEcommerce("view_item", ecommerceItems, {
+      item_list_id: "quiz_result",
+      item_list_name: "Protocolo recomendado",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const ctaCopy = CTA_COPY[ctaVariant];
   const causeLabel = CAUSES[cause].label;
@@ -765,7 +787,7 @@ export function ResultScreen({
             </p>
           )}
           <a
-            href={protocol.ctaUrl}
+            href={storeUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
@@ -774,14 +796,19 @@ export function ResultScreen({
                 ? `${btnPrimary} py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft`
                 : `${btnPrimary} py-[1.15rem]`
             }
-            onClick={() =>
+            onClick={() => {
               track("quiz_cta_clicked", {
                 recommended_protocol: protocol.id,
                 recommended_product: protocol.main.name,
-                url: protocol.ctaUrl,
+                url: storeUrl,
                 cta_label: ctaCopy.label(protocol.cta, causeLabel),
-              })
-            }
+              });
+              trackEcommerce("select_item", ecommerceItems, {
+                item_list_id: "quiz_result",
+                item_list_name: "Protocolo recomendado",
+              });
+              trackEcommerce("begin_checkout", ecommerceItems);
+            }}
           >
             <span>{ctaCopy.label(protocol.cta, causeLabel)}</span>
             <svg
