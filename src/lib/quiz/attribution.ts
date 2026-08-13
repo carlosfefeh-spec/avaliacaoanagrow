@@ -23,12 +23,21 @@ export function buildStoreUrl(
     params.set("utm_content", opts.protocolId);
     if (opts.cause) params.set("utm_term", slug(opts.cause));
     params.set("quiz_id", quizId());
+    const gaClientId = readGaClientId();
+    if (gaClientId) params.set("ga_client_id", gaClientId);
     if (opts.variantSuffix) params.set("quiz_variant", opts.variantSuffix);
 
     return url.toString();
   } catch {
     return baseUrl;
   }
+}
+
+/** Lê o client_id do GA4 a partir do cookie _ga (formato GA1.1.<client_id>). */
+export function readGaClientId(): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.([\d]+\.[\d]+)/);
+  return match?.[1] ?? null;
 }
 
 function slug(value: string) {
@@ -44,6 +53,7 @@ function slug(value: string) {
 export function attributionContext() {
   return {
     quiz_id: quizId(),
+    ga_client_id: readGaClientId() ?? undefined,
     ...captureUtms(),
     ...activeVariants(),
   };

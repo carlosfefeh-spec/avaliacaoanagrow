@@ -23,6 +23,8 @@ const saleSchema = z.object({
   utm_campaign: z.string().max(120).optional(),
   utm_content: z.string().max(120).optional(),
   status: z.string().max(40).optional(),
+  client_id: z.string().max(60).optional(),
+  session_id: z.string().max(60).optional(),
 });
 
 /**
@@ -57,17 +59,20 @@ export const Route = createFileRoute("/api/public/sale")({
 
         const sale = { event: "quiz_purchase", ...parsed.data, receivedAt: new Date().toISOString() };
 
+        const { sendPurchaseToGa4 } = await import("@/lib/quiz/ga4.server");
+        const ga4 = await sendPurchaseToGa4(parsed.data);
+
         try {
           await fetch(WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(sale),
+            body: JSON.stringify({ ...sale, ga4 }),
           });
         } catch (error) {
           console.error("sale forward failed", error);
         }
 
-        return new Response(JSON.stringify({ ok: true }), {
+        return new Response(JSON.stringify({ ok: true, ga4 }), {
           status: 200,
           headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
         });
