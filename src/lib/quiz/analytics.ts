@@ -9,6 +9,22 @@ const UTM_KEYS = [
 ] as const;
 
 const UTM_STORAGE = "anagrow_quiz_utm";
+const QUIZ_ID_KEY = "anagrow_quiz_id";
+
+/** ID persistente da usuária — usado para casar quiz -> pedido na loja. */
+export function quizId(): string {
+  if (typeof window === "undefined") return "";
+  let id = localStorage.getItem(QUIZ_ID_KEY);
+  if (!id) {
+    const rand =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+    id = `qz_${rand}`;
+    localStorage.setItem(QUIZ_ID_KEY, id);
+  }
+  return id;
+}
 
 export function captureUtms(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -49,6 +65,7 @@ export function track(event: string, payload: Payload = {}) {
   if (typeof window === "undefined") return;
   const data = {
     event,
+    quiz_id: quizId(),
     ...captureUtms(),
     ...activeVariants(),
     ...payload,
@@ -70,4 +87,20 @@ export function trackProgress(progress: number) {
   if (progress >= 25) trackOnce("quiz_25_percent", { progress });
   if (progress >= 50) trackOnce("quiz_50_percent", { progress });
   if (progress >= 75) trackOnce("quiz_75_percent", { progress });
+}
+
+type Item = { item_id: string; item_name: string; item_category?: string; quantity?: number };
+
+/** Eventos de e-commerce GA4 (via dataLayer/GTM). */
+export function trackEcommerce(event: string, items: Item[], extra: Payload = {}) {
+  if (typeof window === "undefined") return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ ecommerce: null });
+  track(event, {
+    ecommerce: {
+      currency: "BRL",
+      items: items.map((item) => ({ quantity: 1, ...item })),
+      ...extra,
+    },
+  });
 }

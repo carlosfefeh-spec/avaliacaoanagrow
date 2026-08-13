@@ -1,22 +1,7 @@
-import { captureUtms } from "./analytics";
+import { captureUtms, quizId } from "./analytics";
 import { activeVariants } from "./experiments";
 
-const QUIZ_ID_KEY = "anagrow_quiz_id";
-
-/** ID persistente da usuária — usado para casar quiz -> pedido na loja. */
-export function quizId(): string {
-  if (typeof window === "undefined") return "";
-  let id = localStorage.getItem(QUIZ_ID_KEY);
-  if (!id) {
-    const rand =
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-    id = `qz_${rand}`;
-    localStorage.setItem(QUIZ_ID_KEY, id);
-  }
-  return id;
-}
+export { quizId };
 
 /**
  * Monta a URL da loja com UTMs de rastreio + quiz_id,
