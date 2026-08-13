@@ -92,12 +92,13 @@ function QuizPage() {
 
   const showFeedbackThenAdvance = useCallback(
     (message: string | null) => {
-      const text =
+      const base =
         message ?? MICRO_FEEDBACKS[Math.floor(Math.random() * MICRO_FEEDBACKS.length)]!;
+      const text = decorateMicroFeedback(microVariant, base, microCount.current++);
       setFeedback(text);
-      feedbackTimer.current = setTimeout(() => go(1), 900);
+      feedbackTimer.current = setTimeout(() => go(1), microVariant === "empathic" ? 1100 : 900);
     },
-    [go],
+    [go, microVariant],
   );
 
   const answerSingle = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
