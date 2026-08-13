@@ -171,7 +171,9 @@
 }
 
 @utility animate-enter {
-  animation: qz-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* backwards (não "both"): ao terminar, o transform volta a "none",
+     evitando containing block/atrasos de toque no iOS Safari. */
+  animation: qz-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
 @utility animate-pop {
