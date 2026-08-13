@@ -264,8 +264,8 @@ export const STEPS: Step[] = [
     kind: "milestone",
     id: "reward",
     weight: 3,
-    title: "Parabéns.",
-    body: "Suas respostas já estão permitindo uma análise muito mais precisa do que a média dos casos.",
+    title: "Estamos montando o seu diagnóstico.",
+    body: "Cada resposta que você deu alimenta a leitura do seu caso. Em poucos segundos vamos mostrar a causa mais provável da sua queda e o protocolo indicado para você.",
   },
 
   {
