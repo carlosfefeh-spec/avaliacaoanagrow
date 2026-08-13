@@ -591,6 +591,7 @@ export function ResultScreen({
   const protocol = resolveProtocol(scores, tags);
   const chance = recoveryChance(answers, scores);
   const list = highlights(answers, scores);
+  const ferritin = ferritinReading(answers);
 
   const [ctaVariant, setCtaVariant] = useState<Variant<"cta_v1">>("control");
   const [whyVariant, setWhyVariant] = useState<Variant<"why_v1">>("single");
