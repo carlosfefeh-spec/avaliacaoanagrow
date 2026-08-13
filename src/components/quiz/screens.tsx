@@ -128,6 +128,7 @@ export function InfoScreen({
   step: Extract<Step, { kind: "info" }>;
   onNext: () => void;
 }) {
+  const nextTap = useTap(onNext);
   return (
     <div className="animate-enter">
       {step.eyebrow && <Eyebrow>{step.eyebrow}</Eyebrow>}
@@ -149,6 +150,7 @@ export function MilestoneScreen({
   step: Extract<Step, { kind: "milestone" }>;
   onNext: () => void;
 }) {
+  const nextTap = useTap(onNext);
   return (
     <div className="animate-enter">
       <div className="surface rounded-3xl p-6">
@@ -250,6 +252,7 @@ export function FindingsScreen({
   scores: Scores;
   onNext: () => void;
 }) {
+  const nextTap = useTap(onNext);
   const cause = primaryCause(scores);
   const list = highlights(answers, scores).slice(0, 4);
   const order: Cause[] = ["nutricional", "foliculo", "hormonal"];
