@@ -10,7 +10,9 @@
 export const EXPERIMENTS = {
   landing_v1: ["control", "cause"] as const,
   micro_v1: ["neutral", "empathic"] as const,
+  cta_v1: ["control", "insight"] as const,
 };
+
 
 export type ExperimentId = keyof typeof EXPERIMENTS;
 export type Variant<K extends ExperimentId> = (typeof EXPERIMENTS)[K][number];
