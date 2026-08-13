@@ -710,7 +710,7 @@ export function ResultScreen({
       <div className="border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
         <div className="mx-auto max-w-[560px]">
           {ctaCopy.context && (
-            <p className="text-muted-foreground mb-2 text-center text-[0.76rem] leading-snug">
+            <p className="mb-2.5 text-center text-[0.8rem] leading-snug font-medium text-foreground">
               {ctaCopy.context(causeLabel, chance)}
             </p>
           )}
@@ -718,10 +718,11 @@ export function ResultScreen({
             href={protocol.ctaUrl}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
             className={
               ctaCopy.highlight
-                ? `${btnPrimary} ring-primary/25 animate-pop shadow-xl ring-4`
-                : btnPrimary
+                ? `${btnPrimary} py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft`
+                : `${btnPrimary} py-[1.15rem]`
             }
             onClick={() =>
               track("quiz_cta_clicked", {
@@ -732,7 +733,19 @@ export function ResultScreen({
               })
             }
           >
-            {ctaCopy.label(protocol.cta, causeLabel)}
+            <span>{ctaCopy.label(protocol.cta, causeLabel)}</span>
+            <svg
+              viewBox="0 0 24 24"
+              className="ml-1.5 h-5 w-5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M7 17L17 7M17 7H9M17 7v8" />
+            </svg>
           </a>
         </div>
       </div>
