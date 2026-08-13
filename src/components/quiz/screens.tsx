@@ -14,6 +14,7 @@ import {
   CTA_COPY,
   LANDING_COPY,
   LOADER_COPY,
+  WHY_BLOCKS,
   getVariant,
   type Variant,
 } from "@/lib/quiz/experiments";
@@ -586,13 +587,24 @@ export function ResultScreen({
   const list = highlights(answers, scores);
 
   const [ctaVariant, setCtaVariant] = useState<Variant<"cta_v1">>("control");
+  const [whyVariant, setWhyVariant] = useState<Variant<"why_v1">>("single");
   useEffect(() => {
     const assigned = getVariant("cta_v1");
     setCtaVariant(assigned);
     track("experiment_viewed", { experiment_id: "cta_v1", variant: assigned });
+    const why = getVariant("why_v1");
+    setWhyVariant(why);
+    track("experiment_viewed", { experiment_id: "why_v1", variant: why });
   }, []);
   const ctaCopy = CTA_COPY[ctaVariant];
   const causeLabel = CAUSES[cause].label;
+  const whyBlocks = WHY_BLOCKS[whyVariant]({
+    causeLabel,
+    causeBody: CAUSES[cause].body,
+    productName: protocol.main.name,
+    productRole: protocol.main.role,
+    chance,
+  });
 
 
   return (
@@ -639,6 +651,23 @@ export function ResultScreen({
         <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">
           {protocol.summary}
         </p>
+
+        <div className="mt-4 space-y-3">
+          {whyBlocks.map((block) => (
+            <article
+              key={block.title}
+              className="border-primary/15 bg-primary/[0.04] rounded-3xl border p-5"
+            >
+              <p className="text-primary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
+                Por quê
+              </p>
+              <p className="mt-1.5 text-[1.02rem] font-semibold">{block.title}</p>
+              <p className="text-muted-foreground mt-2 text-[0.9rem] leading-relaxed">
+                {block.body}
+              </p>
+            </article>
+          ))}
+        </div>
 
         <article className="surface mt-4 rounded-3xl p-5">
           <p className="text-primary/60 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
