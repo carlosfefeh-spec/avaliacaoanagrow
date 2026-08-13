@@ -14,6 +14,7 @@ import {
   CTA_COPY,
   LANDING_COPY,
   LOADER_COPY,
+  WHY_BLOCKS,
   getVariant,
   type Variant,
 } from "@/lib/quiz/experiments";
