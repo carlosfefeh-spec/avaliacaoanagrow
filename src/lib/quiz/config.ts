@@ -35,7 +35,7 @@ export type Step =
       bullets?: string[];
       cta: string;
     })
-  | (Base & { kind: "milestone"; title: string; body: string })
+  | (Base & { kind: "milestone"; title: string; body: string; highlight?: string })
   | (Base & { kind: "insights"; title: string; subtitle: string; insights: string[] })
   | (Base & { kind: "findings" })
   | (Base & { kind: "chance" })
