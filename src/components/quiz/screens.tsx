@@ -745,11 +745,6 @@ export function ResultScreen({
           </article>
         ))}
 
-        {protocol.kitName && (
-          <p className="text-muted-foreground mt-4 text-[0.85rem] leading-relaxed">
-            Na loja, esse conjunto aparece como <strong>{protocol.kitName}</strong> ({protocol.kitPrice}).
-          </p>
-        )}
       </section>
 
       <p className="text-muted-foreground mt-8 text-[0.75rem] leading-relaxed">
