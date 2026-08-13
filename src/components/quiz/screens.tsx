@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Answers, Scores, Step } from "@/lib/quiz/config";
 import {
   CAUSES,
@@ -643,6 +643,25 @@ export function ResultScreen({
     chance,
   });
 
+  /* Mobile-first: CTA flutuante entra a partir do primeiro scroll */
+  const [ctaFloating, setCtaFloating] = useState(false);
+  const ctaShownRef = useRef(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const visible = window.scrollY > 64;
+      setCtaFloating(visible);
+      if (visible && !ctaShownRef.current) {
+        ctaShownRef.current = true;
+        track("quiz_sticky_cta_visible", { trigger: "scroll" });
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+
+
 
   return (
     <div className="animate-enter pb-28">
@@ -779,10 +798,15 @@ export function ResultScreen({
         Refazer minha avaliação
       </button>
 
-      <div className="border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_28px_-18px_hsl(var(--foreground)/0.45)] backdrop-blur">
+      <div
+        className={`border-border/60 bg-background/95 fixed inset-x-0 bottom-0 z-20 border-t px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-10px_28px_-18px_hsl(var(--foreground)/0.45)] backdrop-blur transition-transform duration-300 ease-out will-change-transform ${
+          ctaFloating ? "translate-y-0" : "pointer-events-none translate-y-[130%]"
+        }`}
+        aria-hidden={!ctaFloating}
+      >
         <div className="mx-auto max-w-[560px]">
           {ctaCopy.context && (
-            <p className="mb-2.5 text-center text-[0.8rem] leading-snug font-medium text-foreground">
+            <p className="mb-2.5 line-clamp-2 text-center text-[0.8rem] leading-snug font-medium text-foreground">
               {ctaCopy.context(causeLabel, chance)}
             </p>
           )}
@@ -793,8 +817,8 @@ export function ResultScreen({
             aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
             className={
               ctaCopy.highlight
-                ? `${btnPrimary} py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft`
-                : `${btnPrimary} py-[1.15rem]`
+                ? `${btnPrimary} min-h-[56px] py-[1.15rem] shadow-xl shadow-primary/25 animate-pulse-soft touch-manipulation select-none active:scale-[0.985] transition-transform`
+                : `${btnPrimary} min-h-[56px] py-[1.15rem] touch-manipulation select-none active:scale-[0.985] transition-transform`
             }
             onClick={() => {
               track("quiz_cta_clicked", {
