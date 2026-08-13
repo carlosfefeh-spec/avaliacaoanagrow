@@ -11,6 +11,7 @@ import {
   type Cause,
 } from "@/lib/quiz/engine";
 import { isValidBrPhone, maskPhone } from "@/lib/quiz/phone";
+import { useTap } from "@/lib/quiz/tap";
 import { track, trackEcommerce } from "@/lib/quiz/analytics";
 import { buildStoreUrl } from "@/lib/quiz/attribution";
 import {
@@ -54,6 +55,7 @@ export function Landing({
   }, []);
 
   const copy = LANDING_COPY[variant];
+  const startTap = useTap(onStart);
 
   return (
     <div className="animate-enter flex min-h-[100svh] flex-col justify-between px-5 pt-10 pb-8">
@@ -86,7 +88,7 @@ export function Landing({
       </div>
 
       <div className="space-y-3">
-        <button className={btnPrimary} onClick={onStart}>
+        <button className={btnPrimary} {...startTap}>
           {copy.cta}
         </button>
         {onResume && (
@@ -133,7 +135,7 @@ export function InfoScreen({
       {step.body && (
         <p className="text-muted-foreground mt-4 leading-relaxed">{step.body}</p>
       )}
-      <button className={`${btnPrimary} mt-8`} onClick={onNext}>
+      <button className={`${btnPrimary} mt-8`} {...nextTap}>
         {step.cta}
       </button>
     </div>
@@ -159,7 +161,7 @@ export function MilestoneScreen({
         <h2 className="text-[1.45rem] leading-tight font-semibold">{step.title}</h2>
         <p className="text-muted-foreground mt-3 leading-relaxed">{step.body}</p>
       </div>
-      <button className={`${btnPrimary} mt-6`} onClick={onNext}>
+      <button className={`${btnPrimary} mt-6`} {...nextTap}>
         Continuar
       </button>
     </div>
@@ -308,7 +310,7 @@ export function FindingsScreen({
         </ul>
       </div>
 
-      <button className={`${btnPrimary} mt-6`} onClick={onNext}>
+      <button className={`${btnPrimary} mt-6`} {...nextTap}>
         Continuar
       </button>
     </div>
@@ -369,7 +371,7 @@ export function ChanceScreen({
         </div>
       </div>
 
-      <button className={`${btnPrimary} mt-6`} onClick={onNext}>
+      <button className={`${btnPrimary} mt-6`} {...nextTap}>
         Continuar
       </button>
     </div>
