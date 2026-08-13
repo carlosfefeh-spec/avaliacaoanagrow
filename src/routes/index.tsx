@@ -131,6 +131,7 @@ function QuizPage() {
 
   const answerSingle = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
     const next = { ...answers, [currentStep.id]: [optionId] };
+    answersRef.current = next;
     setAnswers(next);
     track("quiz_answered", { question_id: currentStep.id, answer_id: optionId, progress });
     const micro =
