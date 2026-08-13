@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Answers, Scores, Step } from "@/lib/quiz/config";
 import {
   CAUSES,
