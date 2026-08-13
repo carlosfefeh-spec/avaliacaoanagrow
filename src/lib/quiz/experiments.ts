@@ -11,6 +11,7 @@ export const EXPERIMENTS = {
   landing_v1: ["control", "cause"] as const,
   micro_v1: ["neutral", "empathic"] as const,
   cta_v1: ["control", "insight"] as const,
+  loader_v1: ["control", "personal"] as const,
 };
 
 
@@ -152,5 +153,46 @@ export const CTA_COPY: Record<Variant<"cta_v1">, CtaCopy> = {
     context: (causeLabel, chance) =>
       `Baseado em ${causeLabel.toLowerCase()} · ${chance}% de chance de melhora se começar agora`,
     highlight: true,
+  },
+};
+
+/* ------------------------------------------------- Loader de insights (83%) */
+
+export type LoaderCopy = {
+  /** Mensagens exibidas durante a análise (null = usa as do config). */
+  insights: string[] | null;
+  /** Intervalo (ms) até revelar cada próxima mensagem. */
+  pace: (index: number) => number;
+  /** Espera final antes de avançar para os achados. */
+  hold: number;
+  /** Microfeedback de status abaixo da barra (null = só a %). */
+  status: ((shown: number, total: number) => string) | null;
+};
+
+export const LOADER_COPY: Record<Variant<"loader_v1">, LoaderCopy> = {
+  control: {
+    insights: null,
+    pace: () => 1700,
+    hold: 1400,
+    status: null,
+  },
+  // Ritmo acelerando + mensagens em 1ª pessoa + status para segurar a atenção.
+  personal: {
+    insights: [
+      "Comparando seu padrão de queda com o de 20.000 mulheres…",
+      "Afinamento quase sempre aparece antes da queda intensa.",
+      "O DHT também age no couro cabeludo feminino.",
+      "Ferro baixo é uma das causas mais comuns de queda em mulheres.",
+      "B12 e cisteína definem a espessura de cada fio.",
+      "Cruzando tudo isso com as suas respostas…",
+    ],
+    pace: (i) => Math.max(850, 1500 - i * 130),
+    hold: 900,
+    status: (shown, total) => {
+      if (shown >= total) return "Quase lá — montando o seu resultado.";
+      if (shown >= total - 2) return "Falta muito pouco. Não feche esta tela.";
+      if (shown >= 2) return "Seu perfil já está tomando forma.";
+      return "Analisando as suas respostas…";
+    },
   },
 };
