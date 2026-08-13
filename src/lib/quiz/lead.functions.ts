@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-const WEBHOOK_URL = "https://n8n.srv1083227.hstgr.cloud/webhook-test/respostaquizz";
+const WEBHOOK_URL = "https://n8n.srv1083227.hstgr.cloud/webhook/respostaquizz";
 
 export type LeadPayload = {
   quizId: string;
