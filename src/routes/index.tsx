@@ -1,24 +1,305 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { ProgressBar } from "@/components/quiz/ProgressBar";
+import { OptionCard } from "@/components/quiz/OptionCard";
+import {
+  ChanceScreen,
+  FindingsScreen,
+  InfoScreen,
+  InsightsScreen,
+  Landing,
+  MilestoneScreen,
+  NameScreen,
+  PhoneScreen,
+  ProcessingScreen,
+  ResultScreen,
+  btnPrimary,
+} from "@/components/quiz/screens";
+import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
+import { collectTags, computeScores } from "@/lib/quiz/engine";
+import { track, trackProgress } from "@/lib/quiz/analytics";
+import { clearState, loadState, saveState } from "@/lib/quiz/storage";
+
+const TITLE = "Avaliação Capilar Anagrow — descubra a causa da sua queda";
+const DESCRIPTION =
+  "Em 2 minutos, responda uma avaliação guiada e descubra qual protocolo Anagrow combina com a causa da sua queda de cabelo.";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: QuizPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function QuizPage() {
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState<Answers>({});
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [resumable, setResumable] = useState<ReturnType<typeof loadState>>(null);
+  const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const steps = STEPS;
+  const step = steps[index]!;
+  const scores = useMemo(() => computeScores(answers), [answers]);
+  const tags = useMemo(() => collectTags(answers), [answers]);
+
+  const totalWeight = steps.reduce((sum, s) => sum + s.weight, 0);
+  const progress = useMemo(() => {
+    const done = steps.slice(0, index).reduce((sum, s) => sum + s.weight, 0);
+    return step.kind === "result" ? 100 : Math.round((done / totalWeight) * 100);
+  }, [index, step.kind, steps, totalWeight]);
+
+  /* Retomada de abandono */
+  useEffect(() => {
+    const saved = loadState();
+    if (saved && saved.stepId !== "landing") setResumable(saved);
+  }, []);
+
+  /* Persistência + eventos */
+  useEffect(() => {
+    saveState({ stepId: step.id, answers, name, phone });
+    track("quiz_question_viewed", { question_id: step.id, progress });
+    trackProgress(progress);
+  }, [step.id, answers, name, phone, progress]);
+
+  useEffect(() => {
+    const onLeave = () => {
+      if (step.kind !== "result") track("quiz_abandoned", { question_id: step.id, progress });
+    };
+    window.addEventListener("pagehide", onLeave);
+    return () => window.removeEventListener("pagehide", onLeave);
+  }, [step, progress]);
+
+  useEffect(() => () => {
+    if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+  }, []);
+
+  const go = useCallback((delta: number) => {
+    setFeedback(null);
+    setIndex((i) => Math.min(STEPS.length - 1, Math.max(0, i + delta)));
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+  }, []);
+
+  const showFeedbackThenAdvance = useCallback(
+    (message: string | null) => {
+      const text =
+        message ?? MICRO_FEEDBACKS[Math.floor(Math.random() * MICRO_FEEDBACKS.length)]!;
+      setFeedback(text);
+      feedbackTimer.current = setTimeout(() => go(1), 900);
+    },
+    [go],
+  );
+
+  const answerSingle = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
+    const next = { ...answers, [currentStep.id]: [optionId] };
+    setAnswers(next);
+    track("quiz_answered", { question_id: currentStep.id, answer_id: optionId, progress });
+    const micro =
+      typeof currentStep.microFeedback === "function"
+        ? currentStep.microFeedback(next)
+        : (currentStep.microFeedback ?? null);
+    showFeedbackThenAdvance(micro);
+  };
+
+  const toggleMulti = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
+    const option = currentStep.options.find((o) => o.id === optionId)!;
+    const current = answers[currentStep.id] ?? [];
+    let next: string[];
+    if (option.exclusive) {
+      next = current.includes(optionId) ? [] : [optionId];
+    } else {
+      const withoutExclusive = current.filter(
+        (id) => !currentStep.options.find((o) => o.id === id)?.exclusive,
+      );
+      next = withoutExclusive.includes(optionId)
+        ? withoutExclusive.filter((id) => id !== optionId)
+        : [...withoutExclusive, optionId];
+    }
+    setAnswers({ ...answers, [currentStep.id]: next });
+  };
+
+  const resume = () => {
+    if (!resumable) return;
+    setAnswers(resumable.answers);
+    setName(resumable.name);
+    setPhone(resumable.phone);
+    const target = STEPS.findIndex((s) => s.id === resumable.stepId);
+    setIndex(target > 0 ? target : 1);
+    setResumable(null);
+    track("quiz_resumed", { question_id: resumable.stepId });
+  };
+
+  const restart = () => {
+    clearState();
+    setAnswers({});
+    setName("");
+    setPhone("");
+    setIndex(0);
+  };
+
+  if (step.kind === "landing") {
+    return (
+      <main className="mx-auto max-w-[560px]">
+        <Landing
+          onStart={() => {
+            track("quiz_started");
+            go(1);
+          }}
+          onResume={resumable ? resume : undefined}
+        />
+      </main>
+    );
+  }
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-5 pb-8">
+      <header className="sticky top-0 z-10 -mx-5 mb-6 bg-background/92 px-5 pt-1 pb-3 backdrop-blur">
+        <div className="mb-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="Voltar para a etapa anterior"
+            className="text-primary/70 hover:text-primary -ml-1 flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+              <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <span className="font-display text-primary text-[0.78rem] tracking-[0.3em] uppercase">
+            Anagrow
+          </span>
+          <span className="h-9 w-9" />
+        </div>
+        <ProgressBar value={progress} />
+      </header>
+
+      <div key={step.id} className="flex-1">
+        {step.kind === "question" && (
+          <QuestionScreen
+            step={step}
+            selected={answers[step.id] ?? []}
+            feedback={feedback}
+            onSingle={(id) => answerSingle(step, id)}
+            onToggle={(id) => toggleMulti(step, id)}
+            onContinue={() => {
+              track("quiz_answered", {
+                question_id: step.id,
+                answer_id: (answers[step.id] ?? []).join(","),
+                progress,
+              });
+              const micro =
+                typeof step.microFeedback === "function"
+                  ? step.microFeedback(answers)
+                  : (step.microFeedback ?? null);
+              showFeedbackThenAdvance(micro);
+            }}
+          />
+        )}
+
+        {step.kind === "info" && <InfoScreen step={step} onNext={() => go(1)} />}
+        {step.kind === "milestone" && <MilestoneScreen step={step} onNext={() => go(1)} />}
+        {step.kind === "insights" && <InsightsScreen step={step} onDone={() => go(1)} />}
+        {step.kind === "findings" && (
+          <FindingsScreen answers={answers} scores={scores} onNext={() => go(1)} />
+        )}
+        {step.kind === "name" && (
+          <NameScreen
+            onSubmit={(value) => {
+              setName(value);
+              track("quiz_name_submitted");
+              go(1);
+            }}
+          />
+        )}
+        {step.kind === "chance" && (
+          <ChanceScreen answers={answers} scores={scores} name={name} onNext={() => go(1)} />
+        )}
+        {step.kind === "phone" && (
+          <PhoneScreen
+            name={name}
+            onSubmit={(value, optIn) => {
+              setPhone(value);
+              track("quiz_phone_submitted", { marketing_opt_in: optIn });
+              track("quiz_completed", { progress: 100 });
+              go(1);
+            }}
+          />
+        )}
+        {step.kind === "processing" && <ProcessingScreen name={name} onDone={() => go(1)} />}
+        {step.kind === "result" && (
+          <ResultView answers={answers} scores={scores} tags={tags} name={name} onRestart={restart} />
+        )}
+      </div>
+    </main>
+  );
+}
+
+function ResultView(props: React.ComponentProps<typeof ResultScreen>) {
+  useEffect(() => {
+    track("quiz_result_viewed");
+    track("quiz_protocol_recommended");
+  }, []);
+  return <ResultScreen {...props} />;
+}
+
+function QuestionScreen({
+  step,
+  selected,
+  feedback,
+  onSingle,
+  onToggle,
+  onContinue,
+}: {
+  step: Extract<Step, { kind: "question" }>;
+  selected: string[];
+  feedback: string | null;
+  onSingle: (id: string) => void;
+  onToggle: (id: string) => void;
+  onContinue: () => void;
+}) {
+  return (
+    <div className="animate-enter">
+      <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">
+        {step.phase}
+      </p>
+      <h1 className="text-[1.45rem] leading-[1.2] font-semibold text-balance">{step.title}</h1>
+      {step.subtitle && (
+        <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">{step.subtitle}</p>
+      )}
+
+      <div className="mt-6 space-y-2.5" role={step.type === "single" ? "radiogroup" : "group"}>
+        {step.options.map((option) => (
+          <OptionCard
+            key={option.id}
+            option={option}
+            multi={step.type === "multi"}
+            selected={selected.includes(option.id)}
+            onSelect={() => (step.type === "single" ? onSingle(option.id) : onToggle(option.id))}
+          />
+        ))}
+      </div>
+
+      {step.type === "multi" && (
+        <button className={`${btnPrimary} mt-6`} disabled={selected.length === 0} onClick={onContinue}>
+          Continuar
+        </button>
+      )}
+
+      <div className="mt-5 min-h-[1.5rem]" aria-live="polite">
+        {feedback && (
+          <p className="text-primary animate-enter text-[0.9rem] font-medium">{feedback}</p>
+        )}
+      </div>
     </div>
   );
 }

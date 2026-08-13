@@ -533,16 +533,18 @@ export function ProcessingScreen({ name, onDone }: { name: string; onDone: () =>
 export function ResultScreen({
   answers,
   scores,
+  tags,
   name,
   onRestart,
 }: {
   answers: Answers;
   scores: Scores;
+  tags: string[];
   name: string;
   onRestart: () => void;
 }) {
   const cause = primaryCause(scores);
-  const protocol = resolveProtocol(scores, []);
+  const protocol = resolveProtocol(scores, tags);
   const chance = recoveryChance(answers, scores);
   const list = highlights(answers, scores);
 
