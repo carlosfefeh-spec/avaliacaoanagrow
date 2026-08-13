@@ -230,7 +230,7 @@ const FERRITIN_READINGS: Record<string, FerritinReading> = {
 /** Interpretação personalizada do exame de ferritina (null se não respondido). */
 export function ferritinReading(answers: Answers): FerritinReading | null {
   const picked = answers['ferritina_nivel']?.[0];
-  if (!picked) return null;
+  if (!picked || picked === "nsei") return null;
   return FERRITIN_READINGS[picked] ?? null;
 }
 
