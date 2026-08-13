@@ -10,7 +10,7 @@
 export const EXPERIMENTS = {
   landing_v1: ["control", "cause"] as const,
   micro_v1: ["neutral", "empathic"] as const,
-  cta_v1: ["control", "insight"] as const,
+  cta_v1: ["control", "insight", "direct"] as const,
   loader_v1: ["control", "personal"] as const,
   why_v1: ["single", "double"] as const,
 };
@@ -153,6 +153,12 @@ export const CTA_COPY: Record<Variant<"cta_v1">, CtaCopy> = {
     label: () => "Ver meu protocolo completo",
     context: (causeLabel, chance) =>
       `Baseado em ${causeLabel.toLowerCase()} · ${chance}% de chance de melhora se começar agora`,
+    highlight: true,
+  },
+  // Copy curta e direta, mantendo a hierarquia (contexto de uma linha só).
+  direct: {
+    label: () => "Ver meu protocolo",
+    context: (_causeLabel, chance) => `${chance}% de chance de melhora`,
     highlight: true,
   },
 };
