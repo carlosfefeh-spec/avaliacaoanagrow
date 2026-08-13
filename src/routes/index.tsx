@@ -48,6 +48,14 @@ function QuizPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [resumable, setResumable] = useState<ReturnType<typeof loadState>>(null);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const microCount = useRef(0);
+  const [microVariant, setMicroVariant] = useState<Variant<"micro_v1">>("neutral");
+
+  useEffect(() => {
+    const assigned = getVariant("micro_v1");
+    setMicroVariant(assigned);
+    track("experiment_viewed", { experiment_id: "micro_v1", variant: assigned });
+  }, []);
 
   const steps = STEPS;
   const step = steps[index]!;
