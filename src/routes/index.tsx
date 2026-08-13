@@ -385,3 +385,17 @@ function QuestionScreen({
     </div>
   );
 }
+
+function labelAnswers(answers: Answers): { question: string; answers: string[] }[] {
+  const out: { question: string; answers: string[] }[] = [];
+  for (const step of STEPS) {
+    if (step.kind !== "question") continue;
+    const picked = answers[step.id];
+    if (!picked?.length) continue;
+    out.push({
+      question: step.title,
+      answers: picked.map((id) => step.options.find((o) => o.id === id)?.label ?? id),
+    });
+  }
+  return out;
+}
