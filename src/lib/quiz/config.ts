@@ -132,8 +132,7 @@ export const STEPS: Step[] = [
       { id: "gt1", label: "Mais de 1 ano", scores: { osa: 2, tonico: 1 } },
       { id: "anos", label: "Há vários anos", scores: { osa: 3, tonico: 2 } },
     ],
-    microFeedback:
-      "Quedas recentes e quedas de longa data costumam ter causas diferentes.",
+    microFeedback: "Quedas recentes e quedas de longa data costumam ter causas diferentes.",
   },
 
   {
@@ -141,8 +140,7 @@ export const STEPS: Step[] = [
     id: "curiosidade",
     weight: 4,
     eyebrow: "Antes de continuar",
-    title:
-      "Mais de 80% das mulheres tratam apenas o sintoma da queda, sem descobrir a causa.",
+    title: "Mais de 80% das mulheres tratam apenas o sintoma da queda, sem descobrir a causa.",
     body: "É por isso que tanta coisa parece funcionar por um mês e depois para. As próximas perguntas existem justamente para olhar a causa.",
     cta: "Continuar",
   },
@@ -168,7 +166,7 @@ export const STEPS: Step[] = [
       },
     ],
     microFeedback: (a) =>
-      a['exames']?.includes("nunca")
+      a["exames"]?.includes("nunca")
         ? "Sem exames, a leitura passa a depender ainda mais dos sinais que você percebe — e você já me deu vários."
         : "Ótimo. Quem já investigou costuma chegar mais rápido a um protocolo coerente.",
   },
@@ -178,23 +176,31 @@ export const STEPS: Step[] = [
     id: "ferritina_nivel",
     phase: "Contexto",
     weight: 6,
-    condition: (a) => !a['exames']?.includes("nunca"),
+    condition: (a) => !a["exames"]?.includes("nunca"),
     title: "Você sabe qual foi o seu valor de ferritina?",
     subtitle: "Se lembrar mais ou menos, escolha a faixa mais próxima.",
     type: "single",
     options: [
       { id: "lt30", label: "Abaixo de 30 ng/mL", hint: "Reserva de ferro muito baixa", scores: { ferritin12: 4 } },
-      { id: "30a70", label: "Entre 30 e 70 ng/mL", hint: "Dentro do laboratório, baixo para o cabelo", scores: { ferritin12: 3 } },
+      {
+        id: "30a70",
+        label: "Entre 30 e 70 ng/mL",
+        hint: "Dentro do laboratório, baixo para o cabelo",
+        scores: { ferritin12: 3 },
+      },
       { id: "70a150", label: "Entre 70 e 150 ng/mL", hint: "Ainda abaixo do ideal capilar", scores: { ferritin12: 2 } },
-      { id: "gt150", label: "Acima de 150 ng/mL", hint: "Faixa considerada ideal para o fio", scores: { osa: 1, tonico: 1 } },
+      {
+        id: "gt150",
+        label: "Acima de 150 ng/mL",
+        hint: "Faixa considerada ideal para o fio",
+        scores: { osa: 1, tonico: 1 },
+      },
       { id: "nsei", label: "Não sei / nunca medi", scores: { ferritin12: 2 } },
     ],
     microFeedback: (a) => {
-      const v = a['ferritina_nivel']?.[0];
-      if (v === "gt150")
-        return "Ótimo sinal. Com a ferritina em faixa ideal, a leitura aponta para outras frentes.";
-      if (v === "nsei")
-        return "Sem problema — vou interpretar o restante dos sinais e te mostrar o que medir.";
+      const v = a["ferritina_nivel"]?.[0];
+      if (v === "gt150") return "Ótimo sinal. Com a ferritina em faixa ideal, a leitura aponta para outras frentes.";
+      if (v === "nsei") return "Sem problema — vou interpretar o restante dos sinais e te mostrar o que medir.";
       return "Esse número explica muita coisa sobre a espessura dos seus fios.";
     },
   },
@@ -234,7 +240,7 @@ export const STEPS: Step[] = [
     type: "single",
     options: [
       { id: "sim", label: "Sim", scores: { osa: 3 }, tags: ["hormonal"] },
-      { id: "peri", label: "Perimenopausa", scores: { osa: 2 }, tags: ["hormonal"] },
+      { id: "peri", label: "climatério", scores: { osa: 2 }, tags: ["hormonal"] },
       { id: "nao", label: "Não", scores: { ferritin12: 1 } },
       { id: "nsei", label: "Não sei", scores: { osa: 1, ferritin12: 1 } },
     ],
