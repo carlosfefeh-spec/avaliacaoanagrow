@@ -345,11 +345,11 @@ function QuestionScreen({
 }) {
   return (
     <div className="animate-enter">
-      <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">{step.phase}</p>
-      <h1 className="text-[1.45rem] leading-[1.2] font-semibold text-balance">{step.title}</h1>
-      {step.subtitle && <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">{step.subtitle}</p>}
+      <p className="text-muted-foreground mb-3 text-[0.64rem] font-medium tracking-[0.24em] uppercase">{step.phase}</p>
+      <h1 className="font-display text-[1.8rem] leading-[1.15] font-normal text-balance">{step.title}</h1>
+      {step.subtitle && <p className="text-muted-foreground mt-3 text-[0.95rem] leading-relaxed">{step.subtitle}</p>}
 
-      <div className="mt-6 space-y-2.5" role={step.type === "single" ? "radiogroup" : "group"}>
+      <div className="mt-8 space-y-3" role={step.type === "single" ? "radiogroup" : "group"}>
         {step.options.map((option) => (
           <OptionCard
             key={option.id}
@@ -362,12 +362,13 @@ function QuestionScreen({
       </div>
 
       {step.type === "multi" && (
-        <button className={`${btnPrimary} mt-6`} disabled={selected.length === 0} onClick={onContinue}>
+        <button className={`${btnPrimary} mt-8`} disabled={selected.length === 0} onClick={onContinue}>
           Continuar
         </button>
       )}
     </div>
   );
+
 }
 
 function labelAnswers(answers: Answers): { question: string; answers: string[] }[] {
