@@ -27,7 +27,16 @@ import {
   recoveryChance,
   resolveProtocol,
 } from "@/lib/quiz/engine";
-import { captureUtms, track, trackProgress } from "@/lib/quiz/analytics";
+import {
+  captureUtms,
+  reopenFunnel,
+  track,
+  trackDropOff,
+  trackFunnelComplete,
+  trackOptionSelected,
+  trackProgress,
+  trackStepView,
+} from "@/lib/quiz/analytics";
 import { activeVariants, decorateMicroFeedback, getVariant, type Variant } from "@/lib/quiz/experiments";
 import { sendLead } from "@/lib/quiz/lead.functions";
 import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
