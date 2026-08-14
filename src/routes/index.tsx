@@ -98,16 +98,40 @@ function QuizPage() {
   useEffect(() => {
     saveState({ stepId: step.id, answers, name, phone });
     track("quiz_question_viewed", { question_id: step.id, progress });
+    trackStepView({
+      stepId: step.id,
+      stepIndex: index,
+      stepKind: step.kind,
+      totalSteps: steps.length,
+      progress,
+      phase: step.kind === "question" ? step.phase : undefined,
+    });
+    if (step.kind === "result") trackFunnelComplete({ progress: 100 });
     trackProgress(progress);
-  }, [step.id, answers, name, phone, progress]);
+  }, [step, index, steps.length, answers, name, phone, progress]);
 
   useEffect(() => {
     const onLeave = () => {
-      if (step.kind !== "result") track("quiz_abandoned", { question_id: step.id, progress });
+      if (step.kind !== "result") {
+        track("quiz_abandoned", { question_id: step.id, progress });
+        trackDropOff("pagehide");
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        if (step.kind !== "result") trackDropOff("hidden");
+      } else {
+        reopenFunnel();
+      }
     };
     window.addEventListener("pagehide", onLeave);
-    return () => window.removeEventListener("pagehide", onLeave);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", onLeave);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [step, progress]);
+
 
   useEffect(
     () => () => {
