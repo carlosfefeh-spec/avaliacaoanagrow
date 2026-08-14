@@ -244,24 +244,25 @@ function QuizPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-5 pb-8">
-      <header className="sticky top-0 z-10 -mx-5 mb-6 bg-background/92 px-5 pt-1 pb-3 backdrop-blur">
-        <div className="mb-3 flex items-center justify-between">
+    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-4 pb-10">
+      <header className="bg-background/95 sticky top-0 z-10 -mx-5 mb-8 px-5 pt-2 pb-3 backdrop-blur">
+        <div className="mb-4 flex items-center justify-between">
           <button
             type="button"
             onClick={() => go(-1)}
             aria-label="Voltar para a etapa anterior"
-            className="text-primary/70 hover:text-primary -ml-1 flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+            className="text-muted-foreground hover:text-primary -ml-1 flex h-9 w-9 items-center justify-center transition-colors"
           >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5}>
               <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <span className="font-display text-primary text-[0.78rem] tracking-[0.3em] uppercase">Anagrow</span>
+          <span className="font-display text-primary text-[0.8rem] tracking-[0.34em] uppercase">Anagrow</span>
           <span className="h-9 w-9" />
         </div>
         <ProgressBar value={progress} />
       </header>
+
 
       <div key={step.id} className="flex-1">
         {step.kind === "question" && (
