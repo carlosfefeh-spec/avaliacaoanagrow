@@ -99,7 +99,7 @@ type StepMeta = {
   stepKind: string;
   totalSteps: number;
   progress: number;
-  phase?: string;
+  phase?: string | undefined;
 };
 
 let currentStep: (StepMeta & { startedAt: number }) | null = null;
