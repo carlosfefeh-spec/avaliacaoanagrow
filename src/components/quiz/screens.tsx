@@ -17,14 +17,17 @@ import { buildStoreUrl } from "@/lib/quiz/attribution";
 import { CTA_COPY, LANDING_COPY, LOADER_COPY, WHY_BLOCKS, getVariant, type Variant } from "@/lib/quiz/experiments";
 
 export const btnPrimary =
-  "inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.98rem] font-semibold text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-40 disabled:active:scale-100";
+  "inline-flex min-h-[56px] w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.95rem] font-medium tracking-[0.02em] text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-30 disabled:active:scale-100";
 
 export const btnGhost =
   "inline-flex w-full items-center justify-center rounded-full border border-border px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-secondary";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">{children}</p>;
+  return (
+    <p className="text-muted-foreground mb-3 text-[0.64rem] font-medium tracking-[0.24em] uppercase">{children}</p>
+  );
 }
+
 
 /* ---------------------------------------------------------------- Landing */
 
