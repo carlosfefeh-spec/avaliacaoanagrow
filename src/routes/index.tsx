@@ -179,12 +179,23 @@ function QuizPage() {
     answersRef.current = next;
     setAnswers(next);
     track("quiz_answered", { question_id: currentStep.id, answer_id: optionId, progress });
+    trackOptionSelected({
+      questionId: currentStep.id,
+      questionTitle: currentStep.title,
+      optionId,
+      optionLabel: currentStep.options.find((o) => o.id === optionId)?.label ?? optionId,
+      type: "single",
+      selectionIndex: 0,
+      totalSelected: 1,
+      progress,
+    });
     const micro =
       typeof currentStep.microFeedback === "function"
         ? currentStep.microFeedback(next)
         : (currentStep.microFeedback ?? null);
     showFeedbackThenAdvance(micro);
   };
+
 
   const toggleMulti = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
     const option = currentStep.options.find((o) => o.id === optionId)!;
