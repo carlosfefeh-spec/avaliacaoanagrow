@@ -224,7 +224,7 @@ export const STEPS: Step[] = [
     options: [
       { id: "oleoso", label: "Oleoso", scores: { osa: 2, tonico: 1 } },
       { id: "seco", label: "Seco", scores: { tonico: 1, vitaD: 1, glowOil: 1 } },
-      { id: "sensivel", label: "Sensível", scores: { tonico: 1 } },
+      { id: "sensivel", label: "Sensível", scores: { osa: 2, tonico: 1 } },
       { id: "normal", label: "Normal", scores: { tonico: 1 } },
     ],
     microFeedback: "O couro cabeludo é o solo do fio — ele entra na conta.",
@@ -235,12 +235,12 @@ export const STEPS: Step[] = [
     id: "menopausa",
     phase: "Contexto",
     weight: 8,
-    title: "Você está na menopausa?",
+    title: "Você está no climatério?",
     subtitle: "Mudanças hormonais alteram bastante o padrão da queda.",
     type: "single",
     options: [
       { id: "sim", label: "Sim", scores: { osa: 3 }, tags: ["hormonal"] },
-      { id: "peri", label: "climatério", scores: { osa: 2 }, tags: ["hormonal"] },
+      { id: "peri", label: "Perimenopausa", scores: { osa: 2 }, tags: ["hormonal"] },
       { id: "nao", label: "Não", scores: { ferritin12: 1 } },
       { id: "nsei", label: "Não sei", scores: { osa: 1, ferritin12: 1 } },
     ],
