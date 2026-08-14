@@ -317,11 +317,24 @@ function QuizPage() {
             onSingle={(id) => answerSingle(step, id)}
             onToggle={(id) => toggleMulti(step, id)}
             onContinue={() => {
+              const picked = answers[step.id] ?? [];
               track("quiz_answered", {
                 question_id: step.id,
-                answer_id: (answers[step.id] ?? []).join(","),
+                answer_id: picked.join(","),
                 progress,
               });
+              picked.forEach((id, i) =>
+                trackOptionSelected({
+                  questionId: step.id,
+                  questionTitle: step.title,
+                  optionId: id,
+                  optionLabel: step.options.find((o) => o.id === id)?.label ?? id,
+                  type: "multi",
+                  selectionIndex: i,
+                  totalSelected: picked.length,
+                  progress,
+                }),
+              );
               const micro =
                 typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
               showFeedbackThenAdvance(micro);
