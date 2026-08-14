@@ -28,12 +28,7 @@ import {
   resolveProtocol,
 } from "@/lib/quiz/engine";
 import { captureUtms, track, trackProgress } from "@/lib/quiz/analytics";
-import {
-  activeVariants,
-  decorateMicroFeedback,
-  getVariant,
-  type Variant,
-} from "@/lib/quiz/experiments";
+import { activeVariants, decorateMicroFeedback, getVariant, type Variant } from "@/lib/quiz/experiments";
 import { sendLead } from "@/lib/quiz/lead.functions";
 import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
@@ -105,9 +100,12 @@ function QuizPage() {
     return () => window.removeEventListener("pagehide", onLeave);
   }, [step, progress]);
 
-  useEffect(() => () => {
-    if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+    },
+    [],
+  );
 
   const answersRef = useRef<Answers>(answers);
   answersRef.current = answers;
@@ -133,11 +131,9 @@ function QuizPage() {
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   }, []);
 
-
   const showFeedbackThenAdvance = useCallback(
     (message: string | null) => {
-      const base =
-        message ?? MICRO_FEEDBACKS[Math.floor(Math.random() * MICRO_FEEDBACKS.length)]!;
+      const base = message ?? MICRO_FEEDBACKS[Math.floor(Math.random() * MICRO_FEEDBACKS.length)]!;
       const text = decorateMicroFeedback(microVariant, base, microCount.current++);
       setFeedback(text);
       feedbackTimer.current = setTimeout(() => go(1), microVariant === "empathic" ? 1100 : 900);
@@ -164,9 +160,7 @@ function QuizPage() {
     if (option.exclusive) {
       next = current.includes(optionId) ? [] : [optionId];
     } else {
-      const withoutExclusive = current.filter(
-        (id) => !currentStep.options.find((o) => o.id === id)?.exclusive,
-      );
+      const withoutExclusive = current.filter((id) => !currentStep.options.find((o) => o.id === id)?.exclusive);
       next = withoutExclusive.includes(optionId)
         ? withoutExclusive.filter((id) => id !== optionId)
         : [...withoutExclusive, optionId];
@@ -263,9 +257,7 @@ function QuizPage() {
               <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <span className="font-display text-primary text-[0.78rem] tracking-[0.3em] uppercase">
-            Anagrow
-          </span>
+          <span className="font-display text-primary text-[0.78rem] tracking-[0.3em] uppercase">Anagrow</span>
           <span className="h-9 w-9" />
         </div>
         <ProgressBar value={progress} />
@@ -286,9 +278,7 @@ function QuizPage() {
                 progress,
               });
               const micro =
-                typeof step.microFeedback === "function"
-                  ? step.microFeedback(answers)
-                  : (step.microFeedback ?? null);
+                typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
               showFeedbackThenAdvance(micro);
             }}
           />
@@ -297,9 +287,7 @@ function QuizPage() {
         {step.kind === "info" && <InfoScreen step={step} onNext={() => go(1)} />}
         {step.kind === "milestone" && <MilestoneScreen step={step} onNext={() => go(1)} />}
         {step.kind === "insights" && <InsightsScreen step={step} onDone={() => go(1)} />}
-        {step.kind === "findings" && (
-          <FindingsScreen answers={answers} scores={scores} onNext={() => go(1)} />
-        )}
+        {step.kind === "findings" && <FindingsScreen answers={answers} scores={scores} onNext={() => go(1)} />}
         {step.kind === "name" && (
           <NameScreen
             onSubmit={(value) => {
@@ -309,9 +297,7 @@ function QuizPage() {
             }}
           />
         )}
-        {step.kind === "chance" && (
-          <ChanceScreen answers={answers} scores={scores} name={name} onNext={() => go(1)} />
-        )}
+        {step.kind === "chance" && <ChanceScreen answers={answers} scores={scores} name={name} onNext={() => go(1)} />}
         {step.kind === "phone" && (
           <PhoneScreen
             name={name}
@@ -358,13 +344,9 @@ function QuestionScreen({
 }) {
   return (
     <div className="animate-enter">
-      <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">
-        {step.phase}
-      </p>
+      <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">{step.phase}</p>
       <h1 className="text-[1.45rem] leading-[1.2] font-semibold text-balance">{step.title}</h1>
-      {step.subtitle && (
-        <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">{step.subtitle}</p>
-      )}
+      {step.subtitle && <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">{step.subtitle}</p>}
 
       <div className="mt-6 space-y-2.5" role={step.type === "single" ? "radiogroup" : "group"}>
         {step.options.map((option) => (
@@ -383,12 +365,6 @@ function QuestionScreen({
           Continuar
         </button>
       )}
-
-      <div className="mt-5 min-h-[1.5rem]" aria-live="polite">
-        {feedback && (
-          <p className="text-primary animate-enter text-[0.9rem] font-medium">{feedback}</p>
-        )}
-      </div>
     </div>
   );
 }
