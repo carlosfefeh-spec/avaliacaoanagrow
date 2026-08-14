@@ -17,14 +17,17 @@ import { buildStoreUrl } from "@/lib/quiz/attribution";
 import { CTA_COPY, LANDING_COPY, LOADER_COPY, WHY_BLOCKS, getVariant, type Variant } from "@/lib/quiz/experiments";
 
 export const btnPrimary =
-  "inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.98rem] font-semibold text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-40 disabled:active:scale-100";
+  "inline-flex min-h-[56px] w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.95rem] font-medium tracking-[0.02em] text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-30 disabled:active:scale-100";
 
 export const btnGhost =
   "inline-flex w-full items-center justify-center rounded-full border border-border px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-secondary";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">{children}</p>;
+  return (
+    <p className="text-muted-foreground mb-3 text-[0.64rem] font-medium tracking-[0.24em] uppercase">{children}</p>
+  );
 }
+
 
 /* ---------------------------------------------------------------- Landing */
 
@@ -52,7 +55,7 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
           <span className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full" />
           {copy.badge}
         </span>
-        <h1 className="mt-5 text-[2.15rem] leading-[1.08] font-semibold text-balance">{copy.headline}</h1>
+        <h1 className="font-display mt-6 text-[2.5rem] leading-[1.04] font-normal text-balance">{copy.headline}</h1>
         <p className="text-muted-foreground mt-4 text-[1rem] leading-relaxed">{copy.subhead}</p>
         <ul className="mt-6 space-y-2.5">
           {copy.bullets.map((item) => (
@@ -103,7 +106,7 @@ export function InfoScreen({ step, onNext }: { step: Extract<Step, { kind: "info
   return (
     <div className="animate-enter">
       {step.eyebrow && <Eyebrow>{step.eyebrow}</Eyebrow>}
-      <h2 className="text-[1.55rem] leading-[1.18] font-semibold text-balance">{step.title}</h2>
+      <h2 className="font-display text-[1.8rem] leading-[1.15] font-normal text-balance">{step.title}</h2>
       {step.body && <p className="text-muted-foreground mt-4 leading-relaxed">{step.body}</p>}
       <button className={`${btnPrimary} mt-8`} {...nextTap}>
         {step.cta}
@@ -123,7 +126,7 @@ export function MilestoneScreen({ step, onNext }: { step: Extract<Step, { kind: 
             {step.highlight}
           </span>
         )}
-        <h2 className="text-[1.45rem] leading-tight font-semibold">{step.title}</h2>
+        <h2 className="font-display text-[1.6rem] leading-[1.18] font-normal text-balance">{step.title}</h2>
         <p className="text-muted-foreground mt-3 leading-relaxed">{step.body}</p>
       </div>
       <button className={`${btnPrimary} mt-6`} {...nextTap}>
@@ -165,7 +168,7 @@ export function InsightsScreen({ step, onDone }: { step: Extract<Step, { kind: "
   return (
     <div className="animate-enter" aria-live="polite">
       <Eyebrow>{step.subtitle}</Eyebrow>
-      <h2 className="text-[1.5rem] leading-tight font-semibold">{step.title}</h2>
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">{step.title}</h2>
 
       <div className="bg-sand relative mt-6 h-2 overflow-hidden rounded-full">
         <div
@@ -209,7 +212,7 @@ export function FindingsScreen({ answers, scores, onNext }: { answers: Answers; 
   return (
     <div className="animate-enter">
       <Eyebrow>Encontramos alguns sinais importantes</Eyebrow>
-      <h2 className="text-[1.5rem] leading-tight font-semibold">
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
         Pelas suas respostas, sua queda parece estar relacionada principalmente a:
       </h2>
 
@@ -295,7 +298,7 @@ export function ChanceScreen({
   return (
     <div className="animate-enter">
       <Eyebrow>Antes do protocolo</Eyebrow>
-      <h2 className="text-[1.5rem] leading-tight font-semibold">
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
         {name ? `${name}, calculamos` : "Calculamos"} sua chance de recuperação.
       </h2>
       <p className="text-muted-foreground mt-3 leading-relaxed">
@@ -348,7 +351,7 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
       }}
     >
       <Eyebrow>Personalizando sua análise</Eyebrow>
-      <h2 className="text-[1.5rem] leading-tight font-semibold">Já entendi bastante coisa sobre o seu caso.</h2>
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">Já entendi bastante coisa sobre o seu caso.</h2>
       <p className="text-muted-foreground mt-3 leading-relaxed">Antes de montar seu resultado, como posso te chamar?</p>
 
       <label htmlFor="quiz-name" className="sr-only">
@@ -399,7 +402,7 @@ export function PhoneScreen({ name, onSubmit }: { name: string; onSubmit: (phone
       }}
     >
       <Eyebrow>Último passo</Eyebrow>
-      <h2 className="text-[1.5rem] leading-tight font-semibold">
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
         Seu resultado está quase pronto{name ? `, ${name}` : ""}.
       </h2>
       <p className="text-muted-foreground mt-3 leading-relaxed">
@@ -471,7 +474,7 @@ export function ProcessingScreen({ name, onDone }: { name: string; onDone: () =>
   return (
     <div className="animate-enter" aria-live="polite">
       <Eyebrow>Analisando suas respostas</Eyebrow>
-      <h2 className="text-[1.5rem] leading-tight font-semibold">
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
         {name ? `${name}, ` : ""}estamos montando o seu perfil.
       </h2>
 

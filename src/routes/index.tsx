@@ -244,24 +244,25 @@ function QuizPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-5 pb-8">
-      <header className="sticky top-0 z-10 -mx-5 mb-6 bg-background/92 px-5 pt-1 pb-3 backdrop-blur">
-        <div className="mb-3 flex items-center justify-between">
+    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-4 pb-10">
+      <header className="bg-background/95 sticky top-0 z-10 -mx-5 mb-8 px-5 pt-2 pb-3 backdrop-blur">
+        <div className="mb-4 flex items-center justify-between">
           <button
             type="button"
             onClick={() => go(-1)}
             aria-label="Voltar para a etapa anterior"
-            className="text-primary/70 hover:text-primary -ml-1 flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+            className="text-muted-foreground hover:text-primary -ml-1 flex h-9 w-9 items-center justify-center transition-colors"
           >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5}>
               <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <span className="font-display text-primary text-[0.78rem] tracking-[0.3em] uppercase">Anagrow</span>
+          <span className="font-display text-primary text-[0.8rem] tracking-[0.34em] uppercase">Anagrow</span>
           <span className="h-9 w-9" />
         </div>
         <ProgressBar value={progress} />
       </header>
+
 
       <div key={step.id} className="flex-1">
         {step.kind === "question" && (
@@ -344,11 +345,11 @@ function QuestionScreen({
 }) {
   return (
     <div className="animate-enter">
-      <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">{step.phase}</p>
-      <h1 className="text-[1.45rem] leading-[1.2] font-semibold text-balance">{step.title}</h1>
-      {step.subtitle && <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">{step.subtitle}</p>}
+      <p className="text-muted-foreground mb-3 text-[0.64rem] font-medium tracking-[0.24em] uppercase">{step.phase}</p>
+      <h1 className="font-display text-[1.8rem] leading-[1.15] font-normal text-balance">{step.title}</h1>
+      {step.subtitle && <p className="text-muted-foreground mt-3 text-[0.95rem] leading-relaxed">{step.subtitle}</p>}
 
-      <div className="mt-6 space-y-2.5" role={step.type === "single" ? "radiogroup" : "group"}>
+      <div className="mt-8 space-y-3" role={step.type === "single" ? "radiogroup" : "group"}>
         {step.options.map((option) => (
           <OptionCard
             key={option.id}
@@ -361,12 +362,13 @@ function QuestionScreen({
       </div>
 
       {step.type === "multi" && (
-        <button className={`${btnPrimary} mt-6`} disabled={selected.length === 0} onClick={onContinue}>
+        <button className={`${btnPrimary} mt-8`} disabled={selected.length === 0} onClick={onContinue}>
           Continuar
         </button>
       )}
     </div>
   );
+
 }
 
 function labelAnswers(answers: Answers): { question: string; answers: string[] }[] {
