@@ -14,14 +14,7 @@ import { isValidBrPhone, maskPhone } from "@/lib/quiz/phone";
 import { useTap } from "@/lib/quiz/tap";
 import { track, trackEcommerce } from "@/lib/quiz/analytics";
 import { buildStoreUrl } from "@/lib/quiz/attribution";
-import {
-  CTA_COPY,
-  LANDING_COPY,
-  LOADER_COPY,
-  WHY_BLOCKS,
-  getVariant,
-  type Variant,
-} from "@/lib/quiz/experiments";
+import { CTA_COPY, LANDING_COPY, LOADER_COPY, WHY_BLOCKS, getVariant, type Variant } from "@/lib/quiz/experiments";
 
 export const btnPrimary =
   "inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.98rem] font-semibold text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-40 disabled:active:scale-100";
@@ -30,22 +23,12 @@ export const btnGhost =
   "inline-flex w-full items-center justify-center rounded-full border border-border px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-secondary";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">
-      {children}
-    </p>
-  );
+  return <p className="text-primary/60 mb-3 text-[0.68rem] font-semibold tracking-[0.22em] uppercase">{children}</p>;
 }
 
 /* ---------------------------------------------------------------- Landing */
 
-export function Landing({
-  onStart,
-  onResume,
-}: {
-  onStart: () => void;
-  onResume?: (() => void) | undefined;
-}) {
+export function Landing({ onStart, onResume }: { onStart: () => void; onResume?: (() => void) | undefined }) {
   const [variant, setVariant] = useState<Variant<"landing_v1">>("control");
 
   useEffect(() => {
@@ -60,9 +43,7 @@ export function Landing({
   return (
     <div className="animate-enter flex min-h-[100svh] flex-col justify-between px-5 pt-10 pb-8">
       <div>
-        <p className="font-display text-primary text-[1.05rem] tracking-[0.32em] uppercase">
-          Anagrow
-        </p>
+        <p className="font-display text-primary text-[1.05rem] tracking-[0.32em] uppercase">Anagrow</p>
         <div className="bg-primary/15 mt-1 h-px w-14" />
       </div>
 
@@ -71,12 +52,8 @@ export function Landing({
           <span className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full" />
           {copy.badge}
         </span>
-        <h1 className="mt-5 text-[2.15rem] leading-[1.08] font-semibold text-balance">
-          {copy.headline}
-        </h1>
-        <p className="text-muted-foreground mt-4 text-[1rem] leading-relaxed">
-          {copy.subhead}
-        </p>
+        <h1 className="mt-5 text-[2.15rem] leading-[1.08] font-semibold text-balance">{copy.headline}</h1>
+        <p className="text-muted-foreground mt-4 text-[1rem] leading-relaxed">{copy.subhead}</p>
         <ul className="mt-6 space-y-2.5">
           {copy.bullets.map((item) => (
             <li key={item} className="flex items-start gap-2.5 text-[0.92rem]">
@@ -121,21 +98,13 @@ function Check() {
 
 /* ------------------------------------------------------------ Info screen */
 
-export function InfoScreen({
-  step,
-  onNext,
-}: {
-  step: Extract<Step, { kind: "info" }>;
-  onNext: () => void;
-}) {
+export function InfoScreen({ step, onNext }: { step: Extract<Step, { kind: "info" }>; onNext: () => void }) {
   const nextTap = useTap(onNext);
   return (
     <div className="animate-enter">
       {step.eyebrow && <Eyebrow>{step.eyebrow}</Eyebrow>}
       <h2 className="text-[1.55rem] leading-[1.18] font-semibold text-balance">{step.title}</h2>
-      {step.body && (
-        <p className="text-muted-foreground mt-4 leading-relaxed">{step.body}</p>
-      )}
+      {step.body && <p className="text-muted-foreground mt-4 leading-relaxed">{step.body}</p>}
       <button className={`${btnPrimary} mt-8`} {...nextTap}>
         {step.cta}
       </button>
@@ -143,13 +112,7 @@ export function InfoScreen({
   );
 }
 
-export function MilestoneScreen({
-  step,
-  onNext,
-}: {
-  step: Extract<Step, { kind: "milestone" }>;
-  onNext: () => void;
-}) {
+export function MilestoneScreen({ step, onNext }: { step: Extract<Step, { kind: "milestone" }>; onNext: () => void }) {
   const nextTap = useTap(onNext);
   return (
     <div className="animate-enter">
@@ -172,13 +135,7 @@ export function MilestoneScreen({
 
 /* -------------------------------------------------------- Insights loader */
 
-export function InsightsScreen({
-  step,
-  onDone,
-}: {
-  step: Extract<Step, { kind: "insights" }>;
-  onDone: () => void;
-}) {
+export function InsightsScreen({ step, onDone }: { step: Extract<Step, { kind: "insights" }>; onDone: () => void }) {
   const variant = getVariant("loader_v1");
   const copy = LOADER_COPY[variant];
   const insights = copy.insights ?? step.insights;
@@ -243,15 +200,7 @@ export function InsightsScreen({
 
 /* ---------------------------------------------------------- Achados (T11) */
 
-export function FindingsScreen({
-  answers,
-  scores,
-  onNext,
-}: {
-  answers: Answers;
-  scores: Scores;
-  onNext: () => void;
-}) {
+export function FindingsScreen({ answers, scores, onNext }: { answers: Answers; scores: Scores; onNext: () => void }) {
   const nextTap = useTap(onNext);
   const cause = primaryCause(scores);
   const list = highlights(answers, scores).slice(0, 4);
@@ -272,9 +221,7 @@ export function FindingsScreen({
               key={key}
               className={[
                 "rounded-2xl border px-4 py-3.5 transition-colors",
-                active
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "surface text-muted-foreground",
+                active ? "border-primary bg-primary text-primary-foreground" : "surface text-muted-foreground",
               ].join(" ")}
             >
               <div className="flex items-center gap-3">
@@ -290,9 +237,7 @@ export function FindingsScreen({
                 <span className="text-[0.95rem] font-semibold">{CAUSES[key].label}</span>
               </div>
               {active && (
-                <p className="text-primary-foreground/85 mt-2 text-[0.86rem] leading-snug">
-                  {CAUSES[key].body}
-                </p>
+                <p className="text-primary-foreground/85 mt-2 text-[0.86rem] leading-snug">{CAUSES[key].body}</p>
               )}
             </li>
           );
@@ -384,11 +329,7 @@ export function ChanceScreen({
 
 /* ------------------------------------------------------------------ Nome */
 
-export function NameScreen({
-  onSubmit,
-}: {
-  onSubmit: (name: string) => void;
-}) {
+export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
@@ -407,12 +348,8 @@ export function NameScreen({
       }}
     >
       <Eyebrow>Personalizando sua análise</Eyebrow>
-      <h2 className="text-[1.5rem] leading-tight font-semibold">
-        Já entendi bastante coisa sobre o seu caso.
-      </h2>
-      <p className="text-muted-foreground mt-3 leading-relaxed">
-        Antes de montar seu resultado, como posso te chamar?
-      </p>
+      <h2 className="text-[1.5rem] leading-tight font-semibold">Já entendi bastante coisa sobre o seu caso.</h2>
+      <p className="text-muted-foreground mt-3 leading-relaxed">Antes de montar seu resultado, como posso te chamar?</p>
 
       <label htmlFor="quiz-name" className="sr-only">
         Seu primeiro nome
@@ -443,13 +380,7 @@ export function NameScreen({
 
 /* -------------------------------------------------------------- WhatsApp */
 
-export function PhoneScreen({
-  name,
-  onSubmit,
-}: {
-  name: string;
-  onSubmit: (phone: string, optIn: boolean) => void;
-}) {
+export function PhoneScreen({ name, onSubmit }: { name: string; onSubmit: (phone: string, optIn: boolean) => void }) {
   const [value, setValue] = useState("");
   const [optIn, setOptIn] = useState(false);
   const [error, setError] = useState("");
@@ -495,8 +426,7 @@ export function PhoneScreen({
         </p>
       )}
       <p id="quiz-phone-help" className="text-muted-foreground mt-3 text-[0.78rem] leading-relaxed">
-        Usaremos esse número para enviar o seu resultado, conforme a política de privacidade da
-        Anagrow.
+        Usaremos esse número para enviar o seu resultado, conforme a política de privacidade da Anagrow.
       </p>
 
       <label className="mt-4 flex cursor-pointer items-start gap-3 text-[0.82rem] leading-snug">
@@ -506,9 +436,7 @@ export function PhoneScreen({
           onChange={(e) => setOptIn(e.target.checked)}
           className="accent-primary mt-0.5 h-4 w-4"
         />
-        <span className="text-muted-foreground">
-          Quero receber também conteúdos e novidades da Anagrow (opcional).
-        </span>
+        <span className="text-muted-foreground">Quero receber também conteúdos e novidades da Anagrow (opcional).</span>
       </label>
 
       <button type="submit" className={`${btnPrimary} mt-6`}>
@@ -657,8 +585,7 @@ export function ResultScreen({
   useEffect(() => setMounted(true), []);
   useEffect(() => {
     const onScroll = () => {
-      const scrollable =
-        document.documentElement.scrollHeight - window.innerHeight > 80;
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight > 80;
       const visible = !scrollable || window.scrollY > 24;
       setCtaFloating(visible);
       if (visible && !ctaShownRef.current) {
@@ -674,9 +601,6 @@ export function ResultScreen({
       window.removeEventListener("resize", onScroll);
     };
   }, []);
-
-
-
 
   const floatingBar = (
     <div
@@ -735,139 +659,121 @@ export function ResultScreen({
 
   return (
     <>
-    <div className="animate-enter pb-28">
-      <Eyebrow>Resultado da sua avaliação</Eyebrow>
-      <h2 className="text-[1.7rem] leading-[1.15] font-semibold text-balance">
-        {name ? `${name}, seu perfil está pronto.` : "Seu perfil está pronto."}
-      </h2>
-
-      <div className="border-primary/20 bg-primary text-primary-foreground mt-5 rounded-3xl border p-6">
-        <p className="text-primary-foreground/70 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
-          Direção principal
+      <div className="animate-enter pb-28">
+        <Eyebrow>Resultado da sua avaliação</Eyebrow>
+        <h2 className="text-[1.7rem] leading-[1.15] font-semibold text-balance">Seu Plano Capilar</h2>
+        <p className="text-muted-foreground mt-3 text-[0.95rem] leading-relaxed">
+          Criado com base nos seus objetivos e preferências. Um Tricologista vai revisar seu tratamento após a compra
+          para confirmar que é o ideal para você.
         </p>
-        <p className="font-display mt-2 text-[1.4rem] leading-tight font-semibold">
-          {CAUSES[cause].label}
-        </p>
-        <p className="text-primary-foreground/85 mt-3 text-[0.9rem] leading-relaxed">
-          {CAUSES[cause].body}
-        </p>
-        <div className="border-primary-foreground/20 mt-5 flex items-center gap-3 border-t pt-4">
-          <span className="font-display text-[1.7rem] leading-none font-semibold tabular-nums">
-            {chance}%
-          </span>
-          <span className="text-primary-foreground/80 text-[0.82rem] leading-snug">
-            de chance estimada de melhora com tratamento direcionado e contínuo
-          </span>
+        <div className="border-primary/20 bg-primary text-primary-foreground mt-5 rounded-3xl border p-6">
+          <p className="text-primary-foreground/70 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
+            Direção principal
+          </p>
+          <p className="font-display mt-2 text-[1.4rem] leading-tight font-semibold">{CAUSES[cause].label}</p>
+          <p className="text-primary-foreground/85 mt-3 text-[0.9rem] leading-relaxed">{CAUSES[cause].body}</p>
+          <div className="border-primary-foreground/20 mt-5 flex items-center gap-3 border-t pt-4">
+            <span className="font-display text-[1.7rem] leading-none font-semibold tabular-nums">{chance}%</span>
+            <span className="text-primary-foreground/80 text-[0.82rem] leading-snug">
+              de chance estimada de melhora com tratamento direcionado e contínuo
+            </span>
+          </div>
         </div>
-      </div>
 
-      <section className="mt-7">
-        <h3 className="text-[1.15rem] font-semibold">O que chamou nossa atenção</h3>
-        <ul className="mt-3 space-y-2.5">
-          {list.map((item) => (
-            <li key={item} className="flex items-start gap-2.5 text-[0.92rem] leading-snug">
-              <Check />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {ferritin && (
-        <section className="mt-8">
-          <h3 className="text-[1.15rem] font-semibold">Sua leitura de ferritina</h3>
-          <article className="border-primary/20 bg-primary/[0.05] mt-3 rounded-3xl border p-5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-[0.72rem] font-semibold tracking-[0.08em] uppercase">
-                {ferritin.range}
-              </span>
-              <span className="text-muted-foreground text-[0.78rem]">
-                Referência capilar: 150 ng/mL
-              </span>
-            </div>
-
-            <p className="mt-3 text-[1.02rem] font-semibold">{ferritin.status}</p>
-
-            <div className="mt-4">
-              <div className="bg-primary/10 relative h-2 w-full overflow-hidden rounded-full">
-                <div
-                  className="bg-primary h-full rounded-full transition-[width] duration-700"
-                  style={{ width: `${FERRITIN_FILL[ferritin.level]}%` }}
-                />
-              </div>
-              <div className="text-muted-foreground mt-1.5 flex justify-between text-[0.7rem]">
-                <span>0</span>
-                <span>150 ng/mL — ideal para o fio</span>
-              </div>
-            </div>
-
-            <p className="mt-4 text-[0.9rem] leading-relaxed">{ferritin.meaning}</p>
-
-            <div className="border-primary/15 mt-4 border-t pt-4">
-              <p className="text-primary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
-                O que fazer agora
-              </p>
-              <p className="mt-1.5 text-[0.9rem] leading-relaxed">{ferritin.nextStep}</p>
-            </div>
-          </article>
+        <section className="mt-7">
+          <h3 className="text-[1.15rem] font-semibold">O que chamou nossa atenção</h3>
+          <ul className="mt-3 space-y-2.5">
+            {list.map((item) => (
+              <li key={item} className="flex items-start gap-2.5 text-[0.92rem] leading-snug">
+                <Check />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </section>
-      )}
 
-      <section className="mt-8">
-        <h3 className="text-[1.15rem] font-semibold">Por isso, sua recomendação é:</h3>
-        <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">
-          {protocol.summary}
-        </p>
+        {ferritin && (
+          <section className="mt-8">
+            <h3 className="text-[1.15rem] font-semibold">Sua leitura de ferritina</h3>
+            <article className="border-primary/20 bg-primary/[0.05] mt-3 rounded-3xl border p-5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-[0.72rem] font-semibold tracking-[0.08em] uppercase">
+                  {ferritin.range}
+                </span>
+                <span className="text-muted-foreground text-[0.78rem]">Referência capilar: 150 ng/mL</span>
+              </div>
 
-        <div className="mt-4 space-y-3">
-          {whyBlocks.map((block) => (
-            <article
-              key={block.title}
-              className="border-primary/15 bg-primary/[0.04] rounded-3xl border p-5"
-            >
-              <p className="text-primary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
-                Por quê
-              </p>
-              <p className="mt-1.5 text-[1.02rem] font-semibold">{block.title}</p>
-              <p className="text-muted-foreground mt-2 text-[0.9rem] leading-relaxed">
-                {block.body}
-              </p>
+              <p className="mt-3 text-[1.02rem] font-semibold">{ferritin.status}</p>
+
+              <div className="mt-4">
+                <div className="bg-primary/10 relative h-2 w-full overflow-hidden rounded-full">
+                  <div
+                    className="bg-primary h-full rounded-full transition-[width] duration-700"
+                    style={{ width: `${FERRITIN_FILL[ferritin.level]}%` }}
+                  />
+                </div>
+                <div className="text-muted-foreground mt-1.5 flex justify-between text-[0.7rem]">
+                  <span>0</span>
+                  <span>150 ng/mL — ideal para o fio</span>
+                </div>
+              </div>
+
+              <p className="mt-4 text-[0.9rem] leading-relaxed">{ferritin.meaning}</p>
+
+              <div className="border-primary/15 mt-4 border-t pt-4">
+                <p className="text-primary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
+                  O que fazer agora
+                </p>
+                <p className="mt-1.5 text-[0.9rem] leading-relaxed">{ferritin.nextStep}</p>
+              </div>
+            </article>
+          </section>
+        )}
+
+        <section className="mt-8">
+          <h3 className="text-[1.15rem] font-semibold">Por isso, sua recomendação é:</h3>
+          <p className="text-muted-foreground mt-2 text-[0.92rem] leading-relaxed">{protocol.summary}</p>
+
+          <div className="mt-4 space-y-3">
+            {whyBlocks.map((block) => (
+              <article key={block.title} className="border-primary/15 bg-primary/[0.04] rounded-3xl border p-5">
+                <p className="text-primary text-[0.68rem] font-semibold tracking-[0.2em] uppercase">Por quê</p>
+                <p className="mt-1.5 text-[1.02rem] font-semibold">{block.title}</p>
+                <p className="text-muted-foreground mt-2 text-[0.9rem] leading-relaxed">{block.body}</p>
+              </article>
+            ))}
+          </div>
+
+          <article className="surface mt-4 rounded-3xl p-5">
+            <p className="text-primary/60 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
+              Seu Protocolo principal
+            </p>
+            <p className="font-display mt-1 text-[1.25rem] font-semibold">{protocol.main.name}</p>
+            <p className="text-muted-foreground mt-1 text-[0.85rem] leading-relaxed">
+              Os principais produtos para combater a queda de cabelo.
+            </p>
+            <p className="text-muted-foreground mt-1 text-[0.85rem]">{protocol.main.short}</p>
+            <p className="mt-3 text-[0.9rem] leading-relaxed">{protocol.main.role}</p>
+            <p className="text-muted-foreground mt-3 text-[0.8rem]">{protocol.main.usage}</p>
+          </article>
+
+          {protocol.complements.map((product) => (
+            <article key={product.id} className="surface mt-3 rounded-3xl p-5">
+              <p className="text-primary/60 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">Complemento</p>
+              <p className="font-display mt-1 text-[1.15rem] font-semibold">{product.name}</p>
+              <p className="mt-2 text-[0.88rem] leading-relaxed">{product.role}</p>
+              <p className="text-muted-foreground mt-2 text-[0.8rem]">{product.usage}</p>
             </article>
           ))}
-        </div>
+        </section>
 
-        <article className="surface mt-4 rounded-3xl p-5">
-          <p className="text-primary/60 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
-            Produto principal
-          </p>
-          <p className="font-display mt-1 text-[1.25rem] font-semibold">{protocol.main.name}</p>
-          <p className="text-muted-foreground mt-1 text-[0.85rem]">{protocol.main.short}</p>
-          <p className="mt-3 text-[0.9rem] leading-relaxed">{protocol.main.role}</p>
-          <p className="text-muted-foreground mt-3 text-[0.8rem]">{protocol.main.usage}</p>
-        </article>
-
-        {protocol.complements.map((product) => (
-          <article key={product.id} className="surface mt-3 rounded-3xl p-5">
-            <p className="text-primary/60 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
-              Complemento
-            </p>
-            <p className="font-display mt-1 text-[1.15rem] font-semibold">{product.name}</p>
-            <p className="mt-2 text-[0.88rem] leading-relaxed">{product.role}</p>
-            <p className="text-muted-foreground mt-2 text-[0.8rem]">{product.usage}</p>
-          </article>
-        ))}
-
-      </section>
-
-      <p className="text-muted-foreground mt-8 text-[0.75rem] leading-relaxed">
-        Esta avaliação é uma orientação de produtos e não constitui diagnóstico médico. Em caso de
-        gestação, amamentação, uso de medicamentos ou condições de saúde, consulte um profissional
-        antes de iniciar qualquer suplementação.
-      </p>
-
-
-    </div>
-    {mounted ? createPortal(floatingBar, document.body) : null}
+        <p className="text-muted-foreground mt-8 text-[0.75rem] leading-relaxed">
+          Esta avaliação é uma orientação de produtos e não constitui diagnóstico médico. Em caso de gestação,
+          amamentação, uso de medicamentos ou condições de saúde, consulte um profissional antes de iniciar qualquer
+          suplementação.
+        </p>
+      </div>
+      {mounted ? createPortal(floatingBar, document.body) : null}
     </>
   );
 }
