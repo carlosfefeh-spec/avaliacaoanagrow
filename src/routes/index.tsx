@@ -27,7 +27,16 @@ import {
   recoveryChance,
   resolveProtocol,
 } from "@/lib/quiz/engine";
-import { captureUtms, track, trackProgress } from "@/lib/quiz/analytics";
+import {
+  captureUtms,
+  reopenFunnel,
+  track,
+  trackDropOff,
+  trackFunnelComplete,
+  trackOptionSelected,
+  trackProgress,
+  trackStepView,
+} from "@/lib/quiz/analytics";
 import { activeVariants, decorateMicroFeedback, getVariant, type Variant } from "@/lib/quiz/experiments";
 import { sendLead } from "@/lib/quiz/lead.functions";
 import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
@@ -89,16 +98,40 @@ function QuizPage() {
   useEffect(() => {
     saveState({ stepId: step.id, answers, name, phone });
     track("quiz_question_viewed", { question_id: step.id, progress });
+    trackStepView({
+      stepId: step.id,
+      stepIndex: index,
+      stepKind: step.kind,
+      totalSteps: steps.length,
+      progress,
+      phase: step.kind === "question" ? step.phase : undefined,
+    });
+    if (step.kind === "result") trackFunnelComplete({ progress: 100 });
     trackProgress(progress);
-  }, [step.id, answers, name, phone, progress]);
+  }, [step, index, steps.length, answers, name, phone, progress]);
 
   useEffect(() => {
     const onLeave = () => {
-      if (step.kind !== "result") track("quiz_abandoned", { question_id: step.id, progress });
+      if (step.kind !== "result") {
+        track("quiz_abandoned", { question_id: step.id, progress });
+        trackDropOff("pagehide");
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        if (step.kind !== "result") trackDropOff("hidden");
+      } else {
+        reopenFunnel();
+      }
     };
     window.addEventListener("pagehide", onLeave);
-    return () => window.removeEventListener("pagehide", onLeave);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", onLeave);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [step, progress]);
+
 
   useEffect(
     () => () => {
@@ -146,12 +179,23 @@ function QuizPage() {
     answersRef.current = next;
     setAnswers(next);
     track("quiz_answered", { question_id: currentStep.id, answer_id: optionId, progress });
+    trackOptionSelected({
+      questionId: currentStep.id,
+      questionTitle: currentStep.title,
+      optionId,
+      optionLabel: currentStep.options.find((o) => o.id === optionId)?.label ?? optionId,
+      type: "single",
+      selectionIndex: 0,
+      totalSelected: 1,
+      progress,
+    });
     const micro =
       typeof currentStep.microFeedback === "function"
         ? currentStep.microFeedback(next)
         : (currentStep.microFeedback ?? null);
     showFeedbackThenAdvance(micro);
   };
+
 
   const toggleMulti = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
     const option = currentStep.options.find((o) => o.id === optionId)!;
@@ -273,11 +317,24 @@ function QuizPage() {
             onSingle={(id) => answerSingle(step, id)}
             onToggle={(id) => toggleMulti(step, id)}
             onContinue={() => {
+              const picked = answers[step.id] ?? [];
               track("quiz_answered", {
                 question_id: step.id,
-                answer_id: (answers[step.id] ?? []).join(","),
+                answer_id: picked.join(","),
                 progress,
               });
+              picked.forEach((id, i) =>
+                trackOptionSelected({
+                  questionId: step.id,
+                  questionTitle: step.title,
+                  optionId: id,
+                  optionLabel: step.options.find((o) => o.id === id)?.label ?? id,
+                  type: "multi",
+                  selectionIndex: i,
+                  totalSelected: picked.length,
+                  progress,
+                }),
+              );
               const micro =
                 typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
               showFeedbackThenAdvance(micro);
