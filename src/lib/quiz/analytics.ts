@@ -1,4 +1,5 @@
 import { activeVariants } from "./experiments";
+import { recordFunnelEvents, type FunnelEventInput } from "./funnel.functions";
 
 const UTM_KEYS = [
   "utm_source",
@@ -73,6 +74,7 @@ export function track(event: string, payload: Payload = {}) {
   };
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(data);
+  persist(event, data);
   if (import.meta.env.DEV) console.debug("[analytics]", data);
 }
 
@@ -211,5 +213,74 @@ export function trackEcommerce(event: string, items: Item[], extra: Payload = {}
       items: items.map((item) => ({ quantity: 1, ...item })),
       ...extra,
     },
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Persistência dos eventos do funil no banco (dashboard interno)      */
+/* ------------------------------------------------------------------ */
+
+const PERSISTED = new Set([
+  "quiz_started",
+  "quiz_step_view",
+  "quiz_step_exit",
+  "quiz_option_selected",
+  "quiz_drop_off",
+  "quiz_funnel_complete",
+  "quiz_result_viewed",
+  "quiz_cta_clicked",
+  "quiz_lead_sent",
+  "quiz_phone_submitted",
+]);
+
+const queue: FunnelEventInput[] = [];
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+
+function num(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function str(value: unknown): string | null {
+  return typeof value === "string" && value ? value.slice(0, 200) : null;
+}
+
+function persist(event: string, data: Payload) {
+  if (!PERSISTED.has(event)) return;
+  queue.push({
+    sessionId: quizId(),
+    event,
+    stepId: str(data["stepId"] ?? data["drop_step_id"] ?? data["question_id"] ?? data["funnel_step_id"]),
+    stepIndex: num(data["stepIndex"] ?? data["drop_step_index"]),
+    stepKind: str(data["stepKind"] ?? data["drop_step_kind"] ?? data["question_type"]),
+    progress: num(data["progress"]),
+    timeOnStep: num(data["time_on_step"] ?? data["time_to_answer"]),
+    optionId: str(data["option_id"]),
+    optionLabel: str(data["option_label"] ?? data["question_title"]),
+    meta: data as Record<string, unknown>,
+    variants: activeVariants(),
+    utms: captureUtms(),
+  });
+  if (queue.length >= 12 || event === "quiz_drop_off" || event === "quiz_funnel_complete") {
+    flushFunnel();
+    return;
+  }
+  if (flushTimer) return;
+  flushTimer = setTimeout(flushFunnel, 2500);
+}
+
+export function flushFunnel() {
+  if (flushTimer) {
+    clearTimeout(flushTimer);
+    flushTimer = null;
+  }
+  if (!queue.length) return;
+  const batch = queue.splice(0, queue.length);
+  void recordFunnelEvents({ data: { events: batch } }).catch(() => undefined);
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("pagehide", () => flushFunnel());
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushFunnel();
   });
 }
