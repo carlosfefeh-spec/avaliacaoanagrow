@@ -233,7 +233,7 @@ function QuizPage() {
   const submitLead = useServerFn(sendLead);
 
   const dispatchLead = useCallback(
-    (phoneValue: string, optIn: boolean) => {
+    (phoneValue: string, optIn: boolean, emailValue: string | null) => {
       const protocol = resolveProtocol(scores, tags);
       const cause = primaryCause(scores);
       const reading = ferritinReading(answers);
@@ -246,6 +246,7 @@ function QuizPage() {
         name,
         phone: phoneValue,
         phoneDigits: phoneValue.replace(/\D/g, ""),
+        email: emailValue,
         marketingOptIn: optIn,
         answers,
         answersLabeled: labelAnswers(answers),
@@ -366,11 +367,11 @@ function QuizPage() {
         {step.kind === "phone" && (
           <PhoneScreen
             name={name}
-            onSubmit={(value, optIn) => {
+            onSubmit={(value, optIn, emailValue) => {
               setPhone(value);
-              track("quiz_phone_submitted", { marketing_opt_in: optIn });
+              track("quiz_phone_submitted", { marketing_opt_in: optIn, has_email: !!emailValue });
               track("quiz_completed", { progress: 100 });
-              dispatchLead(value, optIn);
+              dispatchLead(value, optIn, emailValue);
               go(1);
             }}
           />

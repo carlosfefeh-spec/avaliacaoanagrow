@@ -383,8 +383,16 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
 
 /* -------------------------------------------------------------- WhatsApp */
 
-export function PhoneScreen({ name, onSubmit }: { name: string; onSubmit: (phone: string, optIn: boolean) => void }) {
+export function PhoneScreen({
+  name,
+  onSubmit,
+}: {
+  name: string;
+  onSubmit: (phone: string, optIn: boolean, email: string | null) => void;
+}) {
   const [value, setValue] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [optIn, setOptIn] = useState(false);
   const [error, setError] = useState("");
 
@@ -397,8 +405,14 @@ export function PhoneScreen({ name, onSubmit }: { name: string; onSubmit: (phone
           setError("Confira o número: precisa ter DDD e 9 dígitos.");
           return;
         }
+        const mail = email.trim();
+        if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) {
+          setEmailError("Confira o e-mail digitado.");
+          return;
+        }
         setError("");
-        onSubmit(value, optIn);
+        setEmailError("");
+        onSubmit(value, optIn, mail || null);
       }}
     >
       <Eyebrow>Último passo</Eyebrow>
@@ -431,6 +445,26 @@ export function PhoneScreen({ name, onSubmit }: { name: string; onSubmit: (phone
       <p id="quiz-phone-help" className="text-muted-foreground mt-3 text-[0.78rem] leading-relaxed">
         Usaremos esse número para enviar o seu resultado, conforme a política de privacidade da Anagrow.
       </p>
+
+      <label htmlFor="quiz-email" className="text-muted-foreground mt-6 block text-[0.82rem]">
+        E-mail para receber o diagnóstico completo (opcional)
+      </label>
+      <input
+        id="quiz-email"
+        type="email"
+        inputMode="email"
+        autoComplete="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="seu@email.com"
+        aria-invalid={!!emailError}
+        className="surface focus:border-primary mt-2 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none"
+      />
+      {emailError && (
+        <p role="alert" className="text-destructive mt-2 text-sm">
+          {emailError}
+        </p>
+      )}
 
       <label className="mt-4 flex cursor-pointer items-start gap-3 text-[0.82rem] leading-snug">
         <input
