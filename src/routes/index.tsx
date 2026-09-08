@@ -146,24 +146,27 @@ function QuizPage() {
 
   const answersRef = useRef<Answers>(answers);
   answersRef.current = answers;
+  const stepsRef = useRef<Step[]>(steps);
+  stepsRef.current = steps;
 
   const go = useCallback((delta: number) => {
     setFeedback(null);
     setIndex((i) => {
+      const list = stepsRef.current;
       const dir = delta >= 0 ? 1 : -1;
       let next = i;
       for (let s = 0; s < Math.abs(delta); s++) {
         next += dir;
         while (
           next > 0 &&
-          next < STEPS.length - 1 &&
-          STEPS[next]!.condition &&
-          !STEPS[next]!.condition!(answersRef.current)
+          next < list.length - 1 &&
+          list[next]!.condition &&
+          !list[next]!.condition!(answersRef.current)
         ) {
           next += dir;
         }
       }
-      return Math.min(STEPS.length - 1, Math.max(0, next));
+      return Math.min(list.length - 1, Math.max(0, next));
     });
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   }, []);
