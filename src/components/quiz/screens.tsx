@@ -371,6 +371,8 @@ export function ChanceScreen({
 export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+  const custom = useCustomization();
+  const field = useFinalFields().find((f) => f.key === "name");
 
   return (
     <form
@@ -387,11 +389,15 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
       }}
     >
       <Eyebrow>Personalizando sua análise</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">Já entendi bastante coisa sobre o seu caso.</h2>
-      <p className="text-muted-foreground mt-3 leading-relaxed">Antes de montar seu resultado, como posso te chamar?</p>
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+        {custom.final.title || "Já entendi bastante coisa sobre o seu caso."}
+      </h2>
+      <p className="text-muted-foreground mt-3 leading-relaxed">
+        {custom.final.body || "Antes de montar seu resultado, como posso te chamar?"}
+      </p>
 
       <label htmlFor="quiz-name" className="sr-only">
-        Seu primeiro nome
+        {field?.label ?? "Seu primeiro nome"}
       </label>
       <input
         id="quiz-name"
@@ -399,7 +405,7 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
         autoComplete="given-name"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Seu primeiro nome"
+        placeholder={field?.placeholder || "Seu primeiro nome"}
         aria-invalid={!!error}
         aria-describedby={error ? "quiz-name-error" : undefined}
         className="surface mt-6 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none focus:border-primary"
@@ -431,36 +437,17 @@ export function PhoneScreen({
   const [emailError, setEmailError] = useState("");
   const [optIn, setOptIn] = useState(false);
   const [error, setError] = useState("");
+  const custom = useCustomization();
+  const fields = useFinalFields();
+  const phoneField = fields.find((f) => f.key === "phone" && f.enabled);
+  const emailField = fields.find((f) => f.key === "email" && f.enabled);
+  const optInField = fields.find((f) => f.key === "optIn" && f.enabled);
+  const ordered = fields.filter((f) => f.enabled && f.key !== "name");
 
-  return (
-    <form
-      className="animate-enter"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!isValidBrPhone(value)) {
-          setError("Confira o número: precisa ter DDD e 9 dígitos.");
-          return;
-        }
-        const mail = email.trim();
-        if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) {
-          setEmailError("Confira o e-mail digitado.");
-          return;
-        }
-        setError("");
-        setEmailError("");
-        onSubmit(value, optIn, mail || null);
-      }}
-    >
-      <Eyebrow>Último passo</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
-        Seu resultado está quase pronto{name ? `, ${name}` : ""}.
-      </h2>
-      <p className="text-muted-foreground mt-3 leading-relaxed">
-        Para você conseguir consultar sua análise depois, qual WhatsApp prefere usar?
-      </p>
-
+  const phoneBlock = phoneField && (
+    <div key="phone">
       <label htmlFor="quiz-phone" className="sr-only">
-        Seu WhatsApp com DDD
+        {phoneField.label}
       </label>
       <input
         id="quiz-phone"
@@ -468,7 +455,7 @@ export function PhoneScreen({
         autoComplete="tel-national"
         value={value}
         onChange={(e) => setValue(maskPhone(e.target.value))}
-        placeholder="(11) 99999-9999"
+        placeholder={phoneField.placeholder || "(11) 99999-9999"}
         aria-invalid={!!error}
         aria-describedby={error ? "quiz-phone-error" : "quiz-phone-help"}
         className="surface mt-6 w-full rounded-2xl px-4 py-4 text-[1rem] tracking-wide outline-none focus:border-primary"
@@ -481,9 +468,13 @@ export function PhoneScreen({
       <p id="quiz-phone-help" className="text-muted-foreground mt-3 text-[0.78rem] leading-relaxed">
         Usaremos esse número para enviar o seu resultado, conforme a política de privacidade da Anagrow.
       </p>
+    </div>
+  );
 
+  const emailBlock = emailField && (
+    <div key="email">
       <label htmlFor="quiz-email" className="text-muted-foreground mt-6 block text-[0.82rem]">
-        E-mail para receber o diagnóstico completo (opcional)
+        {emailField.label}
       </label>
       <input
         id="quiz-email"
@@ -492,7 +483,7 @@ export function PhoneScreen({
         autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="seu@email.com"
+        placeholder={emailField.placeholder || "seu@email.com"}
         aria-invalid={!!emailError}
         className="surface focus:border-primary mt-2 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none"
       />
@@ -501,23 +492,67 @@ export function PhoneScreen({
           {emailError}
         </p>
       )}
+    </div>
+  );
 
-      <label className="mt-4 flex cursor-pointer items-start gap-3 text-[0.82rem] leading-snug">
-        <input
-          type="checkbox"
-          checked={optIn}
-          onChange={(e) => setOptIn(e.target.checked)}
-          className="accent-primary mt-0.5 h-4 w-4"
-        />
-        <span className="text-muted-foreground">Quero receber também conteúdos e novidades da Anagrow (opcional).</span>
-      </label>
+  const optInBlock = optInField && (
+    <label key="optIn" className="mt-4 flex cursor-pointer items-start gap-3 text-[0.82rem] leading-snug">
+      <input
+        type="checkbox"
+        checked={optIn}
+        onChange={(e) => setOptIn(e.target.checked)}
+        className="accent-primary mt-0.5 h-4 w-4"
+      />
+      <span className="text-muted-foreground">{optInField.label}</span>
+    </label>
+  );
+
+  const blocks: Record<string, React.ReactNode> = {
+    phone: phoneBlock,
+    email: emailBlock,
+    optIn: optInBlock,
+  };
+
+  return (
+    <form
+      className="animate-enter"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (phoneField && (phoneField.required !== false || value.trim()) && !isValidBrPhone(value)) {
+          setError("Confira o número: precisa ter DDD e 9 dígitos.");
+          return;
+        }
+        const mail = email.trim();
+        if (emailField?.required && !mail) {
+          setEmailError("Informe seu e-mail para receber o diagnóstico.");
+          return;
+        }
+        if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) {
+          setEmailError("Confira o e-mail digitado.");
+          return;
+        }
+        setError("");
+        setEmailError("");
+        onSubmit(value, optIn, mail || null);
+      }}
+    >
+      <Eyebrow>Último passo</Eyebrow>
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+        {custom.final.thanks || `Seu resultado está quase pronto${name ? `, ${name}` : ""}.`}
+      </h2>
+      <p className="text-muted-foreground mt-3 leading-relaxed">
+        Para você conseguir consultar sua análise depois, qual WhatsApp prefere usar?
+      </p>
+
+      {ordered.map((f) => blocks[f.key])}
 
       <button type="submit" className={`${btnPrimary} mt-6`}>
-        Ver meu resultado
+        {custom.final.button || "Ver meu resultado"}
       </button>
     </form>
   );
 }
+
 
 /* ---------------------------------------------------------- Processamento */
 
