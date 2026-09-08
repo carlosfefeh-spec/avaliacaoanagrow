@@ -18,6 +18,7 @@ import {
   btnPrimary,
 } from "@/components/quiz/screens";
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
+import { loadDiagnosticSteps } from "@/lib/quiz/overrides";
 import {
   CAUSES,
   collectTags,
@@ -77,8 +78,11 @@ function QuizPage() {
     track("experiment_viewed", { experiment_id: "micro_v1", variant: assigned });
   }, []);
 
-  const steps = STEPS;
-  const step = steps[index]!;
+  const [steps, setSteps] = useState<Step[]>(STEPS);
+  useEffect(() => {
+    void loadDiagnosticSteps().then((loaded) => setSteps(loaded));
+  }, []);
+  const step = steps[index] ?? steps[steps.length - 1]!;
   const scores = useMemo(() => computeScores(answers), [answers]);
   const tags = useMemo(() => collectTags(answers), [answers]);
 
@@ -142,24 +146,27 @@ function QuizPage() {
 
   const answersRef = useRef<Answers>(answers);
   answersRef.current = answers;
+  const stepsRef = useRef<Step[]>(steps);
+  stepsRef.current = steps;
 
   const go = useCallback((delta: number) => {
     setFeedback(null);
     setIndex((i) => {
+      const list = stepsRef.current;
       const dir = delta >= 0 ? 1 : -1;
       let next = i;
       for (let s = 0; s < Math.abs(delta); s++) {
         next += dir;
         while (
           next > 0 &&
-          next < STEPS.length - 1 &&
-          STEPS[next]!.condition &&
-          !STEPS[next]!.condition!(answersRef.current)
+          next < list.length - 1 &&
+          list[next]!.condition &&
+          !list[next]!.condition!(answersRef.current)
         ) {
           next += dir;
         }
       }
-      return Math.min(STEPS.length - 1, Math.max(0, next));
+      return Math.min(list.length - 1, Math.max(0, next));
     });
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   }, []);

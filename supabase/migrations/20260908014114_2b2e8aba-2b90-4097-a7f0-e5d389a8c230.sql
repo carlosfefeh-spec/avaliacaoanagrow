@@ -1,0 +1,4 @@
+CREATE POLICY "quiz media readable" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'quiz-media');
+CREATE POLICY "super admin uploads quiz media" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'quiz-media' AND public.has_role(auth.uid(), 'super_admin'));
+CREATE POLICY "super admin updates quiz media" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'quiz-media' AND public.has_role(auth.uid(), 'super_admin')) WITH CHECK (bucket_id = 'quiz-media' AND public.has_role(auth.uid(), 'super_admin'));
+CREATE POLICY "super admin deletes quiz media" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'quiz-media' AND public.has_role(auth.uid(), 'super_admin'));
