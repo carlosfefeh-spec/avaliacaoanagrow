@@ -446,6 +446,26 @@ export function PhoneScreen({
         Usaremos esse número para enviar o seu resultado, conforme a política de privacidade da Anagrow.
       </p>
 
+      <label htmlFor="quiz-email" className="text-muted-foreground mt-6 block text-[0.82rem]">
+        E-mail para receber o diagnóstico completo (opcional)
+      </label>
+      <input
+        id="quiz-email"
+        type="email"
+        inputMode="email"
+        autoComplete="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="seu@email.com"
+        aria-invalid={!!emailError}
+        className="surface focus:border-primary mt-2 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none"
+      />
+      {emailError && (
+        <p role="alert" className="text-destructive mt-2 text-sm">
+          {emailError}
+        </p>
+      )}
+
       <label className="mt-4 flex cursor-pointer items-start gap-3 text-[0.82rem] leading-snug">
         <input
           type="checkbox"
