@@ -33,9 +33,9 @@ export const recordFunnelEvents = createServerFn({ method: "POST" })
         time_on_step: e.timeOnStep ?? null,
         option_id: e.optionId ?? null,
         option_label: e.optionLabel ?? null,
-        meta: e.meta ?? {},
-        variants: e.variants ?? {},
-        utms: e.utms ?? {},
+        meta: (e.meta ?? {}) as never,
+        variants: (e.variants ?? {}) as never,
+        utms: (e.utms ?? {}) as never,
       }));
       const { error } = await supabaseAdmin.from("quiz_funnel_events").insert(rows);
       if (error) throw error;
