@@ -351,12 +351,18 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
         onSubmit(clean);
       }}
     >
-      <Eyebrow>Personalizando sua análise</Eyebrow>
-       <h2 className={questionTitle}>
-        {custom.final.title || "Já entendi bastante coisa sobre o seu caso."}
+      <Eyebrow>Análise concluída</Eyebrow>
+      <h2 className={questionTitle}>
+        {custom.final.title || (
+          <>
+            Seu diagnóstico capilar
+            <br />
+            está pronto.
+          </>
+        )}
       </h2>
-      <p className="text-muted-foreground mt-3 leading-relaxed">
-        {custom.final.body || "Antes de montar seu resultado, como posso te chamar?"}
+      <p className="text-[#6B6560] mt-3 text-[0.95rem] leading-relaxed">
+        {custom.final.body || "Quero apresentar seu resultado de forma personalizada. Como você se chama?"}
       </p>
 
       <label htmlFor="quiz-name" className="sr-only">
@@ -368,7 +374,7 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
         autoComplete="given-name"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder={field?.placeholder || "Seu primeiro nome"}
+        placeholder={field?.placeholder || "Meu nome é..."}
         aria-invalid={!!error}
         aria-describedby={error ? "quiz-name-error" : undefined}
          className="surface mt-6 w-full rounded-lg px-5 py-4 text-[1rem] outline-none focus:border-primary"
@@ -380,7 +386,7 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
       )}
 
       <button type="submit" className={`${btnPrimary} mt-6`}>
-        Continuar
+        Ver meu diagnóstico →
       </button>
     </form>
   );
