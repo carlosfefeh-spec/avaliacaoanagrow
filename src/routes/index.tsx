@@ -20,6 +20,12 @@ import {
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
 import { loadDiagnosticSteps } from "@/lib/quiz/overrides";
 import {
+  CustomizationProvider,
+  DEFAULT_FINAL_FIELDS,
+  themeStyle,
+  useLoadedCustomization,
+} from "@/lib/quiz/customization";
+import {
   CAUSES,
   collectTags,
   computeScores,
