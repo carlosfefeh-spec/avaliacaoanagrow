@@ -20,6 +20,12 @@ import {
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
 import { loadDiagnosticSteps } from "@/lib/quiz/overrides";
 import {
+  CustomizationProvider,
+  DEFAULT_FINAL_FIELDS,
+  themeStyle,
+  useLoadedCustomization,
+} from "@/lib/quiz/customization";
+import {
   CAUSES,
   collectTags,
   computeScores,
@@ -78,11 +84,18 @@ function QuizPage() {
     track("experiment_viewed", { experiment_id: "micro_v1", variant: assigned });
   }, []);
 
-  const [steps, setSteps] = useState<Step[]>(STEPS);
+  const [loadedSteps, setLoadedSteps] = useState<Step[]>(STEPS);
   useEffect(() => {
-    void loadDiagnosticSteps().then((loaded) => setSteps(loaded));
+    void loadDiagnosticSteps().then((loaded) => setLoadedSteps(loaded));
   }, []);
+  const custom = useLoadedCustomization();
+  const nameEnabled = (custom.final.fields ?? DEFAULT_FINAL_FIELDS).find((f) => f.key === "name")?.enabled !== false;
+  const steps = useMemo(
+    () => (nameEnabled ? loadedSteps : loadedSteps.filter((s) => s.kind !== "name")),
+    [loadedSteps, nameEnabled],
+  );
   const step = steps[index] ?? steps[steps.length - 1]!;
+
   const scores = useMemo(() => computeScores(answers), [answers]);
   const tags = useMemo(() => collectTags(answers), [answers]);
 
@@ -148,11 +161,21 @@ function QuizPage() {
   answersRef.current = answers;
   const stepsRef = useRef<Step[]>(steps);
   stepsRef.current = steps;
+  /** Destino definido pelo fluxo condicional do painel para a resposta escolhida. */
+  const jumpRef = useRef<string | null>(null);
+  const branchingRef = useRef(custom.branching);
+  branchingRef.current = custom.branching;
 
   const go = useCallback((delta: number) => {
     setFeedback(null);
     setIndex((i) => {
       const list = stepsRef.current;
+      const jumpTo = jumpRef.current;
+      jumpRef.current = null;
+      if (delta > 0 && jumpTo) {
+        const target = list.findIndex((s) => s.id === jumpTo);
+        if (target > i) return target;
+      }
       const dir = delta >= 0 ? 1 : -1;
       let next = i;
       for (let s = 0; s < Math.abs(delta); s++) {
@@ -170,6 +193,12 @@ function QuizPage() {
     });
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   }, []);
+
+  const setBranch = (stepId: string, optionId: string | undefined) => {
+    if (!optionId) return;
+    const target = branchingRef.current?.[stepId]?.[optionId];
+    jumpRef.current = target ?? null;
+  };
 
   const showFeedbackThenAdvance = useCallback(
     (message: string | null) => {
@@ -196,12 +225,14 @@ function QuizPage() {
       totalSelected: 1,
       progress,
     });
+    setBranch(currentStep.id, optionId);
     const micro =
       typeof currentStep.microFeedback === "function"
         ? currentStep.microFeedback(next)
         : (currentStep.microFeedback ?? null);
     showFeedbackThenAdvance(micro);
   };
+
 
 
   const toggleMulti = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
@@ -283,20 +314,23 @@ function QuizPage() {
 
   if (step.kind === "landing") {
     return (
-      <main className="mx-auto max-w-[560px]">
-        <Landing
-          onStart={() => {
-            track("quiz_started");
-            go(1);
-          }}
-          onResume={resumable ? resume : undefined}
-        />
-      </main>
+      <CustomizationProvider value={custom}>
+        <main className="mx-auto max-w-[560px]" style={themeStyle(custom.theme)}>
+          <Landing
+            onStart={() => {
+              track("quiz_started");
+              go(1);
+            }}
+            onResume={resumable ? resume : undefined}
+          />
+        </main>
+      </CustomizationProvider>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-4 pb-10">
+    <CustomizationProvider value={custom}>
+    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-4 pb-10" style={themeStyle(custom.theme)}>
       <header className="bg-background/95 sticky top-0 z-10 -mx-5 mb-8 px-5 pt-2 pb-3 backdrop-blur">
         <div className="mb-4 flex items-center justify-between">
           <button
@@ -309,11 +343,16 @@ function QuizPage() {
               <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <span className="font-display text-primary text-[0.8rem] tracking-[0.34em] uppercase">Anagrow</span>
+          {custom.theme.logoUrl ? (
+            <img src={custom.theme.logoUrl} alt="Anagrow" className="h-6 w-auto" />
+          ) : (
+            <span className="font-display text-primary text-[0.8rem] tracking-[0.34em] uppercase">Anagrow</span>
+          )}
           <span className="h-9 w-9" />
         </div>
         <ProgressBar value={progress} />
       </header>
+
 
 
       <div key={step.id} className="flex-1">
@@ -345,6 +384,7 @@ function QuizPage() {
               );
               const micro =
                 typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
+              setBranch(step.id, picked[0]);
               showFeedbackThenAdvance(micro);
             }}
           />
@@ -382,7 +422,9 @@ function QuizPage() {
         )}
       </div>
     </main>
+    </CustomizationProvider>
   );
+
 }
 
 function ResultView(props: React.ComponentProps<typeof ResultScreen>) {

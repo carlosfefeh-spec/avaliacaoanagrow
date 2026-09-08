@@ -15,6 +15,7 @@ import { useTap } from "@/lib/quiz/tap";
 import { track, trackEcommerce } from "@/lib/quiz/analytics";
 import { buildStoreUrl } from "@/lib/quiz/attribution";
 import { CTA_COPY, LANDING_COPY, LOADER_COPY, WHY_BLOCKS, getVariant, type Variant } from "@/lib/quiz/experiments";
+import { useCustomization, useFinalFields } from "@/lib/quiz/customization";
 
 export const btnPrimary =
   "inline-flex min-h-[56px] w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.95rem] font-medium tracking-[0.02em] text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-30 disabled:active:scale-100";
@@ -33,6 +34,7 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
 
 export function Landing({ onStart, onResume }: { onStart: () => void; onResume?: (() => void) | undefined }) {
   const [variant, setVariant] = useState<Variant<"landing_v1">>("control");
+  const custom = useCustomization();
 
   useEffect(() => {
     const assigned = getVariant("landing_v1");
@@ -40,14 +42,28 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
     track("experiment_viewed", { experiment_id: "landing_v1", variant: assigned });
   }, []);
 
-  const copy = LANDING_COPY[variant];
+  const base = LANDING_COPY[variant];
+  const l = custom.landing;
+  const copy = {
+    badge: l.badge || base.badge,
+    headline: l.title || base.headline,
+    subhead: l.subtitle || base.subhead,
+    cta: l.cta || base.cta,
+    bullets: base.bullets,
+  };
   const startTap = useTap(onStart);
 
   return (
     <div className="animate-enter flex min-h-[100svh] flex-col justify-between px-5 pt-10 pb-8">
       <div>
-        <p className="font-display text-primary text-[1.05rem] tracking-[0.32em] uppercase">Anagrow</p>
-        <div className="bg-primary/15 mt-1 h-px w-14" />
+        {custom.theme.logoUrl ? (
+          <img src={custom.theme.logoUrl} alt="Anagrow" className="h-8 w-auto" />
+        ) : (
+          <>
+            <p className="font-display text-primary text-[1.05rem] tracking-[0.32em] uppercase">Anagrow</p>
+            <div className="bg-primary/15 mt-1 h-px w-14" />
+          </>
+        )}
       </div>
 
       <div className="py-8">
@@ -57,6 +73,21 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
         </span>
         <h1 className="font-display mt-6 text-[2.5rem] leading-[1.04] font-normal text-balance">{copy.headline}</h1>
         <p className="text-muted-foreground mt-4 text-[1rem] leading-relaxed">{copy.subhead}</p>
+        {l.mediaUrl && l.mediaKind === "video" && (
+          <div className="mt-6 aspect-video w-full overflow-hidden rounded-3xl">
+            <iframe
+              src={l.mediaUrl}
+              title="Vídeo de apresentação"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
+        )}
+        {l.mediaUrl && l.mediaKind !== "video" && (
+          <img src={l.mediaUrl} alt="" className="mt-6 w-full rounded-3xl object-cover" />
+        )}
+        {l.body && <p className="text-muted-foreground mt-4 text-[0.95rem] leading-relaxed">{l.body}</p>}
         <ul className="mt-6 space-y-2.5">
           {copy.bullets.map((item) => (
             <li key={item} className="flex items-start gap-2.5 text-[0.92rem]">
@@ -68,7 +99,11 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
       </div>
 
       <div className="space-y-3">
-        <button className={btnPrimary} {...startTap}>
+        <button
+          className={btnPrimary}
+          style={l.ctaColor ? { backgroundColor: l.ctaColor } : undefined}
+          {...startTap}
+        >
           {copy.cta}
         </button>
         {onResume && (
@@ -83,6 +118,7 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
     </div>
   );
 }
+
 
 function Check() {
   return (
@@ -335,6 +371,8 @@ export function ChanceScreen({
 export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+  const custom = useCustomization();
+  const field = useFinalFields().find((f) => f.key === "name");
 
   return (
     <form
@@ -351,11 +389,15 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
       }}
     >
       <Eyebrow>Personalizando sua análise</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">Já entendi bastante coisa sobre o seu caso.</h2>
-      <p className="text-muted-foreground mt-3 leading-relaxed">Antes de montar seu resultado, como posso te chamar?</p>
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+        {custom.final.title || "Já entendi bastante coisa sobre o seu caso."}
+      </h2>
+      <p className="text-muted-foreground mt-3 leading-relaxed">
+        {custom.final.body || "Antes de montar seu resultado, como posso te chamar?"}
+      </p>
 
       <label htmlFor="quiz-name" className="sr-only">
-        Seu primeiro nome
+        {field?.label ?? "Seu primeiro nome"}
       </label>
       <input
         id="quiz-name"
@@ -363,7 +405,7 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
         autoComplete="given-name"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Seu primeiro nome"
+        placeholder={field?.placeholder || "Seu primeiro nome"}
         aria-invalid={!!error}
         aria-describedby={error ? "quiz-name-error" : undefined}
         className="surface mt-6 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none focus:border-primary"
@@ -395,36 +437,17 @@ export function PhoneScreen({
   const [emailError, setEmailError] = useState("");
   const [optIn, setOptIn] = useState(false);
   const [error, setError] = useState("");
+  const custom = useCustomization();
+  const fields = useFinalFields();
+  const phoneField = fields.find((f) => f.key === "phone" && f.enabled);
+  const emailField = fields.find((f) => f.key === "email" && f.enabled);
+  const optInField = fields.find((f) => f.key === "optIn" && f.enabled);
+  const ordered = fields.filter((f) => f.enabled && f.key !== "name");
 
-  return (
-    <form
-      className="animate-enter"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!isValidBrPhone(value)) {
-          setError("Confira o número: precisa ter DDD e 9 dígitos.");
-          return;
-        }
-        const mail = email.trim();
-        if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) {
-          setEmailError("Confira o e-mail digitado.");
-          return;
-        }
-        setError("");
-        setEmailError("");
-        onSubmit(value, optIn, mail || null);
-      }}
-    >
-      <Eyebrow>Último passo</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
-        Seu resultado está quase pronto{name ? `, ${name}` : ""}.
-      </h2>
-      <p className="text-muted-foreground mt-3 leading-relaxed">
-        Para você conseguir consultar sua análise depois, qual WhatsApp prefere usar?
-      </p>
-
+  const phoneBlock = phoneField && (
+    <div key="phone">
       <label htmlFor="quiz-phone" className="sr-only">
-        Seu WhatsApp com DDD
+        {phoneField.label}
       </label>
       <input
         id="quiz-phone"
@@ -432,7 +455,7 @@ export function PhoneScreen({
         autoComplete="tel-national"
         value={value}
         onChange={(e) => setValue(maskPhone(e.target.value))}
-        placeholder="(11) 99999-9999"
+        placeholder={phoneField.placeholder || "(11) 99999-9999"}
         aria-invalid={!!error}
         aria-describedby={error ? "quiz-phone-error" : "quiz-phone-help"}
         className="surface mt-6 w-full rounded-2xl px-4 py-4 text-[1rem] tracking-wide outline-none focus:border-primary"
@@ -445,9 +468,13 @@ export function PhoneScreen({
       <p id="quiz-phone-help" className="text-muted-foreground mt-3 text-[0.78rem] leading-relaxed">
         Usaremos esse número para enviar o seu resultado, conforme a política de privacidade da Anagrow.
       </p>
+    </div>
+  );
 
+  const emailBlock = emailField && (
+    <div key="email">
       <label htmlFor="quiz-email" className="text-muted-foreground mt-6 block text-[0.82rem]">
-        E-mail para receber o diagnóstico completo (opcional)
+        {emailField.label}
       </label>
       <input
         id="quiz-email"
@@ -456,7 +483,7 @@ export function PhoneScreen({
         autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="seu@email.com"
+        placeholder={emailField.placeholder || "seu@email.com"}
         aria-invalid={!!emailError}
         className="surface focus:border-primary mt-2 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none"
       />
@@ -465,23 +492,67 @@ export function PhoneScreen({
           {emailError}
         </p>
       )}
+    </div>
+  );
 
-      <label className="mt-4 flex cursor-pointer items-start gap-3 text-[0.82rem] leading-snug">
-        <input
-          type="checkbox"
-          checked={optIn}
-          onChange={(e) => setOptIn(e.target.checked)}
-          className="accent-primary mt-0.5 h-4 w-4"
-        />
-        <span className="text-muted-foreground">Quero receber também conteúdos e novidades da Anagrow (opcional).</span>
-      </label>
+  const optInBlock = optInField && (
+    <label key="optIn" className="mt-4 flex cursor-pointer items-start gap-3 text-[0.82rem] leading-snug">
+      <input
+        type="checkbox"
+        checked={optIn}
+        onChange={(e) => setOptIn(e.target.checked)}
+        className="accent-primary mt-0.5 h-4 w-4"
+      />
+      <span className="text-muted-foreground">{optInField.label}</span>
+    </label>
+  );
+
+  const blocks: Record<string, React.ReactNode> = {
+    phone: phoneBlock,
+    email: emailBlock,
+    optIn: optInBlock,
+  };
+
+  return (
+    <form
+      className="animate-enter"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (phoneField && (phoneField.required !== false || value.trim()) && !isValidBrPhone(value)) {
+          setError("Confira o número: precisa ter DDD e 9 dígitos.");
+          return;
+        }
+        const mail = email.trim();
+        if (emailField?.required && !mail) {
+          setEmailError("Informe seu e-mail para receber o diagnóstico.");
+          return;
+        }
+        if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) {
+          setEmailError("Confira o e-mail digitado.");
+          return;
+        }
+        setError("");
+        setEmailError("");
+        onSubmit(value, optIn, mail || null);
+      }}
+    >
+      <Eyebrow>Último passo</Eyebrow>
+      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+        {custom.final.thanks || `Seu resultado está quase pronto${name ? `, ${name}` : ""}.`}
+      </h2>
+      <p className="text-muted-foreground mt-3 leading-relaxed">
+        Para você conseguir consultar sua análise depois, qual WhatsApp prefere usar?
+      </p>
+
+      {ordered.map((f) => blocks[f.key])}
 
       <button type="submit" className={`${btnPrimary} mt-6`}>
-        Ver meu resultado
+        {custom.final.button || "Ver meu resultado"}
       </button>
     </form>
   );
 }
+
 
 /* ---------------------------------------------------------- Processamento */
 
@@ -565,6 +636,9 @@ export function ResultScreen({
   const chance = recoveryChance(answers, scores);
   const list = highlights(answers, scores);
   const ferritin = ferritinReading(answers);
+  const custom = useCustomization();
+  const rc = custom.results[protocol.id] ?? {};
+
   const FERRITIN_FILL: Record<string, number> = {
     critico: 18,
     baixo: 38,
@@ -593,12 +667,13 @@ export function ResultScreen({
     track("experiment_viewed", { experiment_id: "why_v1", variant: why });
     track("quiz_sticky_cta_shown", { variant: assigned });
     setStoreUrl(
-      buildStoreUrl(protocol.ctaUrl, {
+      buildStoreUrl(rc.ctaUrl || protocol.ctaUrl, {
         protocolId: protocol.id,
         cause: CAUSES[cause].label,
         variantSuffix: assigned,
       }),
     );
+
     trackEcommerce("view_item", ecommerceItems, {
       item_list_id: "quiz_result",
       item_list_name: "Protocolo recomendado",
@@ -656,7 +731,8 @@ export function ResultScreen({
           href={storeUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
+          aria-label={`${rc.ctaText || ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
+          style={rc.ctaColor ? { backgroundColor: rc.ctaColor } : undefined}
           className={
             ctaCopy.highlight
               ? `${btnPrimary} shadow-primary/25 animate-pulse-soft min-h-[56px] touch-manipulation py-[1.15rem] shadow-xl transition-transform select-none active:scale-[0.985]`
@@ -667,7 +743,7 @@ export function ResultScreen({
               recommended_protocol: protocol.id,
               recommended_product: protocol.main.name,
               url: storeUrl,
-              cta_label: ctaCopy.label(protocol.cta, causeLabel),
+              cta_label: rc.ctaText || ctaCopy.label(protocol.cta, causeLabel),
             });
             trackEcommerce("select_item", ecommerceItems, {
               item_list_id: "quiz_result",
@@ -676,7 +752,8 @@ export function ResultScreen({
             trackEcommerce("begin_checkout", ecommerceItems);
           }}
         >
-          <span>{ctaCopy.label(protocol.cta, causeLabel)}</span>
+          <span>{rc.ctaText || ctaCopy.label(protocol.cta, causeLabel)}</span>
+
           <svg
             viewBox="0 0 24 24"
             className="ml-1.5 h-5 w-5 shrink-0"
@@ -698,12 +775,14 @@ export function ResultScreen({
     <>
       <div className="animate-enter pb-28">
         <Eyebrow>Resultado da sua avaliação</Eyebrow>
-        <h2 className="text-[1.7rem] leading-[1.15] font-semibold text-balance">Seu Plano Capilar</h2>
+        <h2 className="text-[1.7rem] leading-[1.15] font-semibold text-balance">{rc.title || "Seu Plano Capilar"}</h2>
         <p className="text-muted-foreground mt-3 text-[0.95rem] leading-relaxed">
-          Criado com base nos seus objetivos e preferências. Um Tricologista vai revisar seu tratamento após a compra
-          para confirmar que é o ideal para você.
+          {rc.description ||
+            "Criado com base nos seus objetivos e preferências. Um Tricologista vai revisar seu tratamento após a compra para confirmar que é o ideal para você."}
         </p>
+        {rc.imageUrl && <img src={rc.imageUrl} alt="" className="mt-5 w-full rounded-3xl object-cover" />}
         <div className="border-primary/20 bg-primary text-primary-foreground mt-5 rounded-3xl border p-6">
+
           <p className="text-primary-foreground/70 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
             Direção principal
           </p>
