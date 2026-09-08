@@ -77,8 +77,11 @@ function QuizPage() {
     track("experiment_viewed", { experiment_id: "micro_v1", variant: assigned });
   }, []);
 
-  const steps = STEPS;
-  const step = steps[index]!;
+  const [steps, setSteps] = useState<Step[]>(STEPS);
+  useEffect(() => {
+    void loadDiagnosticSteps().then((loaded) => setSteps(loaded));
+  }, []);
+  const step = steps[index] ?? steps[steps.length - 1]!;
   const scores = useMemo(() => computeScores(answers), [answers]);
   const tags = useMemo(() => collectTags(answers), [answers]);
 
