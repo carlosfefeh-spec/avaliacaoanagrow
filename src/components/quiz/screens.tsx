@@ -33,6 +33,7 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
 
 export function Landing({ onStart, onResume }: { onStart: () => void; onResume?: (() => void) | undefined }) {
   const [variant, setVariant] = useState<Variant<"landing_v1">>("control");
+  const custom = useCustomization();
 
   useEffect(() => {
     const assigned = getVariant("landing_v1");
@@ -40,14 +41,28 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
     track("experiment_viewed", { experiment_id: "landing_v1", variant: assigned });
   }, []);
 
-  const copy = LANDING_COPY[variant];
+  const base = LANDING_COPY[variant];
+  const l = custom.landing;
+  const copy = {
+    badge: l.badge || base.badge,
+    headline: l.title || base.headline,
+    subhead: l.subtitle || base.subhead,
+    cta: l.cta || base.cta,
+    bullets: base.bullets,
+  };
   const startTap = useTap(onStart);
 
   return (
     <div className="animate-enter flex min-h-[100svh] flex-col justify-between px-5 pt-10 pb-8">
       <div>
-        <p className="font-display text-primary text-[1.05rem] tracking-[0.32em] uppercase">Anagrow</p>
-        <div className="bg-primary/15 mt-1 h-px w-14" />
+        {custom.theme.logoUrl ? (
+          <img src={custom.theme.logoUrl} alt="Anagrow" className="h-8 w-auto" />
+        ) : (
+          <>
+            <p className="font-display text-primary text-[1.05rem] tracking-[0.32em] uppercase">Anagrow</p>
+            <div className="bg-primary/15 mt-1 h-px w-14" />
+          </>
+        )}
       </div>
 
       <div className="py-8">
@@ -57,6 +72,21 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
         </span>
         <h1 className="font-display mt-6 text-[2.5rem] leading-[1.04] font-normal text-balance">{copy.headline}</h1>
         <p className="text-muted-foreground mt-4 text-[1rem] leading-relaxed">{copy.subhead}</p>
+        {l.mediaUrl && l.mediaKind === "video" && (
+          <div className="mt-6 aspect-video w-full overflow-hidden rounded-3xl">
+            <iframe
+              src={l.mediaUrl}
+              title="Vídeo de apresentação"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
+        )}
+        {l.mediaUrl && l.mediaKind !== "video" && (
+          <img src={l.mediaUrl} alt="" className="mt-6 w-full rounded-3xl object-cover" />
+        )}
+        {l.body && <p className="text-muted-foreground mt-4 text-[0.95rem] leading-relaxed">{l.body}</p>}
         <ul className="mt-6 space-y-2.5">
           {copy.bullets.map((item) => (
             <li key={item} className="flex items-start gap-2.5 text-[0.92rem]">
@@ -68,7 +98,11 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
       </div>
 
       <div className="space-y-3">
-        <button className={btnPrimary} {...startTap}>
+        <button
+          className={btnPrimary}
+          style={l.ctaColor ? { backgroundColor: l.ctaColor } : undefined}
+          {...startTap}
+        >
           {copy.cta}
         </button>
         {onResume && (
@@ -83,6 +117,7 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
     </div>
   );
 }
+
 
 function Check() {
   return (
