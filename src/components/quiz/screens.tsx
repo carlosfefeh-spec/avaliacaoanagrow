@@ -520,7 +520,7 @@ export function PhoneScreen({
 /* ---------------------------------------------------------- Processamento */
 
 const PROCESS_ITEMS = [
-  "Padrão de queda analisado",
+  "Padrão do ciclo capilar analisado",
   "Tempo de evolução considerado",
   "Contexto hormonal avaliado",
   "Sinais nutricionais cruzados",
@@ -829,7 +829,7 @@ export function ResultScreen({
             </p>
             <p className="font-display mt-1 text-[1.25rem] font-semibold">{protocol.main.name}</p>
             <p className="text-muted-foreground mt-1 text-[0.85rem] leading-relaxed">
-              Os principais produtos para combater a queda de cabelo.
+              Os principais produtos para apoiar a renovação capilar.
             </p>
             <p className="text-muted-foreground mt-1 text-[0.85rem]">{protocol.main.short}</p>
             <p className="mt-3 text-[0.9rem] leading-relaxed">{protocol.main.role}</p>

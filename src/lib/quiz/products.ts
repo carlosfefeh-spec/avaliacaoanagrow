@@ -29,7 +29,7 @@ export const PRODUCTS: Record<string, Product> = {
   ferritin12: {
     id: "ferritin12",
     name: "Ferritin12",
-    short: "Frente nutricional da queda",
+    short: "Frente nutricional do ciclo capilar",
     role: "Repõe a matéria-prima do fio: ferro quelado, B12, biotina, vitamina C, L-Cisteína e L-Lisina.",
     actives: "Ferro quelado · B12 · Biotina · Vitamina C · L-Cisteína · L-Lisina",
     usage: "Uso interno diário, contínuo. Resultados relatados a partir do 3º mês, com resultado mais consistente a partir de 6 meses.",

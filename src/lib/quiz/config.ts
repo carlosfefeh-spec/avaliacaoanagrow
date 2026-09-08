@@ -49,7 +49,7 @@ export const MILESTONES: { at: number; label: string }[] = [
   { at: 0, label: "Vamos começar" },
   { at: 10, label: "Você começou" },
   { at: 35, label: "Excelente" },
-  { at: 60, label: "Já identificamos alguns padrões" },
+  { at: 60, label: "Já compreendemos seu perfil capilar" },
   { at: 82, label: "Falta muito pouco" },
   { at: 100, label: "Resultado pronto" },
 ];
@@ -61,9 +61,9 @@ export const MICRO_FEEDBACKS = [
   "Seu perfil já está ficando mais claro.",
   "Boa. Agora falta entender um detalhe.",
   "Suas respostas já apontam uma direção.",
-  "Anotado. Isso pesa na avaliação.",
+  "Anotado. Isso nos guia na avaliação.",
   "Interessante — isso aparece bastante nos casos que analisamos.",
-  "Certo. Estamos cruzando queda, densidade e crescimento.",
+  "Certo. Estamos cruzando ciclo capilar, densidade e crescimento.",
   "Isso ajuda a diferenciar dois perfis possíveis.",
   "Ótimo. Sua análise ficou mais precisa.",
   "Esse ponto costuma passar despercebido.",
@@ -132,7 +132,7 @@ export const STEPS: Step[] = [
       { id: "gt1", label: "Mais de 1 ano", scores: { osa: 2, tonico: 1 } },
       { id: "anos", label: "Há vários anos", scores: { osa: 3, tonico: 2 } },
     ],
-    microFeedback: "Quedas recentes e quedas de longa data costumam ter causas diferentes.",
+    microFeedback: "Ciclos capilares recentes e de longa data costumam ter causas diferentes.",
   },
 
   {
@@ -140,7 +140,7 @@ export const STEPS: Step[] = [
     id: "curiosidade",
     weight: 4,
     eyebrow: "Antes de continuar",
-    title: "Mais de 80% das mulheres tratam apenas o sintoma da queda, sem descobrir a causa.",
+    title: "Mais de 80% das mulheres tratam apenas o sinal do ciclo capilar, sem descobrir a causa.",
     body: "É por isso que tanta coisa parece funcionar por um mês e depois para. As próximas perguntas existem justamente para olhar a causa.",
     cta: "Continuar",
   },
@@ -200,7 +200,7 @@ export const STEPS: Step[] = [
     microFeedback: (a) => {
       const v = a["ferritina_nivel"]?.[0];
       if (v === "gt150") return "Ótimo sinal. Com a ferritina em faixa ideal, a leitura aponta para outras frentes.";
-      if (v === "nsei") return "Sem problema — vou interpretar o restante dos sinais e te mostrar o que medir.";
+      if (v === "nsei") return "Tudo bem — vou interpretar o restante dos sinais e te mostrar o que medir.";
       return "Esse número explica muita coisa sobre a espessura dos seus fios.";
     },
   },
@@ -210,7 +210,7 @@ export const STEPS: Step[] = [
     id: "milestone40",
     weight: 3,
     title: "Ferritina: o sinal que muitos exames deixam passar",
-    body: "Tricologistas consideram ferritina abaixo de 150 ng/mL o principal indicador nutricional quando o cabelo perde espessura. Antes da queda aumentar, o fio já fica mais fino.",
+    body: "Tricologistas consideram ferritina abaixo de 150 ng/mL o principal indicador nutricional quando o cabelo perde espessura. Antes de o ciclo capilar avançar sem cuidado, o fio já fica mais fino.",
     highlight: "Ferritina < 150 ng/mL",
   },
 
@@ -244,7 +244,7 @@ export const STEPS: Step[] = [
       { id: "sem_mudancas", label: "Meu ciclo não apresentou mudanças", scores: { ferritin12: 1 } },
       { id: "nsei", label: "Não sei identificar", scores: { osa: 1, ferritin12: 1 } },
     ],
-    microFeedback: "Anotado. Isso pesa bastante na leitura hormonal do seu caso.",
+    microFeedback: "Anotado. Isso nos guia bastante na leitura hormonal do seu caso.",
   },
 
   {
@@ -271,7 +271,7 @@ export const STEPS: Step[] = [
     id: "reward",
     weight: 3,
     title: "Estamos montando o seu diagnóstico.",
-    body: "Cada resposta que você deu alimenta a leitura do seu caso. Em poucos segundos vamos mostrar a causa mais provável da sua queda e o protocolo indicado para você.",
+    body: "Cada resposta que você deu alimenta a leitura do seu caso. Em poucos segundos vamos mostrar o principal fator do seu ciclo capilar e o protocolo indicado para você.",
   },
 
   {
@@ -282,7 +282,7 @@ export const STEPS: Step[] = [
     title: "E qual é o seu objetivo?",
     type: "single",
     options: [
-      { id: "parar", label: "Parar a queda", scores: { ferritin12: 3, osa: 2 } },
+      { id: "parar", label: "Estabilizar meu ciclo capilar", scores: { ferritin12: 3, osa: 2 } },
       { id: "encorpar", label: "Encorpar o cabelo", scores: { osa: 2, tonico: 3 } },
       {
         id: "ambos",
@@ -301,9 +301,9 @@ export const STEPS: Step[] = [
     title: "Estamos analisando suas respostas para um diagnóstico mais preciso.",
     subtitle: "Analisando mais de 30 fatores",
     insights: [
-      "Afinamento costuma acontecer antes da queda intensa.",
+      "O afinamento costuma aparecer antes de o ciclo capilar se intensificar.",
       "O DHT também pode afetar mulheres.",
-      "A deficiência de ferro está entre as causas mais comuns de queda feminina.",
+      "A deficiência de ferro está entre os principais fatores do ciclo capilar feminino.",
       "Muitas mulheres têm deficiência de B12 sem saber.",
       "A falta de cisteína reduz a espessura do cabelo.",
     ],
