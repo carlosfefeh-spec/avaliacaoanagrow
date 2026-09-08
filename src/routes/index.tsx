@@ -78,11 +78,18 @@ function QuizPage() {
     track("experiment_viewed", { experiment_id: "micro_v1", variant: assigned });
   }, []);
 
-  const [steps, setSteps] = useState<Step[]>(STEPS);
+  const [loadedSteps, setLoadedSteps] = useState<Step[]>(STEPS);
   useEffect(() => {
-    void loadDiagnosticSteps().then((loaded) => setSteps(loaded));
+    void loadDiagnosticSteps().then((loaded) => setLoadedSteps(loaded));
   }, []);
+  const custom = useLoadedCustomization();
+  const nameEnabled = (custom.final.fields ?? DEFAULT_FINAL_FIELDS).find((f) => f.key === "name")?.enabled !== false;
+  const steps = useMemo(
+    () => (nameEnabled ? loadedSteps : loadedSteps.filter((s) => s.kind !== "name")),
+    [loadedSteps, nameEnabled],
+  );
   const step = steps[index] ?? steps[steps.length - 1]!;
+
   const scores = useMemo(() => computeScores(answers), [answers]);
   const tags = useMemo(() => collectTags(answers), [answers]);
 
