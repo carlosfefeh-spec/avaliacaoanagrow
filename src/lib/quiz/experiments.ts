@@ -95,7 +95,7 @@ export const LANDING_COPY: Record<Variant<"landing_v1">, LandingCopy> = {
   },
   cause: {
     badge: "2 minutos · 100% gratuito",
-    headline: "Seu cabelo está caindo — e você merece saber por quê.",
+    headline: "Seu cabelo está caindo e você merece saber por quê.",
     subhead:
       "A maioria dos tratamentos falha porque cuida só do sinal. Responda algumas perguntas e veja qual fator explica o seu caso.",
     bullets: [
@@ -111,11 +111,11 @@ export const LANDING_COPY: Record<Variant<"landing_v1">, LandingCopy> = {
 
 /** Reforço extra usado na variante empática, por posição no funil. */
 export const EMPATHIC_PREFIXES = [
-  "Você não está imaginando coisas —",
-  "Isso é mais comum do que parece —",
-  "Obrigado por compartilhar —",
-  "Faz total sentido —",
-  "Muita gente descreve exatamente isso —",
+  "Você não está imaginando coisas.",
+  "Isso é mais comum do que parece.",
+  "Obrigado por compartilhar.",
+  "Faz total sentido.",
+  "Muita gente descreve exatamente isso.",
 ];
 
 const NEUTRAL_FALLBACK = "Resposta registrada.";
@@ -196,7 +196,7 @@ export const LOADER_COPY: Record<Variant<"loader_v1">, LoaderCopy> = {
     pace: (i) => Math.max(850, 1500 - i * 130),
     hold: 900,
     status: (shown, total) => {
-      if (shown >= total) return "Quase lá — montando o seu resultado.";
+      if (shown >= total) return "Quase lá. Montando o seu resultado.";
       if (shown >= total - 2) return "Falta muito pouco. Não feche esta tela.";
       if (shown >= 2) return "Seu perfil já está tomando forma.";
       return "Analisando as suas respostas…";

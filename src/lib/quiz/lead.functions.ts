@@ -50,7 +50,7 @@ function buildEmailHtml(d: LeadPayload): string {
     ? `<p style="margin:0 0 8px"><strong>Complementos:</strong> ${esc(d.protocol.complements.join(", "))}</p>`
     : "";
   const ferritin = d.ferritin
-    ? `<p style="margin:0 0 8px"><strong>Ferritina:</strong> ${esc(d.ferritin)} — referência capilar de 150 ng/mL.</p>`
+    ? `<p style="margin:0 0 8px"><strong>Ferritina:</strong> ${esc(d.ferritin)}. Referência capilar de 150 ng/mL.</p>`
     : "";
   const answers = d.answersLabeled
     .map((a) => `<li style="margin-bottom:6px"><strong>${esc(a.question)}</strong><br/>${esc(a.answers.join(", "))}</li>`)

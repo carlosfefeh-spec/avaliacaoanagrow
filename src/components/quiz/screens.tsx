@@ -694,7 +694,7 @@ export function ResultScreen({
           href={storeUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`${rc.ctaText || ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
+          aria-label={`${rc.ctaText || ctaCopy.label(protocol.cta, causeLabel)}, abre em nova aba`}
           style={rc.ctaColor ? { backgroundColor: rc.ctaColor } : undefined}
           className={
             ctaCopy.highlight
@@ -793,7 +793,7 @@ export function ResultScreen({
                 </div>
                 <div className="text-muted-foreground mt-1.5 flex justify-between text-[0.7rem]">
                   <span>0</span>
-                  <span>150 ng/mL — ideal para o fio</span>
+                  <span>150 ng/mL, ideal para o fio</span>
                 </div>
               </div>
 

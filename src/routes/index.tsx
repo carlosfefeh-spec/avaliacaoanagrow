@@ -49,7 +49,7 @@ import { sendLead } from "@/lib/quiz/lead.functions";
 import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 
-const TITLE = "Avaliação Capilar Anagrow — descubra a causa da sua queda";
+const TITLE = "Avaliação Capilar Anagrow: descubra a causa da sua queda";
 const DESCRIPTION =
   "Em 2 minutos, responda uma avaliação guiada e descubra qual protocolo Anagrow combina com a causa da sua queda de cabelo.";
 

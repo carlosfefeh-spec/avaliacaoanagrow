@@ -62,7 +62,7 @@ export const MICRO_FEEDBACKS = [
   "Boa. Agora falta entender um detalhe.",
   "Suas respostas já apontam uma direção.",
   "Anotado. Isso nos guia na avaliação.",
-  "Interessante — isso aparece bastante nos casos que analisamos.",
+  "Interessante. Isso aparece bastante nos casos que analisamos.",
   "Certo. Estamos cruzando ciclo capilar, densidade e crescimento.",
   "Isso ajuda a diferenciar dois perfis possíveis.",
   "Ótimo. Sua análise ficou mais precisa.",
@@ -167,7 +167,7 @@ export const STEPS: Step[] = [
     ],
     microFeedback: (a) =>
       a["exames"]?.includes("nunca")
-        ? "Sem exames, a leitura passa a depender ainda mais dos sinais que você percebe — e você já me deu vários."
+        ? "Sem exames, a leitura passa a depender ainda mais dos sinais que você percebe. E você já me deu vários."
         : "Ótimo. Quem já investigou costuma chegar mais rápido a um protocolo coerente.",
   },
 
@@ -200,7 +200,7 @@ export const STEPS: Step[] = [
     microFeedback: (a) => {
       const v = a["ferritina_nivel"]?.[0];
       if (v === "gt150") return "Ótimo sinal. Com a ferritina em faixa ideal, a leitura aponta para outras frentes.";
-      if (v === "nsei") return "Tudo bem — vou interpretar o restante dos sinais e te mostrar o que medir.";
+      if (v === "nsei") return "Tudo bem. Vou interpretar o restante dos sinais e te mostrar o que medir.";
       return "Esse número explica muita coisa sobre a espessura dos seus fios.";
     },
   },
@@ -227,7 +227,7 @@ export const STEPS: Step[] = [
       { id: "sensivel", label: "Sensível", scores: { osa: 2, tonico: 1 } },
       { id: "normal", label: "Normal", scores: { tonico: 1 } },
     ],
-    microFeedback: "O couro cabeludo é o solo do fio — ele entra na conta.",
+    microFeedback: "O couro cabeludo é o solo do fio, por isso ele entra na conta.",
   },
 
   {
