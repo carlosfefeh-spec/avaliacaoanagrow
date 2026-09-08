@@ -667,12 +667,13 @@ export function ResultScreen({
     track("experiment_viewed", { experiment_id: "why_v1", variant: why });
     track("quiz_sticky_cta_shown", { variant: assigned });
     setStoreUrl(
-      buildStoreUrl(protocol.ctaUrl, {
+      buildStoreUrl(rc.ctaUrl || protocol.ctaUrl, {
         protocolId: protocol.id,
         cause: CAUSES[cause].label,
         variantSuffix: assigned,
       }),
     );
+
     trackEcommerce("view_item", ecommerceItems, {
       item_list_id: "quiz_result",
       item_list_name: "Protocolo recomendado",
