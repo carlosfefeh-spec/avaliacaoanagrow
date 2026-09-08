@@ -17,11 +17,11 @@ export function OptionCard({
       onClick={onSelect}
       aria-pressed={selected}
       className={[
-        "group flex w-full items-center justify-between gap-4 rounded-xl border px-5 py-4 text-left",
-        "min-h-[64px] transition-colors duration-150 active:scale-[0.995]",
+        "group flex w-full items-center justify-between gap-4 rounded-lg border px-5 py-4 text-left",
+        "min-h-[60px] transition-[border-color,background-color,transform] duration-150 active:scale-[0.995]",
         selected
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border/70 bg-card hover:border-primary/50 hover:bg-secondary/50",
+          ? "border-2 border-primary bg-accent text-foreground"
+          : "border-border bg-card hover:border-primary",
       ].join(" ")}
     >
       <span className="min-w-0">
@@ -30,7 +30,7 @@ export function OptionCard({
           <span
             className={[
               "mt-1 block text-[0.82rem] leading-snug",
-              selected ? "text-primary-foreground/70" : "text-muted-foreground",
+              selected ? "text-foreground/70" : "text-muted-foreground",
             ].join(" ")}
           >
             {option.hint}
@@ -42,7 +42,7 @@ export function OptionCard({
         className={[
           "flex h-5 w-5 shrink-0 items-center justify-center border transition-colors",
           multi ? "rounded-[4px]" : "rounded-full",
-          selected ? "border-primary-foreground bg-primary-foreground/15" : "border-border",
+          selected ? "border-primary bg-primary text-primary-foreground" : "border-border",
         ].join(" ")}
         aria-hidden="true"
       >

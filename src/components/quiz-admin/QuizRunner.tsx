@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { QuizHeader } from "@/components/quiz/QuizHeader";
 import { embedUrl, resolveMedia, type FullQuestion, type Quiz } from "@/lib/quiz-admin/api";
 import { gradeQuiz, type GradeResult } from "@/lib/quiz-admin/grade.functions";
 
@@ -160,7 +161,7 @@ export function QuizRunner({
   const selected = answers[question.id] ?? "";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between text-xs tracking-widest uppercase">
         <span className="text-muted-foreground">
           Pergunta {index + 1} de {ordered.length}
@@ -172,7 +173,9 @@ export function QuizRunner({
         <Input placeholder="Seu nome (opcional)" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} />
       )}
 
-      <h2 className="text-xl leading-snug font-medium">{question.prompt || "Pergunta sem enunciado"}</h2>
+      <h2 className="font-display text-[1.625rem] leading-[1.4] font-normal sm:text-[1.75rem]">
+        {question.prompt || "Pergunta sem enunciado"}
+      </h2>
 
       <MediaBlock image={question.image_url} video={question.video_url} />
 
@@ -184,14 +187,14 @@ export function QuizRunner({
           onChange={(e) => setAnswers({ ...answers, [question.id]: e.target.value })}
         />
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {question.options.map((option) => (
             <button
               key={option.id}
               type="button"
               onClick={() => setAnswers({ ...answers, [question.id]: option.id })}
-              className={`w-full rounded-lg border p-4 text-left text-sm transition-colors ${
-                selected === option.id ? "border-primary bg-primary/5" : "hover:border-primary/40"
+               className={`min-h-[60px] w-full rounded-lg border px-5 py-4 text-left text-sm transition-colors ${
+                 selected === option.id ? "border-2 border-primary bg-accent" : "border-border bg-card hover:border-primary"
               }`}
             >
               {option.label || "—"}
@@ -200,13 +203,13 @@ export function QuizRunner({
         </div>
       )}
 
-      <div className="flex gap-3">
+       <div className="sticky bottom-4 flex gap-3">
         {index > 0 && (
           <Button variant="outline" onClick={() => setIndex(index - 1)}>
             Voltar
           </Button>
         )}
-        <Button className="flex-1" disabled={!selected || sending} onClick={() => advance(selected)}>
+         <Button className="min-h-[56px] flex-1 rounded-lg text-base font-semibold" disabled={!selected || sending} onClick={() => advance(selected)}>
           {index + 1 >= ordered.length ? (sending ? "Enviando..." : "Finalizar") : "Continuar"}
         </Button>
       </div>

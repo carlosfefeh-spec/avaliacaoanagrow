@@ -18,10 +18,12 @@ import { CTA_COPY, LANDING_COPY, LOADER_COPY, WHY_BLOCKS, getVariant, type Varia
 import { useCustomization, useFinalFields } from "@/lib/quiz/customization";
 
 export const btnPrimary =
-  "inline-flex min-h-[56px] w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.95rem] font-medium tracking-[0.02em] text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-30 disabled:active:scale-100";
+  "inline-flex min-h-[56px] w-full items-center justify-center rounded-lg bg-primary px-6 py-4 text-[0.95rem] font-semibold text-primary-foreground transition-[filter,transform] duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-30 disabled:active:scale-100";
 
 export const btnGhost =
-  "inline-flex w-full items-center justify-center rounded-full border border-border px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-secondary";
+  "inline-flex w-full items-center justify-center rounded-lg border border-border px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-accent";
+
+const questionTitle = "font-display text-[1.625rem] leading-[1.4] font-normal text-balance sm:text-[1.75rem]";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -54,19 +56,8 @@ export function Landing({ onStart, onResume }: { onStart: () => void; onResume?:
   const startTap = useTap(onStart);
 
   return (
-    <div className="animate-enter flex min-h-[100svh] flex-col justify-between px-5 pt-10 pb-8">
-      <div>
-        {custom.theme.logoUrl ? (
-          <img src={custom.theme.logoUrl} alt="Anagrow" className="h-8 w-auto" />
-        ) : (
-          <>
-            <p className="font-display text-primary text-[1.05rem] tracking-[0.32em] uppercase">Anagrow</p>
-            <div className="bg-primary/15 mt-1 h-px w-14" />
-          </>
-        )}
-      </div>
-
-      <div className="py-8">
+    <div className="animate-enter flex min-h-[calc(100svh-85px)] flex-col justify-between py-8">
+      <div className="py-4">
         <span className="border-primary/20 bg-secondary text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[0.72rem] font-semibold">
           <span className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full" />
           {copy.badge}
@@ -142,7 +133,7 @@ export function InfoScreen({ step, onNext }: { step: Extract<Step, { kind: "info
   return (
     <div className="animate-enter">
       {step.eyebrow && <Eyebrow>{step.eyebrow}</Eyebrow>}
-      <h2 className="font-display text-[1.8rem] leading-[1.15] font-normal text-balance">{step.title}</h2>
+       <h2 className={questionTitle}>{step.title}</h2>
       {step.body && <p className="text-muted-foreground mt-4 leading-relaxed">{step.body}</p>}
       <button className={`${btnPrimary} mt-8`} {...nextTap}>
         {step.cta}
@@ -162,7 +153,7 @@ export function MilestoneScreen({ step, onNext }: { step: Extract<Step, { kind: 
             {step.highlight}
           </span>
         )}
-        <h2 className="font-display text-[1.6rem] leading-[1.18] font-normal text-balance">{step.title}</h2>
+         <h2 className={questionTitle}>{step.title}</h2>
         <p className="text-muted-foreground mt-3 leading-relaxed">{step.body}</p>
       </div>
       <button className={`${btnPrimary} mt-6`} {...nextTap}>
@@ -204,7 +195,7 @@ export function InsightsScreen({ step, onDone }: { step: Extract<Step, { kind: "
   return (
     <div className="animate-enter" aria-live="polite">
       <Eyebrow>{step.subtitle}</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">{step.title}</h2>
+       <h2 className={questionTitle}>{step.title}</h2>
 
       <div className="bg-sand relative mt-6 h-2 overflow-hidden rounded-full">
         <div
@@ -248,7 +239,7 @@ export function FindingsScreen({ answers, scores, onNext }: { answers: Answers; 
   return (
     <div className="animate-enter">
       <Eyebrow>Encontramos alguns sinais importantes</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+       <h2 className={questionTitle}>
         Pelas suas respostas, sua queda parece estar relacionada principalmente a:
       </h2>
 
@@ -334,7 +325,7 @@ export function ChanceScreen({
   return (
     <div className="animate-enter">
       <Eyebrow>Antes do protocolo</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+       <h2 className={questionTitle}>
         {name ? `${name}, calculamos` : "Calculamos"} sua chance de recuperação.
       </h2>
       <p className="text-muted-foreground mt-3 leading-relaxed">
@@ -389,7 +380,7 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
       }}
     >
       <Eyebrow>Personalizando sua análise</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+       <h2 className={questionTitle}>
         {custom.final.title || "Já entendi bastante coisa sobre o seu caso."}
       </h2>
       <p className="text-muted-foreground mt-3 leading-relaxed">
@@ -408,7 +399,7 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
         placeholder={field?.placeholder || "Seu primeiro nome"}
         aria-invalid={!!error}
         aria-describedby={error ? "quiz-name-error" : undefined}
-        className="surface mt-6 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none focus:border-primary"
+         className="surface mt-6 w-full rounded-lg px-5 py-4 text-[1rem] outline-none focus:border-primary"
       />
       {error && (
         <p id="quiz-name-error" role="alert" className="text-destructive mt-2 text-sm">
@@ -458,7 +449,7 @@ export function PhoneScreen({
         placeholder={phoneField.placeholder || "(11) 99999-9999"}
         aria-invalid={!!error}
         aria-describedby={error ? "quiz-phone-error" : "quiz-phone-help"}
-        className="surface mt-6 w-full rounded-2xl px-4 py-4 text-[1rem] tracking-wide outline-none focus:border-primary"
+         className="surface mt-6 w-full rounded-lg px-5 py-4 text-[1rem] tracking-wide outline-none focus:border-primary"
       />
       {error && (
         <p id="quiz-phone-error" role="alert" className="text-destructive mt-2 text-sm">
@@ -485,7 +476,7 @@ export function PhoneScreen({
         onChange={(e) => setEmail(e.target.value)}
         placeholder={emailField.placeholder || "seu@email.com"}
         aria-invalid={!!emailError}
-        className="surface focus:border-primary mt-2 w-full rounded-2xl px-4 py-4 text-[1rem] outline-none"
+         className="surface focus:border-primary mt-2 w-full rounded-lg px-5 py-4 text-[1rem] outline-none"
       />
       {emailError && (
         <p role="alert" className="text-destructive mt-2 text-sm">
@@ -537,7 +528,7 @@ export function PhoneScreen({
       }}
     >
       <Eyebrow>Último passo</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+       <h2 className={questionTitle}>
         {custom.final.thanks || `Seu resultado está quase pronto${name ? `, ${name}` : ""}.`}
       </h2>
       <p className="text-muted-foreground mt-3 leading-relaxed">
@@ -579,7 +570,7 @@ export function ProcessingScreen({ name, onDone }: { name: string; onDone: () =>
   return (
     <div className="animate-enter" aria-live="polite">
       <Eyebrow>Analisando suas respostas</Eyebrow>
-      <h2 className="font-display text-[1.75rem] leading-[1.16] font-normal text-balance">
+       <h2 className={questionTitle}>
         {name ? `${name}, ` : ""}estamos montando o seu perfil.
       </h2>
 

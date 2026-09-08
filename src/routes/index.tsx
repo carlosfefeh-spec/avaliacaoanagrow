@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ProgressBar } from "@/components/quiz/ProgressBar";
 import { OptionCard } from "@/components/quiz/OptionCard";
+import { QuizHeader } from "@/components/quiz/QuizHeader";
 import {
   ChanceScreen,
   FindingsScreen,
@@ -315,14 +316,17 @@ function QuizPage() {
   if (step.kind === "landing") {
     return (
       <CustomizationProvider value={custom}>
-        <main className="mx-auto max-w-[560px]" style={themeStyle(custom.theme)}>
-          <Landing
-            onStart={() => {
-              track("quiz_started");
-              go(1);
-            }}
-            onResume={resumable ? resume : undefined}
-          />
+        <main className="min-h-[100svh]" style={themeStyle(custom.theme)}>
+          <QuizHeader logoUrl={custom.theme.logoUrl} />
+          <div className="mx-auto max-w-[560px] px-6 sm:px-10">
+            <Landing
+              onStart={() => {
+                track("quiz_started");
+                go(1);
+              }}
+              onResume={resumable ? resume : undefined}
+            />
+          </div>
         </main>
       </CustomizationProvider>
     );
@@ -330,32 +334,9 @@ function QuizPage() {
 
   return (
     <CustomizationProvider value={custom}>
-    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-4 pb-10" style={themeStyle(custom.theme)}>
-      <header className="bg-background/95 sticky top-0 z-10 -mx-5 mb-8 px-5 pt-2 pb-3 backdrop-blur">
-        <div className="mb-4 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => go(-1)}
-            aria-label="Voltar para a etapa anterior"
-            className="text-muted-foreground hover:text-primary -ml-1 flex h-9 w-9 items-center justify-center transition-colors"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5}>
-              <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          {custom.theme.logoUrl ? (
-            <img src={custom.theme.logoUrl} alt="Anagrow" className="h-6 w-auto" />
-          ) : (
-            <span className="font-display text-primary text-[0.8rem] tracking-[0.34em] uppercase">Anagrow</span>
-          )}
-          <span className="h-9 w-9" />
-        </div>
-        <ProgressBar value={progress} />
-      </header>
-
-
-
-      <div key={step.id} className="flex-1">
+    <main className="min-h-[100svh]" style={themeStyle(custom.theme)}>
+      <QuizHeader logoUrl={custom.theme.logoUrl} progress={progress} onBack={() => go(-1)} />
+      <div key={step.id} className="mx-auto max-w-[560px] px-6 pt-10 pb-12 sm:px-10">
         {step.kind === "question" && (
           <QuestionScreen
             step={step}
@@ -453,10 +434,10 @@ function QuestionScreen({
   return (
     <div className="animate-enter">
       <p className="text-muted-foreground mb-3 text-[0.64rem] font-medium tracking-[0.24em] uppercase">{step.phase}</p>
-      <h1 className="font-display text-[1.8rem] leading-[1.15] font-normal text-balance">{step.title}</h1>
+       <h1 className="font-display text-[1.625rem] leading-[1.4] font-normal text-balance sm:text-[1.75rem]">{step.title}</h1>
       {step.subtitle && <p className="text-muted-foreground mt-3 text-[0.95rem] leading-relaxed">{step.subtitle}</p>}
 
-      <div className="mt-8 space-y-3" role={step.type === "single" ? "radiogroup" : "group"}>
+       <div className="mt-8 space-y-3" role={step.type === "single" ? "radiogroup" : "group"}>
         {step.options.map((option) => (
           <OptionCard
             key={option.id}
@@ -469,7 +450,7 @@ function QuestionScreen({
       </div>
 
       {step.type === "multi" && (
-        <button className={`${btnPrimary} mt-8`} disabled={selected.length === 0} onClick={onContinue}>
+         <button className={`${btnPrimary} sticky bottom-4 mt-8 shadow-lg`} disabled={selected.length === 0} onClick={onContinue}>
           Continuar
         </button>
       )}
