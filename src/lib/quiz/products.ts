@@ -70,7 +70,7 @@ export const PRODUCTS: Record<string, Product> = {
     id: "anaPlus",
     name: "Ana Plus",
     short: "Colágeno Peptan® 6 em 1",
-    role: "Colágeno hidrolisado com ácido hialurônico, biotina e vitaminas B3, B5, B6 e C — cabelo, unhas e pele.",
+    role: "Colágeno hidrolisado com ácido hialurônico, biotina e vitaminas B3, B5, B6 e C. Cuida de cabelo, unhas e pele.",
     actives: "Colágeno Peptan® · Ácido hialurônico · Biotina · B3, B5, B6, C",
     usage: "1 dose diária dissolvida em água.",
     url: `${BASE}colageno-hidrolisado-proteina-da-beleza-ana-plus-300g`,
@@ -90,12 +90,12 @@ export const PRODUCTS: Record<string, Product> = {
 
 export const KITS = {
   ferrosa: {
-    name: "Kit Ferrosa — Ferritin12 + OSA",
+    name: "Kit Ferrosa com Ferritin12 e OSA",
     url: `${BASE}kit-ferritin12-osa`,
     price: "R$ 219,90",
   },
   glowUp: {
-    name: "Protocolo Glow Up — 3 Ferritin12 + 3 OSA",
+    name: "Protocolo Glow Up com 3 Ferritin12 e 3 OSA",
     url: `${BASE}kit-desafio-glow-up-combate-a-queda-e-fortalecedor-3-ferritin12-3-osa-presente`,
     price: "R$ 587,58",
   },

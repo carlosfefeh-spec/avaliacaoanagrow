@@ -47,7 +47,7 @@ export type Cause = "nutricional" | "foliculo" | "hormonal";
 export const CAUSES: Record<Cause, { label: string; body: string }> = {
   nutricional: {
     label: "Deficiência nutricional",
-    body: "Suas respostas apresentam características frequentemente associadas à falta de matéria-prima para o fio — ferro, B12 e aminoácidos como cisteína.",
+    body: "Suas respostas apresentam características frequentemente associadas à falta de matéria-prima para o fio. Faltam ferro, B12 e aminoácidos como a cisteína, todos essenciais para a saúde do fio.",
   },
   foliculo: {
     label: "Folículo pouco estimulado",
@@ -113,7 +113,7 @@ export function resolveProtocol(scores: Scores, tags: string[]): Protocol {
   if (ferritin12 >= 6 && osa >= 6) {
     return {
       id: "ferrosa",
-      title: "Protocolo Ferrosa — duas frentes ao mesmo tempo",
+      title: "Protocolo Ferrosa para duas frentes ao mesmo tempo",
       summary:
         "Suas respostas mostram sinais tanto da frente nutricional quanto da frente hormonal. Tratar só uma delas costuma explicar por que o resultado trava no meio do caminho.",
       main: PRODUCTS['ferritin12']!,
@@ -185,7 +185,7 @@ const FERRITIN_READINGS: Record<string, FerritinReading> = {
     range: "Abaixo de 30 ng/mL",
     status: "Reserva de ferro muito baixa",
     meaning:
-      "Nessa faixa o corpo prioriza órgãos vitais e o folículo fica no fim da fila. O fio nasce mais fino, encurta o ciclo de crescimento e cai antes da hora — é o cenário em que a transformação da espessura costuma ser mais visível.",
+      "Nessa faixa o corpo prioriza órgãos vitais e o folículo fica no fim da fila. O fio nasce mais fino, encurta o ciclo de crescimento e cai antes da hora. Esse é o cenário em que a transformação da espessura costuma ser mais visível.",
     nextStep:
       "Reposição nutricional contínua é o primeiro passo: comece pelo Ferritin12 todos os dias e reavalie a ferritina em 90 dias.",
   },
@@ -212,7 +212,7 @@ const FERRITIN_READINGS: Record<string, FerritinReading> = {
     range: "Acima de 150 ng/mL",
     status: "Faixa considerada ideal para o fio",
     meaning:
-      "Com a ferritina nessa faixa, a matéria-prima não é o gargalo do seu ciclo capilar. Isso é uma boa notícia: aponta que a causa principal está em outra frente — hormonal ou de estímulo do folículo.",
+      "Com a ferritina nessa faixa, a matéria-prima não é o gargalo do seu ciclo capilar. Isso é uma boa notícia: aponta que a causa principal está em outra frente, hormonal ou de estímulo do folículo.",
     nextStep:
       "Manter a reserva e direcionar o protocolo para a frente que apareceu com mais peso na sua análise.",
   },
@@ -221,7 +221,7 @@ const FERRITIN_READINGS: Record<string, FerritinReading> = {
     range: "Valor não medido",
     status: "Ainda sem número para comparar",
     meaning:
-      "Sem esse dado, a leitura fica nos sinais que você descreveu — e vários deles são compatíveis com reserva de ferro baixa: fio mais fino, ciclo capilar que não estabiliza e crescimento lento.",
+      "Sem esse dado, a leitura fica nos sinais que você descreveu. Vários deles são compatíveis com reserva de ferro baixa: fio mais fino, ciclo capilar que não estabiliza e crescimento lento.",
     nextStep:
       "Peça ferritina no próximo exame de sangue e use 150 ng/mL como referência capilar, não o mínimo do laboratório.",
   },
