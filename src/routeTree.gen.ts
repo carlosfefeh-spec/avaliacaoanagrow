@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as QSlugRouteImport } from './routes/q.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminDiagnosticoRouteImport } from './routes/_authenticated/admin/diagnostico'
 import { Route as ApiPublicSaleRouteImport } from './routes/api/public/sale'
 import { Route as AuthenticatedAdminQuizIdRouteImport } from './routes/_authenticated/admin/quiz.$id'
 
@@ -41,6 +42,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminDiagnosticoRoute =
+  AuthenticatedAdminDiagnosticoRouteImport.update({
+    id: '/admin/diagnostico',
+    path: '/admin/diagnostico',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicSaleRoute = ApiPublicSaleRouteImport.update({
   id: '/api/public/sale',
   path: '/api/public/sale',
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/q/$slug': typeof QSlugRoute
+  '/admin/diagnostico': typeof AuthenticatedAdminDiagnosticoRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
@@ -65,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/q/$slug': typeof QSlugRoute
+  '/admin/diagnostico': typeof AuthenticatedAdminDiagnosticoRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
@@ -75,6 +84,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/q/$slug': typeof QSlugRoute
+  '/_authenticated/admin/diagnostico': typeof AuthenticatedAdminDiagnosticoRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/q/$slug'
+    | '/admin/diagnostico'
     | '/api/public/sale'
     | '/admin/'
     | '/admin/quiz/$id'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/q/$slug'
+    | '/admin/diagnostico'
     | '/api/public/sale'
     | '/admin'
     | '/admin/quiz/$id'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/q/$slug'
+    | '/_authenticated/admin/diagnostico'
     | '/api/public/sale'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/quiz/$id'
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/diagnostico': {
+      id: '/_authenticated/admin/diagnostico'
+      path: '/admin/diagnostico'
+      fullPath: '/admin/diagnostico'
+      preLoaderRoute: typeof AuthenticatedAdminDiagnosticoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/sale': {
       id: '/api/public/sale'
       path: '/api/public/sale'
@@ -170,11 +190,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminDiagnosticoRoute: typeof AuthenticatedAdminDiagnosticoRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminQuizIdRoute: typeof AuthenticatedAdminQuizIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminDiagnosticoRoute: AuthenticatedAdminDiagnosticoRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminQuizIdRoute: AuthenticatedAdminQuizIdRoute,
 }

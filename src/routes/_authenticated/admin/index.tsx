@@ -53,7 +53,7 @@ function AdminHome() {
           variant="outline"
           onClick={async () => {
             await supabase.auth.signOut();
-            await navigate({ to: "/auth", replace: true });
+            await navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
           }}
         >
           Trocar de conta
