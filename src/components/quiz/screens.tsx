@@ -775,12 +775,14 @@ export function ResultScreen({
     <>
       <div className="animate-enter pb-28">
         <Eyebrow>Resultado da sua avaliação</Eyebrow>
-        <h2 className="text-[1.7rem] leading-[1.15] font-semibold text-balance">Seu Plano Capilar</h2>
+        <h2 className="text-[1.7rem] leading-[1.15] font-semibold text-balance">{rc.title || "Seu Plano Capilar"}</h2>
         <p className="text-muted-foreground mt-3 text-[0.95rem] leading-relaxed">
-          Criado com base nos seus objetivos e preferências. Um Tricologista vai revisar seu tratamento após a compra
-          para confirmar que é o ideal para você.
+          {rc.description ||
+            "Criado com base nos seus objetivos e preferências. Um Tricologista vai revisar seu tratamento após a compra para confirmar que é o ideal para você."}
         </p>
+        {rc.imageUrl && <img src={rc.imageUrl} alt="" className="mt-5 w-full rounded-3xl object-cover" />}
         <div className="border-primary/20 bg-primary text-primary-foreground mt-5 rounded-3xl border p-6">
+
           <p className="text-primary-foreground/70 text-[0.68rem] font-semibold tracking-[0.2em] uppercase">
             Direção principal
           </p>
