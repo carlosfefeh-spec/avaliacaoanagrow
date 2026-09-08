@@ -79,6 +79,120 @@ export type Database = {
           },
         ]
       }
+      quiz_funnel_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          meta: Json
+          option_id: string | null
+          option_label: string | null
+          progress: number | null
+          session_id: string
+          step_id: string | null
+          step_index: number | null
+          step_kind: string | null
+          time_on_step: number | null
+          utms: Json
+          variants: Json
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          meta?: Json
+          option_id?: string | null
+          option_label?: string | null
+          progress?: number | null
+          session_id: string
+          step_id?: string | null
+          step_index?: number | null
+          step_kind?: string | null
+          time_on_step?: number | null
+          utms?: Json
+          variants?: Json
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          meta?: Json
+          option_id?: string | null
+          option_label?: string | null
+          progress?: number | null
+          session_id?: string
+          step_id?: string | null
+          step_index?: number | null
+          step_kind?: string | null
+          time_on_step?: number | null
+          utms?: Json
+          variants?: Json
+        }
+        Relationships: []
+      }
+      quiz_leads: {
+        Row: {
+          answers: Json
+          cause: string | null
+          created_at: string
+          email: string | null
+          ferritin: string | null
+          id: string
+          marketing_opt_in: boolean
+          name: string
+          phone: string
+          phone_digits: string
+          protocol_id: string | null
+          protocol_title: string | null
+          recovery_chance: number | null
+          session_id: string
+          utms: Json
+          variants: Json
+          webhook_ok: boolean
+          webhook_status: number | null
+        }
+        Insert: {
+          answers?: Json
+          cause?: string | null
+          created_at?: string
+          email?: string | null
+          ferritin?: string | null
+          id?: string
+          marketing_opt_in?: boolean
+          name?: string
+          phone?: string
+          phone_digits?: string
+          protocol_id?: string | null
+          protocol_title?: string | null
+          recovery_chance?: number | null
+          session_id: string
+          utms?: Json
+          variants?: Json
+          webhook_ok?: boolean
+          webhook_status?: number | null
+        }
+        Update: {
+          answers?: Json
+          cause?: string | null
+          created_at?: string
+          email?: string | null
+          ferritin?: string | null
+          id?: string
+          marketing_opt_in?: boolean
+          name?: string
+          phone?: string
+          phone_digits?: string
+          protocol_id?: string | null
+          protocol_title?: string | null
+          recovery_chance?: number | null
+          session_id?: string
+          utms?: Json
+          variants?: Json
+          webhook_ok?: boolean
+          webhook_status?: number | null
+        }
+        Relationships: []
+      }
       quiz_options: {
         Row: {
           created_at: string
