@@ -6,8 +6,8 @@ export function QuizHeader({
   progress,
   onBack,
 }: {
-  logoUrl?: string;
-  progress?: number;
+  logoUrl?: string | undefined;
+  progress?: number | undefined;
   onBack?: () => void;
 }) {
   return (

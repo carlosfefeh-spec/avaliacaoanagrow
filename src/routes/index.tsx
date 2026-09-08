@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { ProgressBar } from "@/components/quiz/ProgressBar";
 import { OptionCard } from "@/components/quiz/OptionCard";
 import { QuizHeader } from "@/components/quiz/QuizHeader";
 import {

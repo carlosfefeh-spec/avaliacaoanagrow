@@ -37,7 +37,14 @@ function PublicQuizPage() {
       .catch(() => setStatus("missing"));
   }, [slug]);
 
-  if (status === "loading") return <p className="p-8 text-sm">Carregando quiz...</p>;
+  if (status === "loading") {
+    return (
+      <main className="min-h-[100svh]">
+        <QuizHeader />
+        <p className="p-8 text-center text-sm">Carregando quiz...</p>
+      </main>
+    );
+  }
 
   if (status !== "ready" || !state) {
     return (
