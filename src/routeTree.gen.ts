@@ -16,6 +16,7 @@ import { Route as QSlugRouteImport } from './routes/q.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminDiagnosticoRouteImport } from './routes/_authenticated/admin/diagnostico'
 import { Route as AuthenticatedAdminFunilRouteImport } from './routes/_authenticated/admin/funil'
+import { Route as AuthenticatedAdminLeadsRouteImport } from './routes/_authenticated/admin/leads'
 import { Route as ApiPublicSaleRouteImport } from './routes/api/public/sale'
 import { Route as AuthenticatedAdminQuizIdRouteImport } from './routes/_authenticated/admin/quiz.$id'
 
@@ -54,6 +55,11 @@ const AuthenticatedAdminFunilRoute = AuthenticatedAdminFunilRouteImport.update({
   path: '/admin/funil',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminLeadsRoute = AuthenticatedAdminLeadsRouteImport.update({
+  id: '/admin/leads',
+  path: '/admin/leads',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicSaleRoute = ApiPublicSaleRouteImport.update({
   id: '/api/public/sale',
   path: '/api/public/sale',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/q/$slug': typeof QSlugRoute
   '/admin/diagnostico': typeof AuthenticatedAdminDiagnosticoRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
+  '/admin/leads': typeof AuthenticatedAdminLeadsRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/q/$slug': typeof QSlugRoute
   '/admin/diagnostico': typeof AuthenticatedAdminDiagnosticoRoute
   '/admin/funil': typeof AuthenticatedAdminFunilRoute
+  '/admin/leads': typeof AuthenticatedAdminLeadsRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/q/$slug': typeof QSlugRoute
   '/_authenticated/admin/diagnostico': typeof AuthenticatedAdminDiagnosticoRoute
   '/_authenticated/admin/funil': typeof AuthenticatedAdminFunilRoute
+  '/_authenticated/admin/leads': typeof AuthenticatedAdminLeadsRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/q/$slug'
     | '/admin/diagnostico'
     | '/admin/funil'
+    | '/admin/leads'
     | '/api/public/sale'
     | '/admin/'
     | '/admin/quiz/$id'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/q/$slug'
     | '/admin/diagnostico'
     | '/admin/funil'
+    | '/admin/leads'
     | '/api/public/sale'
     | '/admin'
     | '/admin/quiz/$id'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/q/$slug'
     | '/_authenticated/admin/diagnostico'
     | '/_authenticated/admin/funil'
+    | '/_authenticated/admin/leads'
     | '/api/public/sale'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/quiz/$id'
@@ -191,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFunilRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/leads': {
+      id: '/_authenticated/admin/leads'
+      path: '/admin/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AuthenticatedAdminLeadsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/sale': {
       id: '/api/public/sale'
       path: '/api/public/sale'
@@ -211,6 +230,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminDiagnosticoRoute: typeof AuthenticatedAdminDiagnosticoRoute
   AuthenticatedAdminFunilRoute: typeof AuthenticatedAdminFunilRoute
+  AuthenticatedAdminLeadsRoute: typeof AuthenticatedAdminLeadsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminQuizIdRoute: typeof AuthenticatedAdminQuizIdRoute
 }
@@ -218,6 +238,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminDiagnosticoRoute: AuthenticatedAdminDiagnosticoRoute,
   AuthenticatedAdminFunilRoute: AuthenticatedAdminFunilRoute,
+  AuthenticatedAdminLeadsRoute: AuthenticatedAdminLeadsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminQuizIdRoute: AuthenticatedAdminQuizIdRoute,
 }

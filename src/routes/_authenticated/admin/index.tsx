@@ -74,6 +74,9 @@ function AdminHome() {
             <Link to="/admin/funil">Funil do quiz</Link>
           </Button>
           <Button variant="outline" asChild>
+            <Link to="/admin/leads">Leads</Link>
+          </Button>
+          <Button variant="outline" asChild>
             <Link to="/admin/diagnostico">Editar diagnóstico</Link>
           </Button>
           <Button
