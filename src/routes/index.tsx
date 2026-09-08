@@ -384,6 +384,7 @@ function QuizPage() {
               );
               const micro =
                 typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
+              setBranch(step.id, picked[0]);
               showFeedbackThenAdvance(micro);
             }}
           />
@@ -421,7 +422,9 @@ function QuizPage() {
         )}
       </div>
     </main>
+    </CustomizationProvider>
   );
+
 }
 
 function ResultView(props: React.ComponentProps<typeof ResultScreen>) {
