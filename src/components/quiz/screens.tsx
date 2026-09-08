@@ -636,6 +636,9 @@ export function ResultScreen({
   const chance = recoveryChance(answers, scores);
   const list = highlights(answers, scores);
   const ferritin = ferritinReading(answers);
+  const custom = useCustomization();
+  const rc = custom.results[protocol.id] ?? {};
+
   const FERRITIN_FILL: Record<string, number> = {
     critico: 18,
     baixo: 38,
