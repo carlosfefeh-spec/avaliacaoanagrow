@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as QSlugRouteImport } from './routes/q.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiPublicSaleRouteImport } from './routes/api/public/sale'
+import { Route as AuthenticatedAdminQuizIdRouteImport } from './routes/_authenticated/admin/quiz.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -45,6 +46,12 @@ const ApiPublicSaleRoute = ApiPublicSaleRouteImport.update({
   path: '/api/public/sale',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminQuizIdRoute =
+  AuthenticatedAdminQuizIdRouteImport.update({
+    id: '/admin/quiz/$id',
+    path: '/admin/quiz/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -52,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/q/$slug': typeof QSlugRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
   '/q/$slug': typeof QSlugRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +77,25 @@ export interface FileRoutesById {
   '/q/$slug': typeof QSlugRoute
   '/api/public/sale': typeof ApiPublicSaleRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/quiz/$id': typeof AuthenticatedAdminQuizIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/q/$slug' | '/api/public/sale' | '/admin/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/q/$slug'
+    | '/api/public/sale'
+    | '/admin/'
+    | '/admin/quiz/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/q/$slug' | '/api/public/sale' | '/admin'
+  to:
+    | '/'
+    | '/auth'
+    | '/q/$slug'
+    | '/api/public/sale'
+    | '/admin'
+    | '/admin/quiz/$id'
   id:
     | '__root__'
     | '/'
@@ -82,6 +104,7 @@ export interface FileRouteTypes {
     | '/q/$slug'
     | '/api/public/sale'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/quiz/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,15 +159,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSaleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/quiz/$id': {
+      id: '/_authenticated/admin/quiz/$id'
+      path: '/admin/quiz/$id'
+      fullPath: '/admin/quiz/$id'
+      preLoaderRoute: typeof AuthenticatedAdminQuizIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminQuizIdRoute: typeof AuthenticatedAdminQuizIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminQuizIdRoute: AuthenticatedAdminQuizIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
