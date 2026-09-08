@@ -18,6 +18,7 @@ import {
   btnPrimary,
 } from "@/components/quiz/screens";
 import { MICRO_FEEDBACKS, STEPS, type Answers, type Step } from "@/lib/quiz/config";
+import { loadDiagnosticSteps } from "@/lib/quiz/overrides";
 import {
   CAUSES,
   collectTags,
