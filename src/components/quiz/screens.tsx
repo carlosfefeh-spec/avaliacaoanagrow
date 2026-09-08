@@ -15,6 +15,7 @@ import { useTap } from "@/lib/quiz/tap";
 import { track, trackEcommerce } from "@/lib/quiz/analytics";
 import { buildStoreUrl } from "@/lib/quiz/attribution";
 import { CTA_COPY, LANDING_COPY, LOADER_COPY, WHY_BLOCKS, getVariant, type Variant } from "@/lib/quiz/experiments";
+import { useCustomization, useFinalFields } from "@/lib/quiz/customization";
 
 export const btnPrimary =
   "inline-flex min-h-[56px] w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-[0.95rem] font-medium tracking-[0.02em] text-primary-foreground transition-transform duration-200 hover:brightness-110 active:scale-[0.985] disabled:opacity-30 disabled:active:scale-100";
