@@ -161,11 +161,21 @@ function QuizPage() {
   answersRef.current = answers;
   const stepsRef = useRef<Step[]>(steps);
   stepsRef.current = steps;
+  /** Destino definido pelo fluxo condicional do painel para a resposta escolhida. */
+  const jumpRef = useRef<string | null>(null);
+  const branchingRef = useRef(custom.branching);
+  branchingRef.current = custom.branching;
 
   const go = useCallback((delta: number) => {
     setFeedback(null);
     setIndex((i) => {
       const list = stepsRef.current;
+      const jumpTo = jumpRef.current;
+      jumpRef.current = null;
+      if (delta > 0 && jumpTo) {
+        const target = list.findIndex((s) => s.id === jumpTo);
+        if (target > i) return target;
+      }
       const dir = delta >= 0 ? 1 : -1;
       let next = i;
       for (let s = 0; s < Math.abs(delta); s++) {
@@ -183,6 +193,12 @@ function QuizPage() {
     });
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   }, []);
+
+  const setBranch = (stepId: string, optionId: string | undefined) => {
+    if (!optionId) return;
+    const target = branchingRef.current?.[stepId]?.[optionId];
+    jumpRef.current = target ?? null;
+  };
 
   const showFeedbackThenAdvance = useCallback(
     (message: string | null) => {
@@ -209,12 +225,14 @@ function QuizPage() {
       totalSelected: 1,
       progress,
     });
+    setBranch(currentStep.id, optionId);
     const micro =
       typeof currentStep.microFeedback === "function"
         ? currentStep.microFeedback(next)
         : (currentStep.microFeedback ?? null);
     showFeedbackThenAdvance(micro);
   };
+
 
 
   const toggleMulti = (currentStep: Extract<Step, { kind: "question" }>, optionId: string) => {
