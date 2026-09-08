@@ -71,6 +71,9 @@ function AdminHome() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild>
+            <Link to="/admin/funil">Funil do quiz</Link>
+          </Button>
+          <Button variant="outline" asChild>
             <Link to="/admin/diagnostico">Editar diagnóstico</Link>
           </Button>
           <Button
