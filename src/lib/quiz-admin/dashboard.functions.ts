@@ -167,3 +167,51 @@ export const getFunnelDashboard = createServerFn({ method: "POST" })
       })),
     };
   });
+
+export type LeadListRow = LeadRow & { phoneDigits: string; protocolId: string | null };
+
+/** Lista completa de leads para a tela de acompanhamento. */
+export const listLeads = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { search?: string; limit?: number }) => ({
+    search: (data?.search ?? "").trim().slice(0, 80),
+    limit: Math.min(500, Math.max(10, data?.limit ?? 200)),
+  }))
+  .handler(async ({ data, context }): Promise<LeadListRow[]> => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "super_admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden");
+
+    let query = context.supabase
+      .from("quiz_leads")
+      .select(
+        "id, created_at, name, phone, phone_digits, email, cause, protocol_id, protocol_title, recovery_chance, webhook_ok, webhook_status",
+      )
+      .order("created_at", { ascending: false })
+      .limit(data.limit);
+
+    if (data.search) {
+      const term = `%${data.search}%`;
+      query = query.or(`name.ilike.${term},email.ilike.${term},phone_digits.ilike.${term}`);
+    }
+
+    const { data: rows, error } = await query;
+    if (error) throw error;
+
+    return (rows ?? []).map((l) => ({
+      id: l.id,
+      createdAt: l.created_at,
+      name: l.name,
+      phone: l.phone,
+      phoneDigits: l.phone_digits,
+      email: l.email,
+      cause: l.cause,
+      protocolId: l.protocol_id,
+      protocol: l.protocol_title,
+      recoveryChance: l.recovery_chance,
+      webhookOk: l.webhook_ok,
+      webhookStatus: l.webhook_status,
+    }));
+  });
