@@ -83,7 +83,7 @@ export type LandingCopy = {
 export const LANDING_COPY: Record<Variant<"landing_v1">, LandingCopy> = {
   control: {
     badge: "Avaliação capilar guiada",
-    headline: "Descubra a verdadeira causa da sua queda de cabelo.",
+    headline: "Descubra o principal fator do seu ciclo capilar.",
     subhead:
       "Em cerca de 2 minutos analisamos seu caso e indicamos o protocolo Anagrow mais adequado ao que você está vivendo hoje.",
     bullets: [
@@ -97,9 +97,9 @@ export const LANDING_COPY: Record<Variant<"landing_v1">, LandingCopy> = {
     badge: "2 minutos · 100% gratuito",
     headline: "Seu cabelo está caindo — e você merece saber por quê.",
     subhead:
-      "A maioria dos tratamentos falha porque ataca o sintoma. Responda algumas perguntas e veja qual causa explica o seu caso.",
+      "A maioria dos tratamentos falha porque cuida só do sinal. Responda algumas perguntas e veja qual fator explica o seu caso.",
     bullets: [
-      "20.000 mulheres já entenderam a causa da própria queda",
+      "20.000 mulheres já entenderam o próprio ciclo capilar",
       "Nada de formulário longo: uma pergunta por vez",
       "No final, o protocolo certo para o seu perfil",
     ],
@@ -186,10 +186,10 @@ export const LOADER_COPY: Record<Variant<"loader_v1">, LoaderCopy> = {
   // Ritmo acelerando + mensagens em 1ª pessoa + status para segurar a atenção.
   personal: {
     insights: [
-      "Comparando seu padrão de queda com o de 20.000 mulheres…",
-      "Afinamento quase sempre aparece antes da queda intensa.",
+      "Comparando seu ciclo capilar com o de 20.000 mulheres…",
+      "O afinamento quase sempre aparece antes de o ciclo capilar se intensificar.",
       "O DHT também age no couro cabeludo feminino.",
-      "Ferro baixo é uma das causas mais comuns de queda em mulheres.",
+      "Ferro baixo é um dos fatores mais comuns do ciclo capilar em mulheres.",
       "B12 e cisteína definem a espessura de cada fio.",
       "Cruzando tudo isso com as suas respostas…",
     ],
@@ -227,7 +227,7 @@ export const WHY_BLOCKS: Record<Variant<"why_v1">, (ctx: WhyContext) => WhyBlock
   // 2 blocos: causa → mecanismo, separando o diagnóstico da solução.
   double: (c) => [
     {
-      title: "O que está por trás da sua queda",
+      title: "O que está por trás do seu ciclo capilar",
       body: `${c.causeBody} Enquanto essa causa não é tratada, o fio continua nascendo mais fino e caindo antes da hora.`,
     },
     {

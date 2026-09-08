@@ -234,49 +234,20 @@ export function FindingsScreen({ answers, scores, onNext }: { answers: Answers; 
   const nextTap = useTap(onNext);
   const cause = primaryCause(scores);
   const list = highlights(answers, scores).slice(0, 4);
-  const order: Cause[] = ["nutricional", "foliculo", "hormonal"];
 
   return (
     <div className="animate-enter">
-      <Eyebrow>Encontramos alguns sinais importantes</Eyebrow>
-       <h2 className={questionTitle}>
-        Pelas suas respostas, sua queda parece estar relacionada principalmente a:
-      </h2>
+      <Eyebrow>Seu diagnóstico personalizado</Eyebrow>
+      <h2 className={questionTitle}>Identificamos o principal fator por trás da sua situação capilar</h2>
 
-      <ul className="mt-5 space-y-2.5">
-        {order.map((key) => {
-          const active = key === cause;
-          return (
-            <li
-              key={key}
-              className={[
-                "rounded-2xl border px-4 py-3.5 transition-colors",
-                active ? "border-primary bg-primary text-primary-foreground" : "surface text-muted-foreground",
-              ].join(" ")}
-            >
-              <div className="flex items-center gap-3">
-                <span
-                  className={[
-                    "flex h-5 w-5 items-center justify-center rounded-full border",
-                    active ? "border-primary-foreground" : "border-border",
-                  ].join(" ")}
-                  aria-hidden="true"
-                >
-                  {active && <span className="bg-primary-foreground h-2 w-2 rounded-full" />}
-                </span>
-                <span className="text-[0.95rem] font-semibold">{CAUSES[key].label}</span>
-              </div>
-              {active && (
-                <p className="text-primary-foreground/85 mt-2 text-[0.86rem] leading-snug">{CAUSES[key].body}</p>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      <div className="border-primary bg-primary text-primary-foreground mt-5 rounded-2xl border px-5 py-5">
+        <p className="text-[1.05rem] font-bold">{CAUSES[cause].label}</p>
+        <p className="text-primary-foreground/90 mt-2 text-[0.9rem] leading-relaxed">{CAUSES[cause].body}</p>
+      </div>
 
       <div className="surface mt-5 rounded-2xl p-4">
         <p className="text-primary/70 text-[0.7rem] font-semibold tracking-[0.18em] uppercase">
-          O que pesou nessa leitura
+          O que nos guiou nessa análise
         </p>
         <ul className="mt-3 space-y-2">
           {list.map((item) => (
@@ -289,11 +260,12 @@ export function FindingsScreen({ answers, scores, onNext }: { answers: Answers; 
       </div>
 
       <button className={`${btnPrimary} mt-6`} {...nextTap}>
-        Continuar
+        Ver meu protocolo →
       </button>
     </div>
   );
 }
+
 
 /* ------------------------------------------------- Chance de recuperação */
 
@@ -548,7 +520,7 @@ export function PhoneScreen({
 /* ---------------------------------------------------------- Processamento */
 
 const PROCESS_ITEMS = [
-  "Padrão de queda analisado",
+  "Padrão do ciclo capilar analisado",
   "Tempo de evolução considerado",
   "Contexto hormonal avaliado",
   "Sinais nutricionais cruzados",
@@ -857,7 +829,7 @@ export function ResultScreen({
             </p>
             <p className="font-display mt-1 text-[1.25rem] font-semibold">{protocol.main.name}</p>
             <p className="text-muted-foreground mt-1 text-[0.85rem] leading-relaxed">
-              Os principais produtos para combater a queda de cabelo.
+              Os principais produtos para apoiar a renovação capilar.
             </p>
             <p className="text-muted-foreground mt-1 text-[0.85rem]">{protocol.main.short}</p>
             <p className="mt-3 text-[0.9rem] leading-relaxed">{protocol.main.role}</p>

@@ -185,7 +185,7 @@ const FERRITIN_READINGS: Record<string, FerritinReading> = {
     range: "Abaixo de 30 ng/mL",
     status: "Reserva de ferro muito baixa",
     meaning:
-      "Nessa faixa o corpo prioriza órgãos vitais e o folículo fica no fim da fila. O fio nasce mais fino, encurta o ciclo de crescimento e cai antes da hora — é o cenário em que a perda de espessura costuma ser mais visível.",
+      "Nessa faixa o corpo prioriza órgãos vitais e o folículo fica no fim da fila. O fio nasce mais fino, encurta o ciclo de crescimento e cai antes da hora — é o cenário em que a transformação da espessura costuma ser mais visível.",
     nextStep:
       "Reposição nutricional contínua é o primeiro passo: comece pelo Ferritin12 todos os dias e reavalie a ferritina em 90 dias.",
   },
@@ -212,7 +212,7 @@ const FERRITIN_READINGS: Record<string, FerritinReading> = {
     range: "Acima de 150 ng/mL",
     status: "Faixa considerada ideal para o fio",
     meaning:
-      "Com a ferritina nessa faixa, a matéria-prima não é o gargalo da sua queda. Isso é uma boa notícia: aponta que a causa principal está em outra frente — hormonal ou de estímulo do folículo.",
+      "Com a ferritina nessa faixa, a matéria-prima não é o gargalo do seu ciclo capilar. Isso é uma boa notícia: aponta que a causa principal está em outra frente — hormonal ou de estímulo do folículo.",
     nextStep:
       "Manter a reserva e direcionar o protocolo para a frente que apareceu com mais peso na sua análise.",
   },
@@ -221,7 +221,7 @@ const FERRITIN_READINGS: Record<string, FerritinReading> = {
     range: "Valor não medido",
     status: "Ainda sem número para comparar",
     meaning:
-      "Sem esse dado, a leitura fica nos sinais que você descreveu — e vários deles são compatíveis com reserva de ferro baixa: fio mais fino, queda que não estabiliza e crescimento lento.",
+      "Sem esse dado, a leitura fica nos sinais que você descreveu — e vários deles são compatíveis com reserva de ferro baixa: fio mais fino, ciclo capilar que não estabiliza e crescimento lento.",
     nextStep:
       "Peça ferritina no próximo exame de sangue e use 150 ng/mL como referência capilar, não o mínimo do laboratório.",
   },
@@ -253,7 +253,7 @@ export function highlights(answers: Answers, scores: Scores): string[] {
     out.push("Você já investigou parte dos seus marcadores em exames.");
   const meno = answers['menopausa']?.[0];
   if (meno === "sim" || meno === "peri")
-    out.push("Há um contexto hormonal em andamento, que pesa no padrão de afinamento.");
+    out.push("Há um contexto hormonal em andamento, que nos guia na leitura do afinamento.");
   const couro = label("couro");
   if (couro) out.push(`Couro cabeludo ${couro.toLowerCase()}.`);
   const obj = label("objetivo");
