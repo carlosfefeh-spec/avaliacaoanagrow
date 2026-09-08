@@ -314,20 +314,23 @@ function QuizPage() {
 
   if (step.kind === "landing") {
     return (
-      <main className="mx-auto max-w-[560px]">
-        <Landing
-          onStart={() => {
-            track("quiz_started");
-            go(1);
-          }}
-          onResume={resumable ? resume : undefined}
-        />
-      </main>
+      <CustomizationProvider value={custom}>
+        <main className="mx-auto max-w-[560px]" style={themeStyle(custom.theme)}>
+          <Landing
+            onStart={() => {
+              track("quiz_started");
+              go(1);
+            }}
+            onResume={resumable ? resume : undefined}
+          />
+        </main>
+      </CustomizationProvider>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-4 pb-10">
+    <CustomizationProvider value={custom}>
+    <main className="mx-auto flex min-h-[100svh] max-w-[560px] flex-col px-5 pt-4 pb-10" style={themeStyle(custom.theme)}>
       <header className="bg-background/95 sticky top-0 z-10 -mx-5 mb-8 px-5 pt-2 pb-3 backdrop-blur">
         <div className="mb-4 flex items-center justify-between">
           <button
@@ -340,11 +343,16 @@ function QuizPage() {
               <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <span className="font-display text-primary text-[0.8rem] tracking-[0.34em] uppercase">Anagrow</span>
+          {custom.theme.logoUrl ? (
+            <img src={custom.theme.logoUrl} alt="Anagrow" className="h-6 w-auto" />
+          ) : (
+            <span className="font-display text-primary text-[0.8rem] tracking-[0.34em] uppercase">Anagrow</span>
+          )}
           <span className="h-9 w-9" />
         </div>
         <ProgressBar value={progress} />
       </header>
+
 
 
       <div key={step.id} className="flex-1">
