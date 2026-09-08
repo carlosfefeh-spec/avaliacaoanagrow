@@ -253,7 +253,7 @@ export function highlights(answers: Answers, scores: Scores): string[] {
     out.push("Você já investigou parte dos seus marcadores em exames.");
   const meno = answers['menopausa']?.[0];
   if (meno === "sim" || meno === "peri")
-    out.push("Há um contexto hormonal em andamento, que pesa no padrão de afinamento.");
+    out.push("Há um contexto hormonal em andamento, que nos guia na leitura do afinamento.");
   const couro = label("couro");
   if (couro) out.push(`Couro cabeludo ${couro.toLowerCase()}.`);
   const obj = label("objetivo");
