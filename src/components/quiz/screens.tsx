@@ -383,8 +383,16 @@ export function NameScreen({ onSubmit }: { onSubmit: (name: string) => void }) {
 
 /* -------------------------------------------------------------- WhatsApp */
 
-export function PhoneScreen({ name, onSubmit }: { name: string; onSubmit: (phone: string, optIn: boolean) => void }) {
+export function PhoneScreen({
+  name,
+  onSubmit,
+}: {
+  name: string;
+  onSubmit: (phone: string, optIn: boolean, email: string | null) => void;
+}) {
   const [value, setValue] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [optIn, setOptIn] = useState(false);
   const [error, setError] = useState("");
 
@@ -397,8 +405,14 @@ export function PhoneScreen({ name, onSubmit }: { name: string; onSubmit: (phone
           setError("Confira o número: precisa ter DDD e 9 dígitos.");
           return;
         }
+        const mail = email.trim();
+        if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) {
+          setEmailError("Confira o e-mail digitado.");
+          return;
+        }
         setError("");
-        onSubmit(value, optIn);
+        setEmailError("");
+        onSubmit(value, optIn, mail || null);
       }}
     >
       <Eyebrow>Último passo</Eyebrow>
