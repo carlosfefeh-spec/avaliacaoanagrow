@@ -731,7 +731,8 @@ export function ResultScreen({
           href={storeUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`${ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
+          aria-label={`${rc.ctaText || ctaCopy.label(protocol.cta, causeLabel)} — abre em nova aba`}
+          style={rc.ctaColor ? { backgroundColor: rc.ctaColor } : undefined}
           className={
             ctaCopy.highlight
               ? `${btnPrimary} shadow-primary/25 animate-pulse-soft min-h-[56px] touch-manipulation py-[1.15rem] shadow-xl transition-transform select-none active:scale-[0.985]`
@@ -742,7 +743,7 @@ export function ResultScreen({
               recommended_protocol: protocol.id,
               recommended_product: protocol.main.name,
               url: storeUrl,
-              cta_label: ctaCopy.label(protocol.cta, causeLabel),
+              cta_label: rc.ctaText || ctaCopy.label(protocol.cta, causeLabel),
             });
             trackEcommerce("select_item", ecommerceItems, {
               item_list_id: "quiz_result",
@@ -751,7 +752,8 @@ export function ResultScreen({
             trackEcommerce("begin_checkout", ecommerceItems);
           }}
         >
-          <span>{ctaCopy.label(protocol.cta, causeLabel)}</span>
+          <span>{rc.ctaText || ctaCopy.label(protocol.cta, causeLabel)}</span>
+
           <svg
             viewBox="0 0 24 24"
             className="ml-1.5 h-5 w-5 shrink-0"
