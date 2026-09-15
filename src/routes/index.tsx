@@ -376,6 +376,12 @@ function QuizPage() {
               const micro =
                 typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
               recordQuizAnswer({ questionId: step.id, position: index, optionIds: picked });
+              sendWebhookAnswer({
+                position: index,
+                questionTitle: step.title,
+                questionType: "multiple_choice",
+                answerLabels: picked.map((id) => step.options.find((o) => o.id === id)?.label ?? id),
+              });
               setBranch(step.id, picked[0]);
               showFeedbackThenAdvance(micro);
             }}
