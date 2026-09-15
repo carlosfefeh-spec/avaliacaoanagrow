@@ -48,6 +48,7 @@ import { activeVariants, decorateMicroFeedback, getVariant, type Variant } from 
 import { sendLead } from "@/lib/quiz/lead.functions";
 import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
+import { completeQuizSession, recordQuizAnswer, startQuizSession } from "@/lib/quiz/session";
 
 const TITLE = "Avaliação Capilar Anagrow: descubra a causa da sua queda";
 const DESCRIPTION =
@@ -225,6 +226,7 @@ function QuizPage() {
       totalSelected: 1,
       progress,
     });
+    recordQuizAnswer({ questionId: currentStep.id, position: index, optionIds: [optionId] });
     setBranch(currentStep.id, optionId);
     const micro =
       typeof currentStep.microFeedback === "function"
@@ -321,6 +323,7 @@ function QuizPage() {
             <Landing
               onStart={() => {
                 track("quiz_started");
+                void startQuizSession();
                 go(1);
               }}
               onResume={resumable ? resume : undefined}
@@ -364,6 +367,7 @@ function QuizPage() {
               );
               const micro =
                 typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
+              recordQuizAnswer({ questionId: step.id, position: index, optionIds: picked });
               setBranch(step.id, picked[0]);
               showFeedbackThenAdvance(micro);
             }}
@@ -379,6 +383,7 @@ function QuizPage() {
             onSubmit={(value) => {
               setName(value);
               track("quiz_name_submitted");
+              recordQuizAnswer({ questionId: step.id, position: index, textValue: value });
               go(1);
             }}
           />
@@ -411,6 +416,7 @@ function ResultView(props: React.ComponentProps<typeof ResultScreen>) {
   useEffect(() => {
     track("quiz_result_viewed");
     track("quiz_protocol_recommended");
+    completeQuizSession();
   }, []);
   return <ResultScreen {...props} />;
 }

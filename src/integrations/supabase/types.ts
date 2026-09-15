@@ -38,6 +38,44 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_answers: {
+        Row: {
+          created_at: string
+          id: string
+          option_ids: string[]
+          question_id: string
+          question_position: number | null
+          quiz_session_id: string
+          text_value: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_ids?: string[]
+          question_id: string
+          question_position?: number | null
+          quiz_session_id: string
+          text_value?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_ids?: string[]
+          question_id?: string
+          question_position?: number | null
+          quiz_session_id?: string
+          text_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_answers_quiz_session_id_fkey"
+            columns: ["quiz_session_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_attempts: {
         Row: {
           answers: Json
@@ -299,6 +337,42 @@ export type Database = {
           },
         ]
       }
+      quiz_sessions: {
+        Row: {
+          client_id: string | null
+          completed_at: string | null
+          created_at: string
+          current_question_position: number
+          id: string
+          quiz_id: string | null
+          started_at: string
+          status: string
+          workspace_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          current_question_position?: number
+          id?: string
+          quiz_id?: string | null
+          started_at?: string
+          status?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          current_question_position?: number
+          id?: string
+          quiz_id?: string | null
+          started_at?: string
+          status?: string
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       quizzes: {
         Row: {
           created_at: string
@@ -380,6 +454,11 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      quiz_session_complete: { Args: { p_id: string }; Returns: undefined }
+      quiz_session_progress: {
+        Args: { p_id: string; p_position: number }
+        Returns: undefined
       }
     }
     Enums: {
