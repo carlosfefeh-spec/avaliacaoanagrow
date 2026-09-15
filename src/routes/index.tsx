@@ -437,6 +437,7 @@ function ResultView(props: React.ComponentProps<typeof ResultScreen>) {
     track("quiz_result_viewed");
     track("quiz_protocol_recommended");
     completeQuizSession();
+    completeWebhookSession();
   }, []);
   return <ResultScreen {...props} />;
 }
