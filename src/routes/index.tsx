@@ -49,6 +49,7 @@ import { sendLead } from "@/lib/quiz/lead.functions";
 import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 import { completeQuizSession, recordQuizAnswer, startQuizSession } from "@/lib/quiz/session";
+import { completeWebhookSession, sendWebhookAnswer, startWebhookSession } from "@/lib/quiz/webhook-sync";
 
 const TITLE = "Avaliação Capilar Anagrow: descubra a causa da sua queda";
 const DESCRIPTION =
