@@ -398,6 +398,12 @@ function QuizPage() {
               setName(value);
               track("quiz_name_submitted");
               recordQuizAnswer({ questionId: step.id, position: index, textValue: value });
+              sendWebhookAnswer({
+                position: index,
+                questionTitle: "Como você se chama?",
+                questionType: "text",
+                answerText: value,
+              });
               go(1);
             }}
           />
