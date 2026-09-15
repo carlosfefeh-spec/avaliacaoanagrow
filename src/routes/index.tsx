@@ -228,6 +228,12 @@ function QuizPage() {
       progress,
     });
     recordQuizAnswer({ questionId: currentStep.id, position: index, optionIds: [optionId] });
+    sendWebhookAnswer({
+      position: index,
+      questionTitle: currentStep.title,
+      questionType: "single_choice",
+      answerLabels: [currentStep.options.find((o) => o.id === optionId)?.label ?? optionId],
+    });
     setBranch(currentStep.id, optionId);
     const micro =
       typeof currentStep.microFeedback === "function"
