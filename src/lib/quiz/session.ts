@@ -38,21 +38,23 @@ export function startQuizSession(): Promise<string | null> {
   if (starting) return starting;
   starting = (async () => {
     try {
-      const { data, error } = await supabase
-        .from("quiz_sessions")
-        .insert({
-          quiz_id: QUIZ_KEY,
-          workspace_id: WORKSPACE_KEY,
-          client_id: quizId(),
-          status: "in_progress",
-          started_at: new Date().toISOString(),
-          current_question_position: 0,
-        })
-        .select("id")
-        .single();
-      if (error || !data) return null;
-      store(data.id);
-      return data.id;
+      const id =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : null;
+      if (!id) return null;
+      const { error } = await supabase.from("quiz_sessions").insert({
+        id,
+        quiz_id: QUIZ_KEY,
+        workspace_id: WORKSPACE_KEY,
+        client_id: quizId(),
+        status: "in_progress",
+        started_at: new Date().toISOString(),
+        current_question_position: 0,
+      });
+      if (error) return null;
+      store(id);
+      return id;
     } catch {
       return null;
     }
