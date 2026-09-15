@@ -455,6 +455,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      quiz_session_complete: { Args: { p_id: string }; Returns: undefined }
+      quiz_session_progress: {
+        Args: { p_id: string; p_position: number }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "user"
