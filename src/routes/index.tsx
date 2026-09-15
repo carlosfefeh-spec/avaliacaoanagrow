@@ -383,6 +383,7 @@ function QuizPage() {
             onSubmit={(value) => {
               setName(value);
               track("quiz_name_submitted");
+              recordQuizAnswer({ questionId: step.id, position: index, textValue: value });
               go(1);
             }}
           />
