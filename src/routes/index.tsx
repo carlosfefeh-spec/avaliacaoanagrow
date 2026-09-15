@@ -331,6 +331,7 @@ function QuizPage() {
               onStart={() => {
                 track("quiz_started");
                 void startQuizSession();
+                void startWebhookSession();
                 go(1);
               }}
               onResume={resumable ? resume : undefined}
