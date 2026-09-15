@@ -82,10 +82,7 @@ export function recordQuizAnswer(input: {
         text_value: input.textValue ?? null,
         created_at: new Date().toISOString(),
       });
-      await supabase
-        .from("quiz_sessions")
-        .update({ current_question_position: input.position })
-        .eq("id", id);
+      await supabase.rpc("quiz_session_progress", { p_id: id, p_position: input.position });
     } catch {
       /* instrumentação silenciosa: nunca interrompe o quiz */
     }
@@ -99,10 +96,7 @@ export function completeQuizSession(): void {
   if (!id) return;
   void (async () => {
     try {
-      await supabase
-        .from("quiz_sessions")
-        .update({ status: "completed", completed_at: new Date().toISOString() })
-        .eq("id", id);
+      await supabase.rpc("quiz_session_complete", { p_id: id });
     } catch {
       /* instrumentação silenciosa */
     }
