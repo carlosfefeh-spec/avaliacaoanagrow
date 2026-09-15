@@ -49,6 +49,7 @@ import { sendLead } from "@/lib/quiz/lead.functions";
 import { buildStoreUrl, quizId } from "@/lib/quiz/attribution";
 import { clearState, loadState, saveState } from "@/lib/quiz/storage";
 import { completeQuizSession, recordQuizAnswer, startQuizSession } from "@/lib/quiz/session";
+import { completeWebhookSession, sendWebhookAnswer, startWebhookSession } from "@/lib/quiz/webhook-sync";
 
 const TITLE = "Avaliação Capilar Anagrow: descubra a causa da sua queda";
 const DESCRIPTION =
@@ -227,6 +228,12 @@ function QuizPage() {
       progress,
     });
     recordQuizAnswer({ questionId: currentStep.id, position: index, optionIds: [optionId] });
+    sendWebhookAnswer({
+      position: index,
+      questionTitle: currentStep.title,
+      questionType: "single_choice",
+      answerLabels: [currentStep.options.find((o) => o.id === optionId)?.label ?? optionId],
+    });
     setBranch(currentStep.id, optionId);
     const micro =
       typeof currentStep.microFeedback === "function"
@@ -324,6 +331,7 @@ function QuizPage() {
               onStart={() => {
                 track("quiz_started");
                 void startQuizSession();
+                void startWebhookSession();
                 go(1);
               }}
               onResume={resumable ? resume : undefined}
@@ -368,6 +376,12 @@ function QuizPage() {
               const micro =
                 typeof step.microFeedback === "function" ? step.microFeedback(answers) : (step.microFeedback ?? null);
               recordQuizAnswer({ questionId: step.id, position: index, optionIds: picked });
+              sendWebhookAnswer({
+                position: index,
+                questionTitle: step.title,
+                questionType: "multiple_choice",
+                answerLabels: picked.map((id) => step.options.find((o) => o.id === id)?.label ?? id),
+              });
               setBranch(step.id, picked[0]);
               showFeedbackThenAdvance(micro);
             }}
@@ -384,6 +398,12 @@ function QuizPage() {
               setName(value);
               track("quiz_name_submitted");
               recordQuizAnswer({ questionId: step.id, position: index, textValue: value });
+              sendWebhookAnswer({
+                position: index,
+                questionTitle: "Como você se chama?",
+                questionType: "text",
+                answerText: value,
+              });
               go(1);
             }}
           />
@@ -417,6 +437,7 @@ function ResultView(props: React.ComponentProps<typeof ResultScreen>) {
     track("quiz_result_viewed");
     track("quiz_protocol_recommended");
     completeQuizSession();
+    completeWebhookSession();
   }, []);
   return <ResultScreen {...props} />;
 }
