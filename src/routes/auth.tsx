@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { claimSuperAdminFn } from "@/lib/quiz-admin/roles.functions";
 
 const TITLE = "Acesso administrativo — Anagrow";
 const DESCRIPTION = "Entre para gerenciar os quizzes e o diagnóstico capilar da Anagrow.";

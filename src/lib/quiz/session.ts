@@ -1,6 +1,5 @@
-import { supabase } from "@/integrations/supabase/client";
-
 import { quizId } from "./attribution";
+import { completeSessionFn, recordAnswerFn, startSessionFn } from "./tracking.functions";
 
 /** Identificador do quiz de diagnóstico capilar (fluxo principal). */
 const QUIZ_KEY = "diagnostico-capilar";
