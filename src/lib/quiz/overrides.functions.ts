@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 
-export type PublicOverrideRow = { step_id: string; hidden: boolean; patch: Record<string, unknown> };
+import type { Json } from "@/integrations/supabase/types";
+
+export type PublicOverrideRow = { step_id: string; hidden: boolean; patch: Json };
 
 /** Entrega apenas os ajustes de conteúdo necessários para exibir o diagnóstico público. */
 export const fetchPublicOverridesFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -13,7 +15,7 @@ export const fetchPublicOverridesFn = createServerFn({ method: "GET" }).handler(
     return ((data ?? []) as PublicOverrideRow[]).map((row) => ({
       step_id: row.step_id,
       hidden: row.hidden,
-      patch: (row.patch ?? {}) as Record<string, unknown>,
+      patch: (row.patch ?? {}) as Json,
     }));
   } catch (error) {
     console.error("fetchPublicOverridesFn failed", error);
