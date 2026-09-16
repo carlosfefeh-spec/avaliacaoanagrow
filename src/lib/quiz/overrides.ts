@@ -55,7 +55,15 @@ export function applyOverrides(steps: Step[], overrides: OverrideRow[]): Step[] 
 
 export async function loadDiagnosticSteps(): Promise<Step[]> {
   try {
-    return applyOverrides(STEPS, await fetchOverrides());
+    const rows = await fetchPublicOverridesFn();
+    return applyOverrides(
+      STEPS,
+      rows.map((row) => ({
+        step_id: row.step_id,
+        hidden: row.hidden,
+        patch: (row.patch ?? {}) as StepPatch,
+      })),
+    );
   } catch {
     return STEPS;
   }
