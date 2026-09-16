@@ -1,6 +1,5 @@
-import { supabase } from "@/integrations/supabase/client";
-
 import { quizId } from "./attribution";
+import { completeSessionFn, recordAnswerFn, startSessionFn } from "./tracking.functions";
 
 /** Identificador do quiz de diagnóstico capilar (fluxo principal). */
 const QUIZ_KEY = "diagnostico-capilar";
@@ -43,16 +42,10 @@ export function startQuizSession(): Promise<string | null> {
           ? crypto.randomUUID()
           : null;
       if (!id) return null;
-      const { error } = await supabase.from("quiz_sessions").insert({
-        id,
-        quiz_id: QUIZ_KEY,
-        workspace_id: WORKSPACE_KEY,
-        client_id: quizId(),
-        status: "in_progress",
-        started_at: new Date().toISOString(),
-        current_question_position: 0,
+      const result = await startSessionFn({
+        data: { id, quizId: QUIZ_KEY, workspaceId: WORKSPACE_KEY, clientId: quizId() },
       });
-      if (error) return null;
+      if (!result?.ok) return null;
       store(id);
       return id;
     } catch {
@@ -74,15 +67,15 @@ export function recordQuizAnswer(input: {
     try {
       const id = currentQuizSessionId() ?? (await startQuizSession());
       if (!id) return;
-      await supabase.from("quiz_answers").insert({
-        quiz_session_id: id,
-        question_id: input.questionId,
-        question_position: input.position,
-        option_ids: input.optionIds ?? [],
-        text_value: input.textValue ?? null,
-        created_at: new Date().toISOString(),
+      await recordAnswerFn({
+        data: {
+          sessionId: id,
+          questionId: input.questionId,
+          position: input.position,
+          optionIds: input.optionIds ?? [],
+          textValue: input.textValue ?? null,
+        },
       });
-      await supabase.rpc("quiz_session_progress", { p_id: id, p_position: input.position });
     } catch {
       /* instrumentação silenciosa: nunca interrompe o quiz */
     }
@@ -96,7 +89,7 @@ export function completeQuizSession(): void {
   if (!id) return;
   void (async () => {
     try {
-      await supabase.rpc("quiz_session_complete", { p_id: id });
+      await completeSessionFn({ data: { sessionId: id } });
     } catch {
       /* instrumentação silenciosa */
     }

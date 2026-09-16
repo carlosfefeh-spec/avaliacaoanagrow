@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { claimSuperAdminFn } from "@/lib/quiz-admin/roles.functions";
 
 const TITLE = "Acesso administrativo — Anagrow";
 const DESCRIPTION = "Entre para gerenciar os quizzes e o diagnóstico capilar da Anagrow.";
@@ -54,7 +55,11 @@ function AuthPage() {
         setError(authError.message);
         return;
       }
-      await supabase.rpc("claim_super_admin");
+      try {
+        await claimSuperAdminFn();
+      } catch {
+        /* papel será verificado novamente ao abrir o painel */
+      }
       const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/admin";
       await navigate({ to: target, replace: true });
     } finally {
