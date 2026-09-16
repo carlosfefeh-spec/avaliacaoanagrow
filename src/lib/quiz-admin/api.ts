@@ -1,6 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
+import { claimSuperAdminFn } from "./roles.functions";
+
 export type Quiz = Database["public"]["Tables"]["quizzes"]["Row"];
 export type Question = Database["public"]["Tables"]["quiz_questions"]["Row"];
 export type QuestionOption = Database["public"]["Tables"]["quiz_options"]["Row"];
@@ -24,8 +26,12 @@ export function slugify(input: string): string {
 }
 
 export async function isSuperAdmin(): Promise<boolean> {
-  const { data } = await supabase.rpc("claim_super_admin");
-  return data === true;
+  try {
+    const result = await claimSuperAdminFn();
+    return result.isSuperAdmin === true;
+  } catch {
+    return false;
+  }
 }
 
 export async function listQuizzes(): Promise<Quiz[]> {

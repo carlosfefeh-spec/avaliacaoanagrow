@@ -54,7 +54,11 @@ function AuthPage() {
         setError(authError.message);
         return;
       }
-      await supabase.rpc("claim_super_admin");
+      try {
+        await claimSuperAdminFn();
+      } catch {
+        /* papel será verificado novamente ao abrir o painel */
+      }
       const target = search.redirect && search.redirect.startsWith("/") ? search.redirect : "/admin";
       await navigate({ to: target, replace: true });
     } finally {
