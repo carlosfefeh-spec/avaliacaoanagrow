@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 import { STEPS, type Step } from "./config";
+import { fetchPublicOverridesFn } from "./overrides.functions";
 
 export type StepPatch = {
   title?: string;
