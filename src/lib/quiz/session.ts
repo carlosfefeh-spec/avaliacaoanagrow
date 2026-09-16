@@ -42,16 +42,10 @@ export function startQuizSession(): Promise<string | null> {
           ? crypto.randomUUID()
           : null;
       if (!id) return null;
-      const { error } = await supabase.from("quiz_sessions").insert({
-        id,
-        quiz_id: QUIZ_KEY,
-        workspace_id: WORKSPACE_KEY,
-        client_id: quizId(),
-        status: "in_progress",
-        started_at: new Date().toISOString(),
-        current_question_position: 0,
+      const result = await startSessionFn({
+        data: { id, quizId: QUIZ_KEY, workspaceId: WORKSPACE_KEY, clientId: quizId() },
       });
-      if (error) return null;
+      if (!result?.ok) return null;
       store(id);
       return id;
     } catch {
