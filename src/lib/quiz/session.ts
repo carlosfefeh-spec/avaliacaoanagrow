@@ -89,7 +89,7 @@ export function completeQuizSession(): void {
   if (!id) return;
   void (async () => {
     try {
-      await supabase.rpc("quiz_session_complete", { p_id: id });
+      await completeSessionFn({ data: { sessionId: id } });
     } catch {
       /* instrumentação silenciosa */
     }
