@@ -67,15 +67,15 @@ export function recordQuizAnswer(input: {
     try {
       const id = currentQuizSessionId() ?? (await startQuizSession());
       if (!id) return;
-      await supabase.from("quiz_answers").insert({
-        quiz_session_id: id,
-        question_id: input.questionId,
-        question_position: input.position,
-        option_ids: input.optionIds ?? [],
-        text_value: input.textValue ?? null,
-        created_at: new Date().toISOString(),
+      await recordAnswerFn({
+        data: {
+          sessionId: id,
+          questionId: input.questionId,
+          position: input.position,
+          optionIds: input.optionIds ?? [],
+          textValue: input.textValue ?? null,
+        },
       });
-      await supabase.rpc("quiz_session_progress", { p_id: id, p_position: input.position });
     } catch {
       /* instrumentação silenciosa: nunca interrompe o quiz */
     }
